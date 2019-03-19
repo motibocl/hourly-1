@@ -28,14 +28,14 @@
      if( typeof changeImage.showTime == 'undefined'  ) {
          changeImage.showTime = 0;
      }
-     if (document.getElementById("enterBtn").src == "http://localhost:8666/mvc-boiler/src/main/resources/static/css/images/enter-button2.png")
+     if (document.getElementById("enterBtn").src == "http://localhost:8666/css/images/enter-button2.png")
      {
          var time=new Date();
          changeImage.minutes=time.getMinutes();
          changeImage.hours=time.getHours();
          document.getElementById("enterBtn").src = "css/images/exit-button.png";
 
-     } else if (document.getElementById("enterBtn").src == "http://localhost:8666/mvc-boiler/src/main/resources/static/css/images/exit-button.png")
+     } else if (document.getElementById("enterBtn").src == "http://localhost:8666/css/images/exit-button.png")
      {
          var time2=new Date();
          var minutes1=time2.getMinutes();
@@ -44,7 +44,7 @@
          var min=(hours1*60+minutes1)-(changeImage.hours*60+changeImage.minutes);
          changeImage.showTime+=min;
          document.getElementById("workTime").innerHTML= "כמה זמן עבדתי:"+(changeImage.showTime/60).toString().split(".")[0]+"hr"+":" +(changeImage.showTime%60)+"min" ;
-         document.getElementById("enterBtn").src = "styles/images/enter-button2.png";
+         document.getElementById("enterBtn").src = "css/images/enter-button2.png";
      }
  }
 

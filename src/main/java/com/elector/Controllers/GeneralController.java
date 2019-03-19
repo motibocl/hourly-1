@@ -166,7 +166,6 @@ public class GeneralController {
         //1. query db
         //2. fetch relevant data
         //3. send data to the client (html)
-
 //        model.addAttribute("page", PAGE_DASHBOARD);
 //        boolean error = false;
 //        Integer code = null;
@@ -205,7 +204,7 @@ public class GeneralController {
 
         return "reports";
     }
-    @RequestMapping("/special_reports" )
+    @RequestMapping("/special_report" )
     public String special_reports(Model model) throws Exception {
 //        model.addAttribute("page", PAGE_DASHBOARD);
 //        boolean error = false;
@@ -222,10 +221,17 @@ public class GeneralController {
 //        model.addAttribute(PARAM_ERROR, error);
 //        model.addAttribute(PARAM_CODE, code);
 
-        return "special_reports";
+        return "special_report";
     }
-    @RequestMapping("/mainPage" )
+    @RequestMapping("/main" )
     public String mainPage(Model model) throws Exception {
+        model.addAttribute("name","מוטי ברוך שובך:" );
+
+
+
+        //
+//
+//
 //        model.addAttribute("page", PAGE_DASHBOARD);
 //        boolean error = false;
 //        Integer code = null;
