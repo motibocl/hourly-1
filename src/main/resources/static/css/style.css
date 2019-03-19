@@ -1,0 +1,178 @@
+/*--------------------landing page----------------------------------------------*/
+
+body, html {
+    height: 100%;
+    margin: 0;
+    direction: rtl;
+}
+
+
+.img{
+    background-image: url("images/backgroundDesk.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+
+}
+
+.container{
+    text-align: center;
+}
+
+.text{
+    position: relative;
+    font-size:2vw;
+    text-align: right;
+    color: aliceblue;
+    top: 9%;
+    left: -17%;
+
+}
+#logo{
+    margin-top: 76px;
+    width: auto;
+}
+
+.input{
+    width: 100%;
+    margin-top: 20%;
+}
+
+.forgot{
+    color: aliceblue;
+    float: right;
+    margin-left: 5px;
+    font-size: 23px;
+}
+@media screen and (max-width:700px) {
+    .img {
+        background-image: url("images/backgroundMob.jpg");
+
+        /* Full height */
+        height: 100%;
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .text{
+        position: relative;
+        font-size:4vw;
+        text-align: right;
+        color: aliceblue;
+        top: 9%;
+        left: -15%;
+
+    }
+}
+/*--------------------PAGE 1----------------------------------------------*/
+#page1{
+    background-color: #f2eefa;
+}
+.container-fluid{
+    background: #e8e0d9;
+}
+.page1Btn{
+    width: auto;
+    margin: auto;
+}
+.page1Logo{
+    margin: auto;
+
+}
+.mainLogo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.btn-secondary {
+    background-color: #e8e0d9;
+    border-color: #e8e0d9;
+}
+.btn.dropdown-toggle.pull-right{
+    max-width: 70px;
+    float: right;
+}
+.timeEnter{
+    background-color: #ef7f28;
+    height: 85px;
+    margin-top: 82px;
+}
+.enterTime{
+    margin-top: 24px;
+    color: aliceblue;
+    font-weight: 600;
+    font-size: x-large;
+}
+.workedDay{
+    background-color: #e07640;
+    margin-top: 185px;
+}
+.workedMonth{
+    background-color: #e07640;
+    margin-top: 2px;
+    height: 39%;
+
+}
+.date{
+    text-align: center;
+}
+
+.ent {
+    background: #e8e0d9;
+    background-color: #f2eefa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.knisa {
+    padding: initial;
+    width: 40%;
+}
+#date{
+    color: #bf7095;
+    font-weight: 500;
+    font-size: 2.8vw;
+}
+/*------------------------PAGE 2 (SPECIAL REPORT)--------------------------------------------------*/
+.back{
+    max-width: 73px;
+}
+.backBtn{
+    float: left;
+    margin-top: 16.5px;
+}
+.backButtonCon{
+    background-color: #ffffff;
+    height: 70px;
+}
+.speRep{
+    text-align: center;
+    font-size: x-large;
+    font-weight: 600;
+    color: white;
+    margin-top: 30px;
+}
+.specialRepCon{
+    background-color:#e07640 ;
+    height: 100px;
+}
+.formRep{
+    margin-top: 40px;
+}
+.okBtnImg{
+    max-width: 276px;
+}
+.borColor{
+    border-color: #e07640;
+}
+/*------------------------PAGE 3 (REPORTS)------------------------------------------------------------*/
+.ditalesBtn{
+    float: right;
+    margin-top: 16.5px;
+}

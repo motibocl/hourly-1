@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+
+    <class name="com.elector.Objects.Entities.ConfigObject" table="config">
+        <id name="oid" type="int" column="oid">
+            <generator class="native"/>
+        </id>
+        <property name="configKey" type="string" column="config_key"/>
+        <property name="configValue" type="string" column="config_value"/>
+        <property  name="deleted" type="boolean">
+            <column name="deleted"  default="false"/>
+        </property>
+
+    </class>
+
+
+    <class name="com.elector.Objects.Entities.TranslationObject" table="translations" lazy="false">
+        <id name="oid" type="int" column="oid">
+            <generator class="native"/>
+        </id>
+        <property name="translationKey" column="translation_key" type="string"/>
+        <property name="translationValue" column="translation_value" type="string"/>
+        <property name="en" column="en" type="string"/>
+        <property  name="deleted" type="boolean">
+            <column name="deleted"  default="false"/>
+        </property>
+    </class>
+
+    <class name="com.elector.Objects.Entities.LangObject" table="languages">
+        <id name="oid" type="int" column="oid">
+            <generator class="native"/>
+        </id>
+        <property name="code" type="int" column="code"/>
+        <property name="name" type="string" column="name"/>
+        <property  name="active" type="boolean">
+            <column name="active"  default="false"/>
+        </property>
+        <property  name="deleted" type="boolean">
+            <column name="deleted"  default="false"/>
+        </property>
+
+    </class>
+
+
+
+</hibernate-mapping>

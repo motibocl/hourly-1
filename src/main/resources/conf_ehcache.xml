@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <defaultCache
+            name="com.elector.Objects.Entities.VoterObject"
+            maxEntriesLocalHeap="100000"
+            eternal="false"
+            timeToIdleSeconds="30000"
+            timeToLiveSeconds="60000">
+        <persistence strategy="localTempSwap"/>
+    </defaultCache>
+</ehcache>
