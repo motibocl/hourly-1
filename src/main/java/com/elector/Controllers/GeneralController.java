@@ -205,6 +205,43 @@ public class GeneralController {
 
         return "reports";
     }
+    @RequestMapping("/special_reports" )
+    public String special_reports(Model model) throws Exception {
+//        model.addAttribute("page", PAGE_DASHBOARD);
+//        boolean error = false;
+//        Integer code = null;
+//        try {
+//            model.addAttribute(PARAM_NAME, "dashboard");
+//
+//            //model.addAttribute("age", 5436);
+//        } catch (Exception e) {
+//            LOGGER.error("main", e);
+//            error = true;
+//            code = PARAM_ERROR_GENERAL;
+//        }
+//        model.addAttribute(PARAM_ERROR, error);
+//        model.addAttribute(PARAM_CODE, code);
 
+        return "reports";
+    }
+    @RequestMapping("/mainPage" )
+    public String mainPage(Model model) throws Exception {
+//        model.addAttribute("page", PAGE_DASHBOARD);
+//        boolean error = false;
+//        Integer code = null;
+//        try {
+//            model.addAttribute(PARAM_NAME, "dashboard");
+//
+//            //model.addAttribute("age", 5436);
+//        } catch (Exception e) {
+//            LOGGER.error("main", e);
+//            error = true;
+//            code = PARAM_ERROR_GENERAL;
+//        }
+//        model.addAttribute(PARAM_ERROR, error);
+//        model.addAttribute(PARAM_CODE, code);
+
+        return "reports";
+    }
 
 }
