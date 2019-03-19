@@ -222,7 +222,7 @@ public class GeneralController {
 //        model.addAttribute(PARAM_ERROR, error);
 //        model.addAttribute(PARAM_CODE, code);
 
-        return "reports";
+        return "special_reports";
     }
     @RequestMapping("/mainPage" )
     public String mainPage(Model model) throws Exception {
@@ -241,7 +241,7 @@ public class GeneralController {
 //        model.addAttribute(PARAM_ERROR, error);
 //        model.addAttribute(PARAM_CODE, code);
 
-        return "reports";
+        return "main";
     }
 
 }
