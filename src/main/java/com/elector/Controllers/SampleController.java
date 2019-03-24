@@ -31,28 +31,28 @@ public class SampleController {
 //    }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
-    String getdata(@RequestParam String login, @RequestParam String pass) {
-        return getAllData(login,pass);
+    String getdata(@RequestParam String login, @RequestParam String pass) throws SQLException {
+        return getAllData(login, pass);
     }
 
 
-    @RequestMapping(value = "/addval", method = RequestMethod.POST)
-    String addval(@RequestParam String login, @RequestParam String pass) {
-        return addVal(login,pass);
-    }
+    //@RequestMapping(value = "/addval", method = RequestMethod.POST)
+    //String addval(@RequestParam String login, @RequestParam String pass) {
+      //  return addVal(login, pass);
+    //}
 
 
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/test", method = RequestMethod.POST)
     String test(@RequestParam String login, @RequestParam String pass) {
-        return  "login ="+ login+"<br>"+"pass = "+pass;
+        return "login =" + login + "<br>" + "pass = " + pass;
     }
 
 
     final static String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    final static String DB_CONNECTION = "jdbc:mysql://localhost/g-network?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    final static String DB_CONNECTION = "jdbc:mysql://http://localhost:8666/test2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     final static String DB_USER = "root";
-    final static String DB_PASSWORD = "";
-
+    final static String DB_PASSWORD = "tuRgmhuI1";
+*/
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleController.class, args);
         //    addVal("29", "29");
@@ -85,16 +85,41 @@ public class SampleController {
         }
     }
 
-    private static String getAllData(String login, String pass) {
+    private static String getAllData(String login, String pass) throws SQLException {
         ArrayList<User> data = new ArrayList<>();
-        String res="";
-        int c=0;
+        String res = "";
+        int c = 0;
 
-        String selectTableSQL = "SELECT * \n" +
-                "FROM elector \n" +
-                "LIMIT 0 , 30";
 
+
+        Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        // Statement myStmt=myConn.createStatement();
+        PreparedStatement myStmt = null;
+        String sql = "select * from test2.employee WHERE test2.employee.companyId='1' and test2.employee.employeePassword=? and test2.employee.employeePhone=?";
         try {
+            myStmt = myConn.prepareStatement(sql);
+            myStmt.setString(1, login);
+            myStmt.setString(2, pass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (myStmt != null) {
+                try {
+                    myStmt.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        if (sql != null)
+            System.out.println(login);  // return "main";
+        else
+            System.out.println(pass);
+            //return "Landing_page";
+        //String selectTableSQL = "SELECT * \n" +
+        //"FROM elector \n" +
+        //"LIMIT 0 , 30";
+ return "main";
+       /* try {
             Connection dbConnection = null;
             Statement statement = null;
             dbConnection = getDBConnection();
@@ -198,7 +223,8 @@ public class SampleController {
         }
         return res;
     }
+    */
+    }
 }
-
 
 

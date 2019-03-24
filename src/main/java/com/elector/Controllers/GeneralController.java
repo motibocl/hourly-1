@@ -1,6 +1,5 @@
 package com.elector.Controllers;
 
-
 import com.elector.Services.GeneralManager;
 import com.elector.Utils.ConfigUtils;
 import org.codehaus.jettison.json.JSONObject;
@@ -15,7 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.Session;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -187,6 +191,27 @@ public class GeneralController {
 
     @RequestMapping("/reports" )
     public String reports(Model model) throws Exception {
+        try{
+            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false","elector","RAMI2018");
+            Statement myStmt=myConn.createStatement();
+
+            String sql ="insert into company"+"(companyId,companyName,companyAdress)"+"values ('123456','elector','lachish 5 apartment 36,Ashkelon')";
+
+
+            myStmt.executeUpdate(sql);
+           // sql ="delete from company where name='rez'";
+           // myStmt.executeUpdate(sql);
+
+            ResultSet myRs = myStmt.executeQuery("select * from company  ");
+
+            while(myRs.next()){
+
+                 System.out.println(myRs.getString("companyId")+","+myRs.getString("companyName")+","+myRs.getString("companyAdress"));
+             }
+
+        } catch (Exception exc){
+            exc.printStackTrace();
+        }
 //        model.addAttribute("page", PAGE_DASHBOARD);
 //        boolean error = false;
 //        Integer code = null;
