@@ -94,7 +94,7 @@ public class GeneralController {
     }
 
 
-    /***************************/
+
     @RequestMapping("/login")
     public String login(Model model) throws Exception {
         model.addAttribute("page", PAGE_LOGIN);

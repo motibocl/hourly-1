@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -74,9 +73,9 @@ public class Utils {
     public static boolean enableBlocking = true;
 
 
-    public static long calculateObjectSize(Object object) {
-        return ObjectSizeCalculator.getObjectSize(object);
-    }
+//    public static long calculateObjectSize(Object object) {
+//        return ObjectSizeCalculator.getObjectSize(object);
+//    }
 
     public static long calculateStringSize(Object object) {
         return object.toString().getBytes(Charsets.UTF_8).length;
