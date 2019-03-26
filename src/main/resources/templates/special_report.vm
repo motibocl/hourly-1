@@ -18,9 +18,11 @@
             <input type="image" class="btn dropdown-toggle pull-right " data-toggle="dropdown" src="css/images/button.png" >
 
             <ul class="dropdown-menu">
-                <li><a href="main.vm">ראשי</a></li>
+                <li><a href="main.vm" >ראשי</a></li>
                 <li><a href="reports.vm">דוחות נוכחות</a></li>
                 <li><a href="special_report.vm">דיווח מיוחד</a></li>
+                <li><a href="http://localhost:8666/logout" >התנתק</a></li>
+
             </ul>
         </div>
 

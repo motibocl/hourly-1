@@ -21,6 +21,8 @@
                 <li><a href="main.vm">ראשי</a></li>
                 <li><a href="reports.vm">דוחות נוכחות</a></li>
                 <li><a href="special_report.vm">דיווח מיוחד</a></li>
+                <li><a href="http://localhost:8666/logout" >התנתק</a></li>
+
             </ul>
         </div>
 
@@ -86,7 +88,16 @@
         </div>
     </div>
 </div>
+<div class="container report">
+    <div class="row">
+    <div class="col-6 formRep">
+        #foreach( $comments in $comment )
+            <p >$comments</p>
+        #end
 
+    </div>
+    </div>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
