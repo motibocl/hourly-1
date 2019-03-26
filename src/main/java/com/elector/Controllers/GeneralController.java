@@ -164,7 +164,7 @@ public class GeneralController {
     }
 
 
-
+/*
     @RequestMapping("/home" )
     public String home(Model model) throws Exception {
         //1. query db
@@ -247,10 +247,10 @@ public class GeneralController {
 //        model.addAttribute(PARAM_CODE, code);
 
         return "special_report";
-    }
-    @RequestMapping("/main" )
-    public String mainPage(Model model) throws Exception {
-        model.addAttribute("name","מוטי ברוך שובך:" );
+    }*/
+  /*  @RequestMapping(value="/main" )
+    public String mainPage() throws Exception {
+       // model.addAttribute("name","מוטי ברוך שובך:" );
 
 
 
@@ -273,6 +273,6 @@ public class GeneralController {
 //        model.addAttribute(PARAM_CODE, code);
 
         return "main";
-    }
+    }*/
 
 }

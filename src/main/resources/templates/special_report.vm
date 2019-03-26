@@ -53,7 +53,7 @@
         <div class="col formRep">
             <form>
                 <div class="form-group">
-                    <select class="form-control borColor" id="exampleFormControlSelect1" >
+                    <select class="form-control borColor" name="theDay" id="exampleFormControlSelect1" >
                         <option>בחר יום...</option>
                         <option>ראשון</option>
                         <option>שני</option>
@@ -65,14 +65,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control borColor" id="exampleFormControlInput1" placeholder="כמות שעות">
+                    <input type="text" class="form-control borColor" name="hoursWorked" id="exampleFormControlInput1" placeholder="כמות שעות">
                 </div>
 
                 <div class="form-group">
-                    <textarea class="form-control borColor" id="exampleFormControlTextarea1" rows="3"placeholder="סיבה"></textarea>
+                    <textarea class="form-control borColor"  name="text" id="exampleFormControlTextarea1" rows="3"placeholder="סיבה"></textarea>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
+                    <button type="submit" formaction="http://localhost:8666/getAlltext" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
                 </div>
 
             </form>
