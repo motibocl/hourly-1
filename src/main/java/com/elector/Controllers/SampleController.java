@@ -110,8 +110,20 @@ public class SampleController {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleController.class, args);
+        delete(2);
     }
+    public  static void delete(int employeeId)throws Exception{
+        String sqlDel ="delete from test2.comments where employeeId=?";
+        PreparedStatement preparedStmt = myConn.prepareStatement(sqlDel);
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.executeQuery();
 
+        sqlDel ="delete from test2.employee where employeeId=?";
+        preparedStmt = myConn.prepareStatement(sqlDel);
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.executeQuery();
+
+    }
     //iliya said to add try catch final.
     private static boolean checkCredentials(String login, String pass) throws SQLException {
 
@@ -135,6 +147,7 @@ public class SampleController {
 
     }
 
-}
 
+
+}
 
