@@ -73,8 +73,8 @@ public class SampleController {
 
     @RequestMapping("/logout")
     public String logout(Model model) throws Exception {
-        loggedIn = false;
-        return "redirect:/home";
+        //loggedIn = false;
+        return "Landing_page";
     }
 
     @RequestMapping("/reports")

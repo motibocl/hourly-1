@@ -47,7 +47,21 @@
          document.getElementById("enterBtn").src = "css/images/enter-button2.png";
      }
  }
-
+ function cookie(){
+     Cookies.set('flag', "1");
+ }
+ function delCookie() {
+     Cookies.remove('flag');
+     //window.location= "http://localhost:8666/logout";
+ }
+ function checkCookie(){
+     if(Cookies.get()==""){
+         window.location.replace("http://localhost:8666/logout");
+     }
+ }
+ function redirect(){
+      axios.get('http://localhost:8666/logout')
+ }
  /*jQuery(document).ready(function($){
 
  $('.black-button').on({
