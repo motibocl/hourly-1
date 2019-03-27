@@ -38,6 +38,7 @@ public class SampleController {
             return "Landing_page";
     }
 
+
     @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
     public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String theDay) throws SQLException {
 
@@ -115,10 +116,13 @@ public class SampleController {
     private static boolean checkCredentials(String login, String pass) throws SQLException {
 
 
-        PreparedStatement myStmt = myConn.prepareStatement("select * from test2.employee WHERE test2.employee.companyId='1234' and test2.employee.employeePhone=? and test2.employee.employeePassword=? ");
-        myStmt.setString(1, login);
-        myStmt.setString(2, pass);
-
+        PreparedStatement myStmt = myConn.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
+        try {
+            myStmt.setInt(1, Integer.parseInt(login));
+            myStmt.setString(2, pass);
+        }catch (Exception exc){
+            return false;
+        }
         ResultSet rs = myStmt.executeQuery();
 
         if (rs.next()) {
