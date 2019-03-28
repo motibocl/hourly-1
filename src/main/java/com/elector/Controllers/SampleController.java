@@ -9,8 +9,11 @@ import org.springframework.ui.Model;
 
 
 //
-
 import javax.annotation.PostConstruct;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -26,7 +29,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
