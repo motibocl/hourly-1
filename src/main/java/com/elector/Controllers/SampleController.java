@@ -42,10 +42,12 @@ public class SampleController {
     public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String theDay) throws SQLException {
 
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
-        String sql = "insert into comments (employeeId,comments) values (?,?)";
+        String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
         PreparedStatement preparedStmt = myConn.prepareStatement(sql);
         preparedStmt.setInt(1, employeeId);
-        preparedStmt.setString(2, text);
+        preparedStmt.setString(2, hoursWorked);
+        preparedStmt.setString(3, text);
+        preparedStmt.setString(4, theDay);
         preparedStmt.execute();
 
         return "redirect:/main";
