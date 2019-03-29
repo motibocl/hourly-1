@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 
 
 //
+
 import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,6 +17,9 @@ import java.io.IOException;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.*;
+import java.util.zip.ZipEntry;
 
 @Controller
 @EnableAutoConfiguration
@@ -26,10 +30,14 @@ public class SampleController {
     private static int counter = 0;
     private static String name = null;
     private static int employeeId;
-
+    private static float enter;
+    private static float exit;
+    private static float total;
+    Date now = new Date();
+    java.sql.Date today = new java.sql.Date(now.getTime());
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -40,6 +48,7 @@ public class SampleController {
         } else
             return "Landing_page";
     }
+
 
     @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
     public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String theDay) throws SQLException {
@@ -74,10 +83,41 @@ public class SampleController {
             return "redirect:/main";
         return "Landing_page";
     }
+    @RequestMapping("/result")
+    public String resultTime(Model model,  @RequestParam ("enterTime") float enterTime, @RequestParam ("exitTime") float exitTime) throws Exception {
+        if (loggedIn) {
 
+            enter=enterTime;
+            exit=exitTime;
+            total=exitTime-enterTime;
+            String sql = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date) values (?,?,?,?,?)";
+            PreparedStatement preparedStmt = myConn.prepareStatement(sql);
+            preparedStmt.setInt(1, employeeId);
+            preparedStmt.setFloat(2, enter);
+            preparedStmt.setFloat(3, exit);
+            preparedStmt.setFloat(4, total);
+            preparedStmt.setDate(5,today);
+
+            preparedStmt.execute();
+            preparedStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
+            preparedStmt.setInt(1, employeeId);
+            preparedStmt.setDate(2, today);
+            ResultSet rs2 = preparedStmt.executeQuery();
+            float workedToday = 0;
+            // model.addAttribute("lengthList",commentList.size() );
+            while (rs2.next()) {
+                workedToday+=rs2.getFloat("totalhoursWorked");
+            }
+                String time=(workedToday / 60)+":"+(workedToday % 60);
+                model.addAttribute("workedToday", time);
+
+            return "redirect:/main";
+        }
+        return "Landing_page";
+    }
     @RequestMapping("/logout")
     public String logout(Model model) throws Exception {
-        //loggedIn = false;
+        loggedIn = false;
         return "Landing_page";
     }
 
@@ -93,7 +133,7 @@ public class SampleController {
             while (rs.next()) {
                 commentList.add(rs.getString("comments"));
             }
-            // model.addAttribute("lengthList",commentList.size() );
+
 
             model.addAttribute("comment", commentList);
 
@@ -132,10 +172,13 @@ public class SampleController {
     private static boolean checkCredentials(String login, String pass) throws SQLException {
 
 
-        PreparedStatement myStmt = myConn.prepareStatement("select * from test2.employee WHERE test2.employee.companyId='1234' and test2.employee.employeePhone=? and test2.employee.employeePassword=? ");
-        myStmt.setString(1, login);
-        myStmt.setString(2, pass);
-
+        PreparedStatement myStmt = myConn.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
+        try {
+            myStmt.setInt(1, Integer.parseInt(login));
+            myStmt.setString(2, pass);
+        }catch (Exception exc){
+            return false;
+        }
         ResultSet rs = myStmt.executeQuery();
 
         if (rs.next()) {

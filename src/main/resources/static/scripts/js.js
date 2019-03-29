@@ -43,25 +43,54 @@
          //  changeImage.minutes=(minutes1-changeImage.minutes;
          var min=(hours1*60+minutes1)-(changeImage.hours*60+changeImage.minutes);
          changeImage.showTime+=min;
-         document.getElementById("workTime").innerHTML= "כמה זמן עבדתי:"+(changeImage.showTime/60).toString().split(".")[0]+"hr"+":" +(changeImage.showTime%60)+"min" ;
          document.getElementById("enterBtn").src = "css/images/enter-button2.png";
+         var enterTime=changeImage.minutes+(changeImage.hours*60);
+         var exitTime=minutes1+(hours1*60);
+         var data='enterTime='
+         + encodeURIComponent(enterTime)
+         +'&exitTime='
+         +encodeURIComponent(exitTime);
+         $.ajax({
+          type: 'POST',
+          url:"result",
+          data:data ,
+          success:function (data) {
+              console.log('success',data);
+
+          }   ,
+             error: function (exception) {
+                 alert('Exception'+exception);
+             }
+         });
      }
  }
  function cookie(){
-     Cookies.set('flag', "1");
+     var id=makeid(25);
+     Cookies.set('flag', id);
  }
  function delCookie() {
      Cookies.remove('flag');
      //window.location= "http://localhost:8666/logout";
  }
  function checkCookie(){
-     if(Cookies.get()==""){
+     if(Cookies.get('flag')==""){
          window.location.replace("http://localhost:8666/logout");
      }
  }
  function redirect(){
       axios.get('http://localhost:8666/logout')
  }
+ function makeid(length) {
+     var text = "";
+     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+     for (var i = 0; i < length; i++)
+         text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+     return text;
+ }
+
+
  /*jQuery(document).ready(function($){
 
  $('.black-button').on({
