@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 public class SampleController {
     private static Connection myConn;
     private static boolean loggedIn;//if logged in
+    private static boolean flag;//if logged in
     private static int counter = 0;
     private static String name = null;
     private static int employeeId;
@@ -69,6 +70,20 @@ public class SampleController {
     public String mainp(Model model) throws Exception {
         try {
             model.addAttribute("name", "Welcome back " + name);
+
+                PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
+                Stmt .setInt(1, employeeId);
+                Stmt.setDate(2, today);
+                ResultSet rs2 = Stmt.executeQuery();
+                float workedToday = 0;
+                // model.addAttribute("lengthList",commentList.size() );
+                while (rs2.next()) {
+                    workedToday+=rs2.getFloat("totalhoursWorked");
+                }
+                String time="time you worked today:  "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";
+                model.addAttribute("workedToday", time);
+
+
             if (!loggedIn)
                 return "Landing_page";
             return "main";
@@ -86,7 +101,7 @@ public class SampleController {
     @RequestMapping("/result")
     public String resultTime(Model model,  @RequestParam ("enterTime") float enterTime, @RequestParam ("exitTime") float exitTime) throws Exception {
         if (loggedIn) {
-
+            flag=true;
             enter=enterTime;
             exit=exitTime;
             total=exitTime-enterTime;
@@ -99,17 +114,6 @@ public class SampleController {
             preparedStmt.setDate(5,today);
 
             preparedStmt.execute();
-            preparedStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
-            preparedStmt.setInt(1, employeeId);
-            preparedStmt.setDate(2, today);
-            ResultSet rs2 = preparedStmt.executeQuery();
-            float workedToday = 0;
-            // model.addAttribute("lengthList",commentList.size() );
-            while (rs2.next()) {
-                workedToday+=rs2.getFloat("totalhoursWorked");
-            }
-                String time=(workedToday / 60)+":"+(workedToday % 60);
-                model.addAttribute("workedToday", time);
 
             return "redirect:/main";
         }

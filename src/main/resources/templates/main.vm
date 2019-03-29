@@ -37,7 +37,7 @@
 <div class="container timeEnter">
     <div class="row">
         <div class="col-12">
-            <p class="enterTime"> $workedToday  </p>
+            <p class="enterTime"id="workTime">$workedToday</p>
 
         </div>
     </div>
