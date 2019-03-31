@@ -1,25 +1,26 @@
 package com.elector.Controllers;
 
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
-
-//
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import javax.servlet.*;
 
 import javax.annotation.PostConstruct;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.*;
-import java.util.zip.ZipEntry;
+
+//
 
 @Controller
 @EnableAutoConfiguration
@@ -43,9 +44,10 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
-    public String getdata(@RequestParam String login, @RequestParam String pass) throws SQLException {
+    public String getdata(@RequestParam String login, @RequestParam String pass, HttpServletResponse response) throws SQLException {
         if (checkCredentials(login, pass)) {//if pass and phone correct
-            loggedIn = true;
+            response.addCookie(new Cookie("foo", "bar"));
+            //loggedIn = true;
             return "redirect:/main";
         } else
             return "Landing_page";
@@ -68,7 +70,9 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public String mainp(Model model) throws Exception {
+    public String mainp(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+        if (cookie.equals(""))//cheack if loged in.
+            return "Landing_page";
         try {
             model.addAttribute("name", "Welcome back " + name);//the welcom back page title.
                 //getting all the working time list
@@ -110,8 +114,7 @@ public class SampleController {
                  model.addAttribute("timeWorkMonth", timeMonth);
 
 
-            if (!loggedIn)//cheack if loged in.
-                return "Landing_page";
+
             return "main";
         } catch (Exception exc) {
             return "error";
@@ -119,8 +122,8 @@ public class SampleController {
     }
 
     @RequestMapping("/home")
-    public String home(Model model) throws Exception {
-        if (loggedIn)
+    public String home(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+        if (cookie.equals("bar"))
             return "redirect:/main";
         return "Landing_page";
     }
@@ -146,15 +149,22 @@ public class SampleController {
         return "Landing_page";
     }
     @RequestMapping("/logout")
-    public String logout(Model model) throws Exception {
-        loggedIn = false;
+    public String logout(Model model,HttpServletResponse response) throws Exception {
+        //loggedIn = false;
+        Cookie cookie = new Cookie("foo", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        if (cookie.equals("bar"))
+            return "redirect:/main";
         return "Landing_page";
     }
 
     @RequestMapping("/reports")
-    public String reports(Model model) throws Exception {
+    public String reports(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
         try {
-            if (!loggedIn)
+            if (!cookie.equals("bar"))
                 return "Landing_page";
             PreparedStatement myStmt = myConn.prepareStatement("select * from test2.comments WHERE test2.comments.employeeId=?  ");
             myStmt.setInt(1, employeeId);
@@ -176,8 +186,8 @@ public class SampleController {
 //elector8089
 
     @RequestMapping("/special_report")
-    public String special_reports(Model model) throws Exception {
-        if (!loggedIn)
+    public String special_reports(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+        if (cookie.equals(""))
             return "Landing_page";
         return "special_report";
     }
@@ -214,6 +224,8 @@ public class SampleController {
         if (rs.next()) {
             name = rs.getString("employeeName");
             employeeId = rs.getInt("employeeId");
+
+
             return true;
         }
 
