@@ -40,13 +40,13 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
     public String getdata(@RequestParam String login, @RequestParam String pass, HttpServletResponse response) throws SQLException {
         if (checkCredentials(login, pass)) {//if pass and phone correct
-            response.addCookie(new Cookie("foo", "bar"));
+            response.addCookie(new Cookie("foo", generateToken(35)));//making a cookie
             //loggedIn = true;
             return "redirect:/main";
         } else
@@ -74,7 +74,7 @@ public class SampleController {
         if (cookie.equals(""))//cheack if loged in.
             return "Landing_page";
         try {
-            model.addAttribute("name", "Welcome back " + name);//the welcom back page title.
+            model.addAttribute("name", "Welcome back " + name);//the welcome back page title.
                 //getting all the working time list
                 PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
                 Stmt .setInt(1, employeeId);
@@ -123,14 +123,13 @@ public class SampleController {
 
     @RequestMapping("/home")
     public String home(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
-        if (cookie.equals("bar"))
+        if (!cookie.equals(""))
             return "redirect:/main";
         return "Landing_page";
     }
     @RequestMapping("/result")
-    public String resultTime(Model model,  @RequestParam ("enterTime") float enterTime, @RequestParam ("exitTime") float exitTime) throws Exception {
-        if (loggedIn) {
-            flag=true;
+    public String resultTime(Model model,  @RequestParam ("enterTime") float enterTime, @RequestParam ("exitTime") float exitTime,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+        if (!cookie.equals("")) {
             enter=enterTime;
             exit=exitTime;
             total=exitTime-enterTime;
@@ -156,16 +155,17 @@ public class SampleController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        if (cookie.equals("bar"))
+        if (!cookie.equals(""))
             return "redirect:/main";
         return "Landing_page";
     }
 
     @RequestMapping("/reports")
     public String reports(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
-        try {
-            if (!cookie.equals("bar"))
+
+            if (cookie.equals(""))
                 return "Landing_page";
+        try {
             PreparedStatement myStmt = myConn.prepareStatement("select * from test2.comments WHERE test2.comments.employeeId=?  ");
             myStmt.setInt(1, employeeId);
             ResultSet rs = myStmt.executeQuery();
@@ -233,7 +233,15 @@ public class SampleController {
 
     }
 
+ private String generateToken(int length){
+     String text = "";
+     String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+     for (int i = 0; i < length; i++)
+         text += possible.charAt((int)(Math.floor(Math.random() * possible.length())));
+
+     return text;
+ }
 
 }
 
