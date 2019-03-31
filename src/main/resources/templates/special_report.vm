@@ -55,16 +55,8 @@
         <div class="col formRep">
             <form>
                 <div class="form-group">
-                    <select class="form-control borColor" name="theDay" id="exampleFormControlSelect1" >
-                        <option>בחר יום...</option>
-                        <option>ראשון</option>
-                        <option>שני</option>
-                        <option>שלישי</option>
-                        <option>רביעי</option>
-                        <option>חמישי</option>
-                        <option>שישי</option>
-                        <option>שבת</option>
-                    </select>
+                    <input type="date" name="reasonDate">
+
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control borColor" name="hoursWorked" id="exampleFormControlInput1" placeholder="כמות שעות">

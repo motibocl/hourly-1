@@ -54,7 +54,9 @@
 <div class="container workedDay">
     <div class="row">
         <div class="col-12 ">
-            <p class="enterTime">שעת כניסה: 9:30:10</p>
+        #foreach( $timeWork in $timeWorkList )
+          <p class="enterTime">$timeWork</p>
+        #end
         </div>
     </div>
 </div>
@@ -62,7 +64,7 @@
 <div class="container workedMonth">
     <div class="row">
         <div class="col-12">
-            <p class="enterTime">שעת כניסה: 9:30:10</p>
+            <p class="enterTime">$timeWorkMonth</p>
         </div>
     </div>
 </div>
@@ -73,6 +75,7 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="/scripts/js.js"></script>
 <script src="/scripts/jquery-3.3.1.min.js"></script>
+<script src="scripts/jquery.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

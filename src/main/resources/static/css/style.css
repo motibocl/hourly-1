@@ -107,6 +107,7 @@ body, html {
     color: aliceblue;
     font-weight: 600;
     font-size: x-large;
+
 }
 .workedDay{
     background-color: #e07640;
@@ -180,4 +181,14 @@ body, html {
     text-align: center;
     font-size: x-large;
 
+}
+.inf{
+    border-color: #e07640;
+    border-style: solid;
+}
+.infCon{
+    width: 1156px;
+}
+.infCol{
+    margin: inherit;
 }

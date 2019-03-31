@@ -36,9 +36,10 @@ public class SampleController {
     private static float total;
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
+
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -52,7 +53,7 @@ public class SampleController {
 
 
     @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
-    public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String theDay) throws SQLException {
+    public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate) throws SQLException {
 
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
         String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
@@ -60,7 +61,7 @@ public class SampleController {
         preparedStmt.setInt(1, employeeId);
         preparedStmt.setString(2, hoursWorked);
         preparedStmt.setString(3, text);
-        preparedStmt.setString(4, theDay);
+        preparedStmt.setString(4,  reasonDate);
         preparedStmt.execute();
 
         return "redirect:/main";
@@ -69,22 +70,47 @@ public class SampleController {
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String mainp(Model model) throws Exception {
         try {
-            model.addAttribute("name", "Welcome back " + name);
-
+            model.addAttribute("name", "Welcome back " + name);//the welcom back page title.
+                //getting all the working time list
                 PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
                 Stmt .setInt(1, employeeId);
                 Stmt.setDate(2, today);
                 ResultSet rs2 = Stmt.executeQuery();
                 float workedToday = 0;
-                // model.addAttribute("lengthList",commentList.size() );
+                ArrayList<String> timeWorkList = new ArrayList<String>();
+                //couting how many hours the employee worked this day.
                 while (rs2.next()) {
                     workedToday+=rs2.getFloat("totalhoursWorked");
+                    timeWorkList.add("working time:  "+(int)(rs2.getFloat("enterTime") / 60)+":"+(int)(rs2.getFloat("enterTime")%60) +"  ->   "+(int)(rs2.getFloat("exitTime") / 60)+":"+(int)(rs2.getFloat("exitTime")%60)) ;
+                //adding to a list of working hours.
                 }
-                String time="time you worked today:  "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";
+
+
+                String time="time you worked today:  "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";//all the time that the employee worked.
                 model.addAttribute("workedToday", time);
+                model.addAttribute("timeWorkList", timeWorkList);
+               //getting the month and the year from calendar object.
+                Date date = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
+                int todayYear= calendar.get(Calendar.YEAR);//year current
+                PreparedStatement Stmt2 = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
+                Stmt2 .setInt(1, employeeId);
+                Stmt2 .setInt(2, todayMonth+1);//because we want the current time we add 1.
+                Stmt2 .setInt(3, todayYear);
+                ResultSet rs3 = Stmt2.executeQuery();//excuting query.
+
+                float workedThisMonth = 0;//count the month working time.
+                 while (rs3.next()) {
+                     workedThisMonth+=rs3.getFloat("totalhoursWorked");
+                 }
+                 //the string.
+                 String timeMonth="time you worked this month:  "+(int)(workedThisMonth / 60)+"hr"+":"+(int)(workedThisMonth % 60)+"min";
+                 model.addAttribute("timeWorkMonth", timeMonth);
 
 
-            if (!loggedIn)
+            if (!loggedIn)//cheack if loged in.
                 return "Landing_page";
             return "main";
         } catch (Exception exc) {
@@ -137,7 +163,7 @@ public class SampleController {
             while (rs.next()) {
                 commentList.add(rs.getString("comments"));
             }
-
+            // model.addAttribute("lengthList",commentList.size() );
 
             model.addAttribute("comment", commentList);
 
@@ -147,7 +173,7 @@ public class SampleController {
 
         }
     }
-
+//elector8089
 
     @RequestMapping("/special_report")
     public String special_reports(Model model) throws Exception {

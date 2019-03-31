@@ -91,15 +91,19 @@
  }
 
 
- /*jQuery(document).ready(function($){
+$(document).ready(function ($) {
 
- $('.black-button').on({
-      'click': function(){
-          $('#change-image').attr('src','styles/images/exit-button.png');
-      }
-  });
+    $('.black-button').on({
+        'click': function () {
+            $('#change-image').attr('src', 'styles/images/exit-button.png');
+        }
+    });
 
 
-  });*/
-
+});
+ $('#sandbox-container input').datepicker({
+     daysOfWeekDisabled: "6",
+     todayHighlight: true
+ });
+/*----------------------------AJAX----------------------------------------------*/
 
