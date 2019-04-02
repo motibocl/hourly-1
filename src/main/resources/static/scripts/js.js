@@ -6,7 +6,7 @@
 */
 
  var today = new Date ( );//today a date object
-
+var flag=false;
  var days = new Array ( );
  days[0] = "יום ראשון,";//in index 0
  days[1] = "יום שני,";//in index 1 becouse 0 place isnt empty
@@ -17,8 +17,15 @@
  days[6] = "יום שבת,";
  document.getElementById("date").innerHTML =days[today.getDay()]+"<br />"+today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear();
 
+ function stay() {
+     if(flag==false)
+         document.getElementById("enterBtn").src = "css/images/enter-button2.png";
+      else
+         document.getElementById("enterBtn").src = "css/images/exit-button.png";
 
- function changeImage() {
+ }
+
+     function changeImage() {
      if( typeof changeImage.minutes == 'undefined'  ) {
          changeImage.minutes = 0;
      }
@@ -30,6 +37,7 @@
      }
      if (document.getElementById("enterBtn").src == "http://localhost:8666/css/images/enter-button2.png")
      {
+         flag=true;
          var time=new Date();
          changeImage.minutes=time.getMinutes();
          changeImage.hours=time.getHours();

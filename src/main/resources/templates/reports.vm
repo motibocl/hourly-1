@@ -55,41 +55,44 @@
     </div>
 </div>
 
-<div class="container report">
+<form class="container report" >
     <div class="row">
+
         <div class="col-6 formRep">
-            <form>
+
                 <div class="form-group">
                     <select class="form-control borColor" id="exampleFormControlSelect1" name="month" >
-                        <option>בחר חודש...</option>
-                        <option>ינואר</option>
-                        <option>פברואר</option>
-                        <option>מרץ</option>
-                        <option>אפריל</option>
-                        <option>מאי</option>
-                        <option>יוני</option>
-                        <option>יולי</option>
-                        <option>אוגוסט</option>
-                        <option>ספטמבר</option>
-                        <option>אוקטובר</option>
-                        <option>נובמבר</option>
-                        <option>דצמבר</option>
+                        <option value="0">בחר חודש...</option>
+                        <option value="1">ינואר</option>
+                        <option value="2">פברואר</option>
+                        <option value="3">מרץ</option>
+                        <option value="4">אפריל</option>
+                        <option value="5">מאי</option>
+                        <option value="6">יוני</option>
+                        <option value="7">יולי</option>
+                        <option value="8">אוגוסט</option>
+                        <option value="9">ספטמבר</option>
+                        <option value="10">אוקטובר</option>
+                        <option value="11">נובמבר</option>
+                        <option value="12">דצמבר</option>
                     </select>
                 </div>
-            </form>
+
         </div>
+
         <div class="col-6 formRep">
-            <form>
+
 
                     <div class="form-group">
-                        <input type="text" class="form-control borColor" id="exampleFormControlInput1" name="year" placeholder="שנה">
+                        <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="year" placeholder="שנה">
                     </div>
 
-                <button type="submit" formaction="http://localhost:8666/getWorkDays" class="btn btn-sm okBtn" >חפש! </button>
-            </form>
+                <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
         </div>
     </div>
-</div>
+</form >
+
+
 <div class="container infCon" >
     <div class="row rowBorder">
         <div class="col-3 infCol">

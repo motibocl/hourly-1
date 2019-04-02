@@ -50,7 +50,7 @@
 
 
 <div class="container-fluid ent">
-    <button class="knisa" onclick="changeImage()" method="post" action="/result"><img class="img-fluid" src="css/images/enter-button2.png" alt="" id="enterBtn"  ></button>
+    <button class="knisa" onclick="changeImage()" onload="stay()" method="post" action="/result"><img class="img-fluid" src="css/images/enter-button2.png" alt="" id="enterBtn"  ></button>
 </div>
 
 <div class="container workedDay">

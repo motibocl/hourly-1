@@ -25,13 +25,14 @@
 
                 <br>
                 <br>
-                <form class="input" action="" method="post" >
+                <form class="input" action="" method="post" id="login">
                     <input class="form-control" type="text" name="login" placeholder="טלפון">
                     <br>
                     <input class="form-control" type="password" name="pass" placeholder="סיסמה">
-                    <input type="submit" formaction="http://localhost:8666/getAlldata" style="display:none"/>
-                    <a class="forgot" href="#" >שחכתי את הסיסמה?</a>
+                    <a class="forgot" href="#" >שכחתי את הסיסמה?</a>
                 </form>
+                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="http://localhost:8666/getAlldata" >התחבר</button>
+
             </header>
         </div>
 

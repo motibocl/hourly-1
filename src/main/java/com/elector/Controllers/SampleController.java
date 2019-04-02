@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Integer.parseInt;
+
 //
 
 @Controller
@@ -42,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -92,7 +94,7 @@ public class SampleController {
         if (cookie.equals(""))//cheack if loged in.
             return "Landing_page";
         try {
-            model.addAttribute("name", "Welcome back " + name);//the welcome back page title.
+            model.addAttribute("name", "ברוך הבא  " + name);//the welcome back page title.
                 //getting all the working time list
                 PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
                 Stmt .setInt(1, employeeId);
@@ -103,12 +105,12 @@ public class SampleController {
                 //couting how many hours the employee worked this day.
                 while (rs2.next()) {
                     workedToday+=rs2.getFloat("totalhoursWorked");
-                    timeWorkList.add("working time:  "+(int)(rs2.getFloat("enterTime") / 60)+":"+(int)(rs2.getFloat("enterTime")%60) +"  ->   "+(int)(rs2.getFloat("exitTime") / 60)+":"+(int)(rs2.getFloat("exitTime")%60)) ;
+                    timeWorkList.add("זמן עבודה: "+(int)(rs2.getFloat("enterTime") / 60)+":"+(int)(rs2.getFloat("enterTime")%60) +"  ->   "+(int)(rs2.getFloat("exitTime") / 60)+":"+(int)(rs2.getFloat("exitTime")%60)) ;
                 //adding to a list of working hours.
                 }
 
 
-                String time="time you worked today:  "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";//all the time that the employee worked.
+                String time="הזמן שעבדת היום: "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";//all the time that the employee worked.
                 model.addAttribute("workedToday", time);
                 model.addAttribute("timeWorkList", timeWorkList);
                //getting the month and the year from calendar object.
@@ -128,7 +130,7 @@ public class SampleController {
                      workedThisMonth+=rs3.getFloat("totalhoursWorked");
                  }
                  //the string.
-                 String timeMonth="time you worked this month:  "+(int)(workedThisMonth / 60)+"hr"+":"+(int)(workedThisMonth % 60)+"min";
+                 String timeMonth="הזמן שעבדת החודש: "+(int)(workedThisMonth / 60)+"hr"+":"+(int)(workedThisMonth % 60)+"min";
                  model.addAttribute("timeWorkMonth", timeMonth);
 
 
@@ -183,30 +185,63 @@ public class SampleController {
     }
 
     @RequestMapping("/reports")
-    public String reports(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+    public String reports(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie,@RequestParam(value = "month",defaultValue = "")String month,@RequestParam(value = "year",defaultValue = "")String year) throws Exception {
 
             if (cookie.equals(""))
                 return "Landing_page";
         try {
-            PreparedStatement myStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=?  ");
-            myStmt.setInt(1, employeeId);
-            ResultSet rs = myStmt.executeQuery();
-            ArrayList<String> dayList = new ArrayList<String>();
-            ArrayList<String> hoursWorked = new ArrayList<String>();
-            ArrayList<String> hoursList = new ArrayList<String>();
-            ArrayList<Date> dateList = new ArrayList<Date>();
+            if(!month.equals("")&&!year.equals("")) {
+                PreparedStatement myStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and YEAR (date)=? and MONTH (date)=?");
+                myStmt.setInt(1, employeeId);
+                myStmt.setInt(2, parseInt(year));
+                myStmt.setInt(3,  parseInt(month) );
+                ResultSet rs = myStmt.executeQuery();
+                ResultSet rsExitTime;
+                ResultSet rsEnterTime;
+                ResultSet rsSumTime;
 
-            while (rs.next()) {
-                dayList.add(rs.getString("dayOfTheWeek"));
-                hoursList.add((int)(rs.getFloat("enterTime") / 60)+":"+(int)(rs.getFloat("enterTime")%60) +"  ->   "+(int)(rs.getFloat("exitTime") / 60)+":"+(int)(rs.getFloat("exitTime")%60));
-                hoursWorked.add((int)(rs.getFloat("totalhoursWorked") / 60)+":"+(int)(rs.getFloat("totalhoursWorked")%60));
-                dateList.add(rs.getDate("date"));
+                ArrayList<String> dayList = new ArrayList<String>();
+                ArrayList<String> hoursWorked = new ArrayList<String>();
+                ArrayList<String> hoursList = new ArrayList<String>();
+                ArrayList<Date> dateList = new ArrayList<Date>();
+                for(int i=1;i<=31;i++){
+                    myStmt =myConn.prepareStatement("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=? ORDER BY timeId DESC limit 1");
+                    myStmt.setInt(1, parseInt(year));
+                    myStmt.setInt(2,  parseInt(month) );
+                    myStmt.setInt(3,  i );
+                    rsExitTime = myStmt.executeQuery();
+                    myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=?  limit 1");
+                    myStmt.setInt(1, parseInt(year));
+                    myStmt.setInt(2,  parseInt(month) );
+                    myStmt.setInt(3, i );
+                    rsEnterTime = myStmt.executeQuery();
+                    myStmt =myConn.prepareStatement("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=?");
+                    myStmt.setInt(1, parseInt(year));
+                    myStmt.setInt(2,  parseInt(month) );
+                    myStmt.setInt(3, i );
+
+                    rsSumTime = myStmt.executeQuery();
+                    if(rsSumTime.next()&&rsEnterTime.next()&&rsExitTime.next()) {
+                        dayList.add(rsEnterTime.getString("dayOfTheWeek"));
+                        hoursWorked.add((int) (rsSumTime.getFloat("total") / 60) + ":" + (int) (rsSumTime.getFloat("total") % 60));
+                        hoursList.add((int) (rsEnterTime.getFloat("enterTime") / 60) + ":" + (int) (rsEnterTime.getFloat("enterTime") % 60) + "  ->   " + (int) (rsExitTime.getFloat("exitTime") / 60) + ":" + (int) (rsExitTime.getFloat("exitTime") % 60));
+                        dateList.add(rsEnterTime.getDate("date"));
+                    }
+                }
+
+
+
+               /* while (rs.next()) {
+                    dayList.add(rs.getString("dayOfTheWeek"));
+                    hoursList.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
+                    hoursWorked.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
+                    dateList.add(rs.getDate("date"));
+                }*/
+                model.addAttribute("days", dayList);
+                model.addAttribute("hours", hoursList);
+                model.addAttribute("hoursWorked", hoursWorked);
+                model.addAttribute("dateWorked", dateList);
             }
-            model.addAttribute("days", dayList);
-            model.addAttribute("hours", hoursList);
-            model.addAttribute("hoursWorked", hoursWorked);
-            model.addAttribute("dateWorked", dateList);
-
             return "reports";
         } catch (Exception exc) {
             return "error";
@@ -244,7 +279,7 @@ public class SampleController {
 
         PreparedStatement myStmt = myConn.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
         try {
-            myStmt.setInt(1, Integer.parseInt(login));
+            myStmt.setInt(1, parseInt(login));
             myStmt.setString(2, pass);
         }catch (Exception exc){
             return false;

@@ -6,7 +6,16 @@ body, html {
     direction: rtl;
 }
 
-
+.loginBtn{
+    margin-top: 3px;
+    float: left;
+    background-color: #b95c6e;
+    border-color: #b96481;
+}
+.loginBtn:hover{
+    background-color: #e07640;
+    border-color: #e07640;
+}
 .img{
     background-image: url("images/backgroundDesk.png");
     background-position: center;
