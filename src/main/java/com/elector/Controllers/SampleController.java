@@ -40,7 +40,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -67,6 +67,21 @@ public class SampleController {
         preparedStmt.execute();
 
         return "redirect:/main";
+    }
+
+
+    //Sending comments "What did you do today"
+    @RequestMapping(value = "/sendComment", method = RequestMethod.GET)
+    public String getCommentary(@RequestParam String commentary) throws SQLException {
+
+        // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        String sql = "insert into comments (employeeId,comments) values (?,?)";
+        PreparedStatement preparedStmt = myConn.prepareStatement(sql);
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setString(2, commentary);
+        preparedStmt.execute();
+
+        return "redirect:/reports";
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
