@@ -93,7 +93,7 @@
 </form >
 
 
-<div class="container infCon" >
+<div class="container " >
     <div class="row rowBorder">
         <div class="col-3 infCol">
             #foreach( $day in $days )
