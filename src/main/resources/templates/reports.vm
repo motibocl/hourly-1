@@ -130,7 +130,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-                            <p2>אז מה עשית היום</p2>
+                            <p2>אז מה עשית היום?</p2>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -139,7 +139,7 @@
 
                         <form>
                             <div class="form-group">
-                                <input type="text" class="form-control borColor" name="commentary" id="exampleFormControlInput1" placeholder="כמות שעות">
+                                <input type="text" class="form-control borColor" name="commentary" id="exampleFormControlInput1" placeholder="הסבר">
                             </div>
                             <button type="submit" formaction="http://localhost:8666/sendComment" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"></button>
                         </form>
