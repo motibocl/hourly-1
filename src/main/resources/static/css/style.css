@@ -219,3 +219,6 @@ body, html {
 .modalFit{
     width: fit-content;
 }
+.ok{
+    width: 191px;
+}

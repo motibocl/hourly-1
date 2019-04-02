@@ -44,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -228,19 +228,31 @@ public class SampleController {
                         dateList.add(rsEnterTime.getDate("date"));
                     }
                 }
-
-
-
-               /* while (rs.next()) {
-                    dayList.add(rs.getString("dayOfTheWeek"));
-                    hoursList.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
-                    hoursWorked.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
-                    dateList.add(rs.getDate("date"));
-                }*/
                 model.addAttribute("days", dayList);
                 model.addAttribute("hours", hoursList);
                 model.addAttribute("hoursWorked", hoursWorked);
                 model.addAttribute("dateWorked", dateList);
+                /*this is queris for the details modal*/
+                ArrayList<String> dayListDetails = new ArrayList<String>();
+                ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
+                ArrayList<String> hoursListDetails = new ArrayList<String>();
+                ArrayList<Date> dateListDetails = new ArrayList<Date>();
+                myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? ");
+                myStmt.setInt(1, parseInt(year));
+                myStmt.setInt(2,  parseInt(month) );
+                rs = myStmt.executeQuery();
+                while (rs.next()) {
+                    dayListDetails.add(rs.getString("dayOfTheWeek"));
+                    hoursListDetails.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
+                    hoursWorkedDetails.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
+                    dateListDetails.add(rs.getDate("date"));
+                }
+
+                //for the details
+                model.addAttribute("daysDetails", dayListDetails);
+                model.addAttribute("hoursDetails", hoursListDetails);
+                model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
+                model.addAttribute("dateWorkedDetails", dateListDetails);
             }
             return "reports";
         } catch (Exception exc) {
