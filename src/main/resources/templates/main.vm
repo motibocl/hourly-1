@@ -4,14 +4,16 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta http-equiv="Expires" CONTENT="0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="Pragma" CONTENT="no-cache">
     <!--Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
     <title>Hourly|main</title>
 </head>
-<body id="page1" onload="cookie()" >
+<body id="page1" onload="callme()" >
 <div class="container-fluid ">
     <div class="row">
         <div class="col-3 page1Btn " >
@@ -21,7 +23,7 @@
                 <li><a href="main.vm">ראשי</a></li>
                 <li><a href="reports.vm">דוחות נוכחות</a></li>
                 <li><a href="special_report.vm">דיווח מיוחד</a></li>
-                <li ><a href="http://localhost:8666/logout" onclick="redirect()">התנתק</a></li>
+                <li ><a href="http://localhost:8666/logout">התנתק</a></li>
             </ul>
         </div>
 

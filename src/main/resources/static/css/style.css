@@ -140,6 +140,13 @@ body, html {
     font-weight: 500;
     font-size: 2.8vw;
 }
+.btnrep{
+    height: 27px;
+    background-color: #ef7f28;
+    margin-bottom: 18.5px;
+    width: max-content;
+
+}
 /*------------------------PAGE 2 (SPECIAL REPORT)--------------------------------------------------*/
 .back{
     max-width: 73px;
@@ -191,4 +198,15 @@ body, html {
 }
 .infCol{
     margin: inherit;
+}
+.repImg {
+    height: 3vw;
+}
+.editPic{
+    height: 10px;
+    width: 15px;
+
+}
+.modalFit{
+    width: fit-content;
 }

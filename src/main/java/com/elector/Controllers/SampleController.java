@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +42,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -55,8 +57,9 @@ public class SampleController {
 
 
     @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
-    public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate) throws SQLException {
-
+    public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate,@CookieValue(value = "foo", defaultValue = "") String cookie) throws SQLException {
+        if (cookie.equals(""))//cheack if loged in.
+            return "Landing_page";
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
         String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
         PreparedStatement preparedStmt = myConn.prepareStatement(sql);
@@ -148,13 +151,17 @@ public class SampleController {
             enter=enterTime;
             exit=exitTime;
             total=exitTime-enterTime;
-            String sql = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date) values (?,?,?,?,?)";
+            Date day = new Date();
+            LocalDate localDate = day.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            String[] dayOfTheWeek={"יום א","יום ב","יום ג","יום ד","יום ה","יום ו","יום ז"};
+            String sql = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)";
             PreparedStatement preparedStmt = myConn.prepareStatement(sql);
             preparedStmt.setInt(1, employeeId);
             preparedStmt.setFloat(2, enter);
             preparedStmt.setFloat(3, exit);
             preparedStmt.setFloat(4, total);
             preparedStmt.setDate(5,today);
+            preparedStmt.setString(6,dayOfTheWeek[localDate.getDayOfMonth()]);
 
             preparedStmt.execute();
 
@@ -170,8 +177,8 @@ public class SampleController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        if (!cookie.equals(""))
-            return "redirect:/main";
+       // if (!cookie.equals(""))
+           // return "redirect:/main";
         return "Landing_page";
     }
 
@@ -181,16 +188,24 @@ public class SampleController {
             if (cookie.equals(""))
                 return "Landing_page";
         try {
-            PreparedStatement myStmt = myConn.prepareStatement("select * from test2.comments WHERE test2.comments.employeeId=?  ");
+            PreparedStatement myStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=?  ");
             myStmt.setInt(1, employeeId);
             ResultSet rs = myStmt.executeQuery();
-            ArrayList<String> commentList = new ArrayList<String>();
-            while (rs.next()) {
-                commentList.add(rs.getString("comments"));
-            }
-            // model.addAttribute("lengthList",commentList.size() );
+            ArrayList<String> dayList = new ArrayList<String>();
+            ArrayList<String> hoursWorked = new ArrayList<String>();
+            ArrayList<String> hoursList = new ArrayList<String>();
+            ArrayList<Date> dateList = new ArrayList<Date>();
 
-            model.addAttribute("comment", commentList);
+            while (rs.next()) {
+                dayList.add(rs.getString("dayOfTheWeek"));
+                hoursList.add((int)(rs.getFloat("enterTime") / 60)+":"+(int)(rs.getFloat("enterTime")%60) +"  ->   "+(int)(rs.getFloat("exitTime") / 60)+":"+(int)(rs.getFloat("exitTime")%60));
+                hoursWorked.add((int)(rs.getFloat("totalhoursWorked") / 60)+":"+(int)(rs.getFloat("totalhoursWorked")%60));
+                dateList.add(rs.getDate("date"));
+            }
+            model.addAttribute("days", dayList);
+            model.addAttribute("hours", hoursList);
+            model.addAttribute("hoursWorked", hoursWorked);
+            model.addAttribute("dateWorked", dateList);
 
             return "reports";
         } catch (Exception exc) {

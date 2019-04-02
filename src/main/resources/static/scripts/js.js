@@ -66,6 +66,12 @@
          });
      }
  }
+ function callme()
+ {
+     history.go(1);
+ }
+
+
  /*function cookie(){
      var id=makeid(25);
 
