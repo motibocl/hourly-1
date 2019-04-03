@@ -93,13 +93,17 @@
 </form >
 
 
-<div class="container " >
+<div class="container" >
     <div class="row rowBorder">
+
+##        1. day
         <div class="col-3 infCol">
             #foreach( $day in $days )
          <p class="inf">$day</p>
             #end
         </div>
+
+##    2 hours
         <div class="col-3-fluid">
              #foreach( $hour in $hours )
 
@@ -107,39 +111,43 @@
 
             #end
         </div>
+
+##    3. date
         <div class="col-3-fluid">
             #foreach( $date in $dateWorked )
 
             <p class="inf">$date</p>
                 #end
-
         </div>
-        <div class="col-2 infCol ">
 
+##        <div class="col-2 infCol ">
+
+##    4. hours
         <div class="col-3-fluid">
              #foreach( $hours in $hoursWorked )
                  <div>
             <!-- Button trigger modal -->
-            <button type="button" class="btn  btnrep" data-toggle="modal" data-target="#exampleModalCenter">$hours<img src="css/images/EDIT.png" class="editPic"></button>
+                     <button type="button" class="btn  btnrep" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hours</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button>
                  </div>
              #end
         </div>
+
     <!-- Modal -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content modWind">
+                        <div class="modal-header headStyle">
                             <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-                            <p2>אז מה עשית היום?</p2>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                            <p2 class="fontModStyle">אז מה עשית היום?</p2>
                         </div>
 
 
                         <form>
                             <div class="form-group">
-                                <input type="text" class="form-control borColor" name="commentary" id="exampleFormControlInput1" placeholder="הסבר">
+                                <textarea class="inpForm1" rows="4" cols="50" class="form-control" name="commentary" id="exampleFormControlInput1"></textarea>
                             </div>
                             <button type="submit" formaction="http://localhost:8666/sendComment" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"></button>
                         </form>
@@ -202,6 +210,21 @@
         </div>
     </div>
 </div>
+
+
+##    <table id="myTable">
+##        <tbody>
+##        <tr> #foreach( $date in $dateWorked )
+##
+##            <p class="inf">$date</p>
+##        #end</tr>
+##        <tr>#foreach( $date in $dateWorked )
+##
+##            <p class="inf">$date</p>
+##        #end</tr>
+##        </tbody>
+##        <tr>...</tr>
+##    </table>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -184,6 +184,9 @@ body, html {
 }
 .okBtnImg{
     max-width: 276px;
+
+    margin-top: 14%;
+    margin-right: -3%;
 }
 .borColor{
     border-color: #e07640;
@@ -221,4 +224,29 @@ body, html {
 }
 .ok{
     width: 191px;
+}
+
+
+/*------------------------Modal---------------*/
+.modWind {
+    width: 478px;
+    height: 400px;
+}
+
+.headStyle {
+    background-color: #e8e0d9;
+    height: 23%;
+}
+
+.fontModStyle {
+    margin-left: 35%;
+    margin-top: 25px;
+    font-size: 19px;
+    color: #e07640;
+}
+
+.inpForm1{
+    width: 99%;
+    height: 175px;
+    border: none;
 }
