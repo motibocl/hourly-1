@@ -44,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
@@ -57,7 +57,12 @@ public class SampleController {
             return "Landing_page";
     }
 
+    @RequestMapping("/admin")
+    public String admin(Model model) throws SQLException {
 
+            return "admin";
+
+    }
     @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
     public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate,@CookieValue(value = "foo", defaultValue = "") String cookie) throws SQLException {
         if (cookie.equals(""))//cheack if loged in.
@@ -76,8 +81,8 @@ public class SampleController {
 
 
     //Sending comments "What did you do today"
-    @RequestMapping(value = "/sendComment", method = RequestMethod.GET)
-    public String getCommentary(@RequestParam String commentary) throws SQLException {
+    @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
+    public String getCommentary(@RequestParam  String commentary) throws SQLException {
 
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
         String sql = "insert into comments (employeeId,comments) values (?,?)";
@@ -178,7 +183,11 @@ public class SampleController {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-
+        //for enter and exit.
+        Cookie cookie2 = new Cookie("flag", null);
+        cookie2.setHttpOnly(true);
+        cookie2.setMaxAge(0);
+        response.addCookie(cookie2);
        // if (!cookie.equals(""))
            // return "redirect:/main";
         return "Landing_page";

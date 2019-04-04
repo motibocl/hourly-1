@@ -13,16 +13,16 @@
     <title>Hourly|special-report</title>
 </head>
 
-<body id="page1"onload="callme()">
+<body id="page1"onload="clearCache()">
 <div class="container-fluid ">
     <div class="row">
         <div class="col-3 page1Btn " >
             <input type="image" class="btn dropdown-toggle pull-right " data-toggle="dropdown" src="css/images/button.png" >
 
             <ul class="dropdown-menu">
-                <li><a href="main.vm" >ראשי</a></li>
-                <li><a href="reports.vm">דוחות נוכחות</a></li>
-                <li><a href="special_report.vm">דיווח מיוחד</a></li>
+                <li><a href="main" >ראשי</a></li>
+                <li><a href="reports">דוחות נוכחות</a></li>
+                <li><a href="special_report">דיווח מיוחד</a></li>
                 <li><a href="http://localhost:8666/logout" >התנתק</a></li>
 
             </ul>
@@ -61,7 +61,7 @@
 
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control borColor" name="hoursWorked" id="exampleFormControlInput1" placeholder="כמות שעות">
+                    <input type="number" class="form-control borColor" name="hoursWorked" id="exampleFormControlInput1" placeholder="כמות שעות">
                 </div>
 
                 <div class="form-group">

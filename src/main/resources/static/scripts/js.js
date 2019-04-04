@@ -18,7 +18,7 @@ var flag=false;
  document.getElementById("date").innerHTML =days[today.getDay()]+"<br />"+today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear();
 
  function stay() {
-     if(flag==false)
+     if(Cookies.get('flag')==null)
          document.getElementById("enterBtn").src = "css/images/enter-button2.png";
       else
          document.getElementById("enterBtn").src = "css/images/exit-button.png";
@@ -26,7 +26,7 @@ var flag=false;
  }
 
      function changeImage() {
-     if( typeof changeImage.minutes == 'undefined'  ) {
+    /* if( typeof changeImage.minutes == 'undefined'  ) {
          changeImage.minutes = 0;
      }
      if( typeof changeImage.hours == 'undefined'  ) {
@@ -34,32 +34,30 @@ var flag=false;
      }
      if( typeof changeImage.showTime == 'undefined'  ) {
          changeImage.showTime = 0;
-     }
-     if (document.getElementById("enterBtn").src == "http://localhost:8666/css/images/enter-button2.png")
+     }*/
+     if (Cookies.get('flag')==null)
      {
-         flag=true;
+         Cookies.set('flag',1);
          var time=new Date();
-         changeImage.minutes=time.getMinutes();
-         changeImage.hours=time.getHours();
+         //changeImage.hours=time.getHours();
          document.getElementById("enterBtn").src = "css/images/exit-button.png";
-
-     } else if (document.getElementById("enterBtn").src == "http://localhost:8666/css/images/exit-button.png")
+        localStorage.setItem("minutes", time.getMinutes().toString());
+         localStorage.setItem("hours", time.getHours().toString());
+     }
+     else
      {
          var time2=new Date();
          var minutes1=time2.getMinutes();
          var hours1=time2.getHours();
-         //  changeImage.minutes=(minutes1-changeImage.minutes;
-         var min=(hours1*60+minutes1)-(changeImage.hours*60+changeImage.minutes);
-         changeImage.showTime+=min;
-
-
+         //var min=(hours1*60+minutes1)-(changeImage.hours*60+changeImage.minutes);
+        // changeImage.showTime+=min;
          document.getElementById("enterBtn").src = "css/images/enter-button2.png";
-         var enterTime=changeImage.minutes+(changeImage.hours*60);
+         var enterTime= parseInt(localStorage.getItem("minutes"))+(parseInt(localStorage.getItem("hours"))*60);
          var exitTime=minutes1+(hours1*60);
          var data='enterTime='
-         + encodeURIComponent(enterTime)
-         +'&exitTime='
-         +encodeURIComponent(exitTime);
+             + encodeURIComponent(enterTime)
+             +'&exitTime='
+             +encodeURIComponent(exitTime);
          $.ajax({
           type: 'POST',
           url:"result",
@@ -72,14 +70,35 @@ var flag=false;
                  alert('Exception'+exception);
              }
          });
+         Cookies.remove('flag');
+
+        // location.reload();//reloads the page
+
      }
  }
- function callme()
+
+ function clearCache()
  {
      history.go(1);
  }
 
+function repComment(){
+    var commentary = document.getElementsByName('commentary')[0].value;
+    var data='commentary='
+        + encodeURIComponent(commentary);
+    $.ajax({
+        type: 'POST',
+        url:"sendComment",
+        data:data ,
+        success:function (data) {
+            console.log('success',data);
 
+        }   ,
+        error: function (exception) {
+            alert('Exception'+exception);
+        }
+    });
+}
  /*function cookie(){
      var id=makeid(25);
 
@@ -137,5 +156,6 @@ $(document).ready(function ($) {
      daysOfWeekDisabled: "6",
      todayHighlight: true
  });
+
 /*----------------------------AJAX----------------------------------------------*/
 

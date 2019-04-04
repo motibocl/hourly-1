@@ -13,16 +13,16 @@
 
     <title>Hourly|reports</title>
 </head>
-<body id="page1" onload="callme()">
+<body id="page1" onload="clearCache()">
 <div class="container-fluid ">
     <div class="row">
         <div class="col-3 page1Btn " >
             <input type="image" class="btn dropdown-toggle pull-right " data-toggle="dropdown" src="css/images/button.png" >
 
             <ul class="dropdown-menu">
-                <li><a href="main.vm">ראשי</a></li>
-                <li><a href="reports.vm">דוחות נוכחות</a></li>
-                <li><a href="special_report.vm">דיווח מיוחד</a></li>
+                <li><a href="main" >ראשי</a></li>
+                <li><a href="reports">דוחות נוכחות</a></li>
+                <li><a href="special_report">דיווח מיוחד</a></li>
                 <li><a href="http://localhost:8666/logout" >התנתק</a></li>
 
             </ul>
@@ -93,7 +93,7 @@
 </form >
 
 
-<div class="container" >
+<div class="container " >
     <div class="row rowBorder">
 
 ##        1. day
@@ -118,6 +118,7 @@
 
             <p class="inf">$date</p>
                 #end
+
         </div>
 
 ##        <div class="col-2 infCol ">
@@ -131,7 +132,6 @@
                  </div>
              #end
         </div>
-
     <!-- Modal -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -145,12 +145,13 @@
                         </div>
 
 
-                        <form>
+                        <div>
                             <div class="form-group">
+                                <input type="text" class="form-control borColor" name="commentary" id="exampleFormControlInput1" placeholder="הסבר" >
                                 <textarea class="inpForm1" rows="4" cols="50" class="form-control" name="commentary" id="exampleFormControlInput1"></textarea>
                             </div>
-                            <button type="submit" formaction="http://localhost:8666/sendComment" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"></button>
-                        </form>
+                            <button type="button" onclick="repComment()" class="close" data-dismiss="modal" class="btn btn-sm okBtn"  ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"></button>
+                        </div>
 
                     </div>
                 </div>

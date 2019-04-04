@@ -12,7 +12,7 @@
 
     <title>Hourly|main</title>
 </head>
-<body>
+<body onload="clearCache()">
 <h1>login first!</h1>
 
 
