@@ -1,6 +1,7 @@
 package com.elector.Controllers;
 
 
+import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
@@ -39,6 +40,8 @@ public class SampleController {
     private static float enter;
     private static float exit;
     private static float total;
+    private static float enterBpressed;
+    private static int clicked;
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
 
@@ -99,6 +102,8 @@ public class SampleController {
         if (cookie.equals(""))//cheack if loged in.
             return "Landing_page";
         try {
+
+
             model.addAttribute("name", "ברוך הבא  " + name);//the welcome back page title.
                 //getting all the working time list
                 PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
@@ -113,8 +118,22 @@ public class SampleController {
                     timeWorkList.add("זמן עבודה: "+timeString(rs2.getFloat("enterTime")) +"  ->   "+timeString(rs2.getFloat("exitTime"))) ;
                 //adding to a list of working hours.
                 }
+            PreparedStatement Stmt1 = myConn.prepareStatement("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
+            Stmt1.setInt(1, employeeId);
+            ResultSet rs = Stmt1.executeQuery() ;
+            boolean clicked=false;
+            while (rs.next()) {
+                clicked=rs.getBoolean("enterOrExit");
+            }
+            if(!clicked){
+                model.addAttribute("url","css/images/enter-button2.png");
+                model.addAttribute("id","0");
 
+            }else {
+                model.addAttribute("url", "css/images/exit-button.png");
+                model.addAttribute("id","1");
 
+            }
                 String time="הזמן שעבדת היום: "+timeString(workedToday );//all the time that the employee worked.
                 model.addAttribute("workedToday", time);
                 model.addAttribute("timeWorkList", timeWorkList);
@@ -145,6 +164,36 @@ public class SampleController {
             return "error";
         }
     }
+    @RequestMapping("/update")
+    public String update(Model model, @RequestParam ("button") int button,@CookieValue(value = "foo", defaultValue = "") String cookie,@RequestParam ("enterTime") Float enterTime) throws Exception {
+        if (!cookie.equals("")) {
+            //JSONObject jsonObject = new JSONObject();
+            enterBpressed=enterTime;
+            String sql = "update test2.employee set enterOrExit=? where employeeId=? ";
+            PreparedStatement preparedStmt = myConn.prepareStatement(sql);
+            preparedStmt.setInt(1, button);
+            preparedStmt.setInt(2, employeeId);
+            preparedStmt.execute();
+            Date day = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(day);
+            String[] dayOfTheWeek={"יום א","יום ב","יום ג","יום ד","יום ה","יום ו","יום ז"};
+            String sql2 = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)";
+            PreparedStatement preparedStmt2 = myConn.prepareStatement(sql2);
+            preparedStmt2.setInt(1, employeeId);
+            preparedStmt2.setFloat(2, enterTime);
+            preparedStmt2.setFloat(3, 0);
+            preparedStmt2.setFloat(4, 0);
+            preparedStmt2.setDate(5,today);
+            preparedStmt2.setString(6,dayOfTheWeek[ c.get(Calendar.DAY_OF_WEEK)-1]);
+            preparedStmt2.execute();
+            model.addAttribute("url","css/images/exit-button.png");
+           // jsonObject.put("success", "true");
+            //return jsonObject.toString();
+            return "redirect:/main";
+        }
+        return "Landing_page";
+    }
 
     @RequestMapping("/home")
     public String home(Model model,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
@@ -153,24 +202,22 @@ public class SampleController {
         return "Landing_page";
     }
     @RequestMapping("/result")
-    public String resultTime(Model model,  @RequestParam ("enterTime") float enterTime, @RequestParam ("exitTime") float exitTime,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
+    public String resultTime(Model model, @RequestParam ("button") int button, @RequestParam ("exitTime") float exitTime,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
         if (!cookie.equals("")) {
-            enter=enterTime;
+           // enter=enterTime;
             exit=exitTime;
-            total=exitTime-enterTime;
-            Date day = new Date();
-            LocalDate localDate = day.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            String[] dayOfTheWeek={"יום א","יום ב","יום ג","יום ד","יום ה","יום ו","יום ז"};
-            String sql = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)";
+            total=exitTime-enterBpressed;
+            String sql =" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1";
             PreparedStatement preparedStmt = myConn.prepareStatement(sql);
-            preparedStmt.setInt(1, employeeId);
-            preparedStmt.setFloat(2, enter);
-            preparedStmt.setFloat(3, exit);
-            preparedStmt.setFloat(4, total);
-            preparedStmt.setDate(5,today);
-            preparedStmt.setString(6,dayOfTheWeek[localDate.getDayOfMonth()]);
-
+            preparedStmt.setFloat(1, exit);
+            preparedStmt.setFloat(2, total);
+            preparedStmt.setInt(3, employeeId);
             preparedStmt.execute();
+            String sql2 = "update test2.employee set enterOrExit=? where employeeId=? ";
+            PreparedStatement preparedStmt2 = myConn.prepareStatement(sql2);
+            preparedStmt2.setInt(1, button);
+            preparedStmt2.setInt(2, employeeId);
+            preparedStmt2.execute();
 
             return "redirect:/main";
         }
@@ -184,12 +231,7 @@ public class SampleController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         //for enter and exit.
-        Cookie cookie2 = new Cookie("flag", null);
-        cookie2.setHttpOnly(true);
-        cookie2.setMaxAge(0);
-        response.addCookie(cookie2);
-       // if (!cookie.equals(""))
-           // return "redirect:/main";
+
         return "Landing_page";
     }
 
@@ -246,9 +288,10 @@ public class SampleController {
                 ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
                 ArrayList<String> hoursListDetails = new ArrayList<String>();
                 ArrayList<Date> dateListDetails = new ArrayList<Date>();
-                myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? ");
+                myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=?");
                 myStmt.setInt(1, parseInt(year));
                 myStmt.setInt(2,  parseInt(month) );
+                myStmt.setInt(3,  employeeId );
                 rs = myStmt.executeQuery();
                 while (rs.next()) {
                     dayListDetails.add(rs.getString("dayOfTheWeek"));

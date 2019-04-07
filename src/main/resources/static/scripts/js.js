@@ -17,47 +17,47 @@ var flag=false;
  days[6] = "יום שבת,";
  document.getElementById("date").innerHTML =days[today.getDay()]+"<br />"+today.getDate()+"/"+(today.getMonth()+1)+"/"+today.getFullYear();
 
- function stay() {
-     if(Cookies.get('flag')==null)
-         document.getElementById("enterBtn").src = "css/images/enter-button2.png";
-      else
-         document.getElementById("enterBtn").src = "css/images/exit-button.png";
 
- }
 
-     function changeImage() {
-    /* if( typeof changeImage.minutes == 'undefined'  ) {
-         changeImage.minutes = 0;
-     }
-     if( typeof changeImage.hours == 'undefined'  ) {
-         changeImage.hours = 0;
-     }
-     if( typeof changeImage.showTime == 'undefined'  ) {
-         changeImage.showTime = 0;
-     }*/
-     if (Cookies.get('flag')==null)
+     function changeImage(id) {
+
+     if (id=="0")
      {
-         Cookies.set('flag',1);
          var time=new Date();
-         //changeImage.hours=time.getHours();
-         document.getElementById("enterBtn").src = "css/images/exit-button.png";
         localStorage.setItem("minutes", time.getMinutes().toString());
          localStorage.setItem("hours", time.getHours().toString());
+         var enterTime= parseInt(localStorage.getItem("minutes"))+(parseInt(localStorage.getItem("hours"))*60);
+         var num=1;
+         var pressed='button='
+             + encodeURIComponent(num)
+             +'&enterTime='
+             + encodeURIComponent(enterTime)
+         $.ajax({
+             type: 'POST',
+             url:"update",
+             data:pressed ,
+             success:function (data) {
+                 console.log('success',data);
+
+             }   ,
+             error: function (exception) {
+                 alert('Exception'+exception);
+             }
+         });
+         debugger;
+          location.reload();//reloads the page
      }
      else
      {
          var time2=new Date();
          var minutes1=time2.getMinutes();
          var hours1=time2.getHours();
-         //var min=(hours1*60+minutes1)-(changeImage.hours*60+changeImage.minutes);
-        // changeImage.showTime+=min;
-         document.getElementById("enterBtn").src = "css/images/enter-button2.png";
-         var enterTime= parseInt(localStorage.getItem("minutes"))+(parseInt(localStorage.getItem("hours"))*60);
          var exitTime=minutes1+(hours1*60);
-         var data='enterTime='
-             + encodeURIComponent(enterTime)
-             +'&exitTime='
-             +encodeURIComponent(exitTime);
+         var num=0;
+         var data='exitTime='
+             + encodeURIComponent(exitTime)
+            +'&button='
+            +encodeURIComponent(num);
          $.ajax({
           type: 'POST',
           url:"result",
@@ -70,9 +70,7 @@ var flag=false;
                  alert('Exception'+exception);
              }
          });
-         Cookies.remove('flag');
-
-         location.reload();//reloads the page
+          location.reload();//reloads the page
 
      }
  }
@@ -142,32 +140,33 @@ function repComment(){
  }
 
 */
-$(document).ready(function ($) {
-
-    $('.black-button').on({
-        'click': function () {
-            $('#change-image').attr('src', 'styles/images/exit-button.png');
-        }
-    });
-
-
-});
- $('#sandbox-container input').datepicker({
-     daysOfWeekDisabled: "6",
-     todayHighlight: true
- });
- function myFunction() {
-     var x = document.getElementById("myDIV");
-     if (x.style.display === "none") {
-         x.style.display = "block";
-     } else {
-         x.style.display = "none";
-     }
- }
-/*----------------------------sidebar----------------------------------------------*/
+// $(document).ready(function ($) {
+//
+//     $('.black-button').on({
+//         'click': function () {
+//             $('#change-image').attr('src', 'styles/images/exit-button.png');
+//         }
+//     });
+//
+//
+// });
+//  $('#sandbox-container input').datepicker({
+//      daysOfWeekDisabled: "6",
+//      todayHighlight: true
+//  });
+//  function myFunction() {
+//      var x = document.getElementById("myDIV");
+//      if (x.style.display === "none") {
+//          x.style.display = "block";
+//      } else {
+//          x.style.display = "none";
+//      }
+//  }
+// /*----------------------------sidebar----------------------------------------------*/
 
  function openNav() {
      document.getElementById("mySidenav").style.width = "250px";
+
  }
 
  function closeNav() {
