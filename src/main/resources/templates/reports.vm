@@ -17,19 +17,21 @@
 <div class="container-fluid ">
     <div class="row">
         <div class="col-3 page1Btn " >
-            <input type="image" class="btn dropdown-toggle pull-right " data-toggle="dropdown" src="css/images/button.png" >
-
-            <ul class="dropdown-menu">
-                <li><a href="main" >ראשי</a></li>
-                <li><a href="reports">דוחות נוכחות</a></li>
-                <li><a href="special_report">דיווח מיוחד</a></li>
-                <li><a href="http://localhost:8666/logout" >התנתק</a></li>
-
-            </ul>
+            <div class="col-3 page1Btn " >
+                <input type="image" onclick="openNav()"class="hih" src="css/images/button.png" >
+                <div id="mySidenav" class="sidenav" >
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <a href="main.vm"><h4 class="nav">ראשי</h4></a>
+                    <a href="reports.vm">    <div class="glyphicon glyphicon-envelope"></div>    <h4 class=" nav">דוחות נוכחות</h4></a>
+                    <a href="special_report.vm"><h4 class="nav">דיווח מיוחד</h4></a>
+                    <a href="http://localhost:8666/logout"><h4 class="nav">התנתק</h4></a>
+                    <div class="version">7.4.2019</div>
+                </div>
+            </div>
         </div>
 
         <div class="col-6 page1Logo">
-            <img src="css/images/Logo-second.png" class="img-fluid mainLogo">
+            <img onclick="main()" src="css/images/Logo-second.png" class="img-fluid mainLogo">
         </div>
         <div class="col-3 page1Btn">
             <p id="date"></p>

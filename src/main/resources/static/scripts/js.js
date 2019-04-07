@@ -72,7 +72,7 @@ var flag=false;
          });
          Cookies.remove('flag');
 
-        // location.reload();//reloads the page
+         location.reload();//reloads the page
 
      }
  }
@@ -156,6 +156,25 @@ $(document).ready(function ($) {
      daysOfWeekDisabled: "6",
      todayHighlight: true
  });
+ function myFunction() {
+     var x = document.getElementById("myDIV");
+     if (x.style.display === "none") {
+         x.style.display = "block";
+     } else {
+         x.style.display = "none";
+     }
+ }
+/*----------------------------sidebar----------------------------------------------*/
 
-/*----------------------------AJAX----------------------------------------------*/
+ function openNav() {
+     document.getElementById("mySidenav").style.width = "250px";
+ }
 
+ function closeNav() {
+     document.getElementById("mySidenav").style.width = "0";
+ }
+ /*----------------------------------logo-----------------------------------------*/
+ function main() {
+     window.location.replace("main");
+
+ }

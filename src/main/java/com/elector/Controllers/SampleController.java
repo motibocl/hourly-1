@@ -110,12 +110,12 @@ public class SampleController {
                 //couting how many hours the employee worked this day.
                 while (rs2.next()) {
                     workedToday+=rs2.getFloat("totalhoursWorked");
-                    timeWorkList.add("זמן עבודה: "+(int)(rs2.getFloat("enterTime") / 60)+":"+(int)(rs2.getFloat("enterTime")%60) +"  ->   "+(int)(rs2.getFloat("exitTime") / 60)+":"+(int)(rs2.getFloat("exitTime")%60)) ;
+                    timeWorkList.add("זמן עבודה: "+timeString(rs2.getFloat("enterTime")) +"  ->   "+timeString(rs2.getFloat("exitTime"))) ;
                 //adding to a list of working hours.
                 }
 
 
-                String time="הזמן שעבדת היום: "+(int)(workedToday / 60)+"hr"+":"+(int)(workedToday % 60)+"min";//all the time that the employee worked.
+                String time="הזמן שעבדת היום: "+timeString(workedToday );//all the time that the employee worked.
                 model.addAttribute("workedToday", time);
                 model.addAttribute("timeWorkList", timeWorkList);
                //getting the month and the year from calendar object.
@@ -135,7 +135,7 @@ public class SampleController {
                      workedThisMonth+=rs3.getFloat("totalhoursWorked");
                  }
                  //the string.
-                 String timeMonth="הזמן שעבדת החודש: "+(int)(workedThisMonth / 60)+"hr"+":"+(int)(workedThisMonth % 60)+"min";
+                 String timeMonth="הזמן שעבדת החודש: "+timeString(workedThisMonth );
                  model.addAttribute("timeWorkMonth", timeMonth);
 
 
@@ -228,12 +228,12 @@ public class SampleController {
                     myStmt.setInt(1, parseInt(year));
                     myStmt.setInt(2,  parseInt(month) );
                     myStmt.setInt(3, i );
-
+//rsSumTime.getFloat("total") / 60) + ":" + (int) (rsSumTime.getFloat("total") % 60)
                     rsSumTime = myStmt.executeQuery();
                     if(rsSumTime.next()&&rsEnterTime.next()&&rsExitTime.next()) {
                         dayList.add(rsEnterTime.getString("dayOfTheWeek"));
-                        hoursWorked.add((int) (rsSumTime.getFloat("total") / 60) + ":" + (int) (rsSumTime.getFloat("total") % 60));
-                        hoursList.add((int) (rsEnterTime.getFloat("enterTime") / 60) + ":" + (int) (rsEnterTime.getFloat("enterTime") % 60) + "  ->   " + (int) (rsExitTime.getFloat("exitTime") / 60) + ":" + (int) (rsExitTime.getFloat("exitTime") % 60));
+                        hoursWorked.add(timeString(rsSumTime.getFloat("total")));
+                        hoursList.add(timeString(rsEnterTime.getFloat("enterTime") ) + "   ->   " + timeString(rsExitTime.getFloat("exitTime") ));
                         dateList.add(rsEnterTime.getDate("date"));
                     }
                 }
@@ -328,6 +328,13 @@ public class SampleController {
 
      return text;
  }
+    private String timeString(float minutes){
+            int hoursTime= (int) (minutes/60);
+            int minutesTime= (int) (minutes%60);
+            if(minutesTime<10)
+                return ""+hoursTime+":"+"0"+minutesTime;
+            else
+                return ""+hoursTime+":"+minutesTime;
+    }
 
 }
-
