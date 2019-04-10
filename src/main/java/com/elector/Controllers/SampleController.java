@@ -40,7 +40,7 @@ public class SampleController {
   //  private static float enter;
   //  private static float exit;
   //  private static float total;
-   // private static float enterBpressed;qwewqsadSAsa
+   // private static float enterBpressed;qwewqsadSAsaF
    // private static int clicked;
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());

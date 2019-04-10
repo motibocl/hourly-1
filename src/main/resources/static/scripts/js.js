@@ -70,7 +70,7 @@ var flag=false;
                  alert('Exception'+exception);
              }
          });
-          location.reload();//reloads the page
+          location.reload();//reloads the page SA
 
      }
  }
