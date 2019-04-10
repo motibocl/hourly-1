@@ -32,29 +32,28 @@ import static java.lang.Integer.parseInt;
 
 public class SampleController {
     private static Connection myConn;
-    private static boolean loggedIn;//if logged in
-    private static boolean flag;//if logged in
-    private static int counter = 0;
-    private static String name = null;
-    private static int employeeId;
-    private static float enter;
-    private static float exit;
-    private static float total;
-    private static float enterBpressed;
-    private static int clicked;
+   // private static boolean loggedIn;//if logged in
+  //  private static boolean flag;//if logged in
+   // private static int counter = 0;
+   // private static String name = null;
+    //private static int employeeId;
+  //  private static float enter;
+  //  private static float exit;
+  //  private static float total;
+   // private static float enterBpressed;
+   // private static int clicked;
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
     public String getdata(@RequestParam String login, @RequestParam String pass, HttpServletResponse response) throws SQLException {
         if (checkCredentials(login, pass)) {//if pass and phone correct
-            response.addCookie(new Cookie("foo", generateToken(35)));//making a cookie
-            //loggedIn = true;
+            response.addCookie(new Cookie("foo", generateToken(login)));//making a cookie
             return "redirect:/main";
         } else
             return "Landing_page";
@@ -73,7 +72,7 @@ public class SampleController {
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
         String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
         PreparedStatement preparedStmt = myConn.prepareStatement(sql);
-        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setInt(1, parseInt(getEmployeeId(cookie)));
         preparedStmt.setString(2, hoursWorked);
         preparedStmt.setString(3, text);
         preparedStmt.setString(4,  reasonDate);
@@ -85,12 +84,12 @@ public class SampleController {
 
     //Sending comments "What did you do today"
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
-    public String getCommentary(@RequestParam  String commentary) throws SQLException {
+    public String getCommentary(@RequestParam  String commentary,@CookieValue(value = "foo", defaultValue = "") String cookie) throws SQLException {
 
         // Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
         String sql = "insert into comments (employeeId,comments) values (?,?)";
         PreparedStatement preparedStmt = myConn.prepareStatement(sql);
-        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setInt(1, parseInt(getEmployeeId(cookie)));
         preparedStmt.setString(2, commentary);
         preparedStmt.execute();
 
@@ -102,12 +101,19 @@ public class SampleController {
         if (cookie.equals(""))//cheack if loged in.
             return "Landing_page";
         try {
-
+            String name="";
+            String phone=convertToken(cookie);
+            PreparedStatement statement = myConn.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+            statement.setInt(1, parseInt(phone));
+            ResultSet result = statement.executeQuery();
+            while(result.next()){
+                name=result.getString("employeeName");
+            }
 
             model.addAttribute("name", "ברוך הבא  " + name);//the welcome back page title.
                 //getting all the working time list
                 PreparedStatement Stmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
-                Stmt .setInt(1, employeeId);
+                Stmt .setInt(1, parseInt(getEmployeeId(cookie)));
                 Stmt.setDate(2, today);
                 ResultSet rs2 = Stmt.executeQuery();
                 float workedToday = 0;
@@ -119,7 +125,7 @@ public class SampleController {
                 //adding to a list of working hours.
                 }
             PreparedStatement Stmt1 = myConn.prepareStatement("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
-            Stmt1.setInt(1, employeeId);
+            Stmt1.setInt(1, parseInt(getEmployeeId(cookie)));
             ResultSet rs = Stmt1.executeQuery() ;
             boolean clicked=false;
             while (rs.next()) {
@@ -144,7 +150,7 @@ public class SampleController {
                 int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
                 int todayYear= calendar.get(Calendar.YEAR);//year current
                 PreparedStatement Stmt2 = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
-                Stmt2 .setInt(1, employeeId);
+                Stmt2 .setInt(1, parseInt(getEmployeeId(cookie)));
                 Stmt2 .setInt(2, todayMonth+1);//because we want the current time we add 1.
                 Stmt2 .setInt(3, todayYear);
                 ResultSet rs3 = Stmt2.executeQuery();//excuting query.
@@ -168,11 +174,11 @@ public class SampleController {
     public String update(Model model, @RequestParam ("button") int button,@CookieValue(value = "foo", defaultValue = "") String cookie,@RequestParam ("enterTime") Float enterTime) throws Exception {
         if (!cookie.equals("")) {
             //JSONObject jsonObject = new JSONObject();
-            enterBpressed=enterTime;
+            //enterBpressed=enterTime;
             String sql = "update test2.employee set enterOrExit=? where employeeId=? ";
             PreparedStatement preparedStmt = myConn.prepareStatement(sql);
             preparedStmt.setInt(1, button);
-            preparedStmt.setInt(2, employeeId);
+            preparedStmt.setInt(2, parseInt(getEmployeeId(cookie)));
             preparedStmt.execute();
             Date day = new Date();
             Calendar c = Calendar.getInstance();
@@ -180,7 +186,7 @@ public class SampleController {
             String[] dayOfTheWeek={"יום א","יום ב","יום ג","יום ד","יום ה","יום ו","יום ז"};
             String sql2 = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)";
             PreparedStatement preparedStmt2 = myConn.prepareStatement(sql2);
-            preparedStmt2.setInt(1, employeeId);
+            preparedStmt2.setInt(1, parseInt(getEmployeeId(cookie)));
             preparedStmt2.setFloat(2, enterTime);
             preparedStmt2.setFloat(3, 0);
             preparedStmt2.setFloat(4, 0);
@@ -188,8 +194,8 @@ public class SampleController {
             preparedStmt2.setString(6,dayOfTheWeek[ c.get(Calendar.DAY_OF_WEEK)-1]);
             preparedStmt2.execute();
             model.addAttribute("url","css/images/exit-button.png");
-           // jsonObject.put("success", "true");
-            //return jsonObject.toString();
+          //  jsonObject.put("success", "true");
+           // return jsonObject.toString();
             return "redirect:/main";
         }
         return "Landing_page";
@@ -205,18 +211,18 @@ public class SampleController {
     public String resultTime(Model model, @RequestParam ("button") int button, @RequestParam ("exitTime") float exitTime,@CookieValue(value = "foo", defaultValue = "") String cookie) throws Exception {
         if (!cookie.equals("")) {
            // enter=enterTime;
-            exit=exitTime;
-            total=exitTime-enterBpressed;
+            float exit=exitTime;
+            float total=exitTime-enterTime(cookie);
             String sql =" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1";
             PreparedStatement preparedStmt = myConn.prepareStatement(sql);
             preparedStmt.setFloat(1, exit);
             preparedStmt.setFloat(2, total);
-            preparedStmt.setInt(3, employeeId);
+            preparedStmt.setInt(3,parseInt(getEmployeeId(cookie)));
             preparedStmt.execute();
             String sql2 = "update test2.employee set enterOrExit=? where employeeId=? ";
             PreparedStatement preparedStmt2 = myConn.prepareStatement(sql2);
             preparedStmt2.setInt(1, button);
-            preparedStmt2.setInt(2, employeeId);
+            preparedStmt2.setInt(2, parseInt(getEmployeeId(cookie)));
             preparedStmt2.execute();
 
             return "redirect:/main";
@@ -243,7 +249,7 @@ public class SampleController {
         try {
             if(!month.equals("")&&!year.equals("")) {
                 PreparedStatement myStmt = myConn.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and YEAR (date)=? and MONTH (date)=?");
-                myStmt.setInt(1, employeeId);
+                myStmt.setInt(1, parseInt(getEmployeeId(cookie)));
                 myStmt.setInt(2, parseInt(year));
                 myStmt.setInt(3,  parseInt(month) );
                 ResultSet rs = myStmt.executeQuery();
@@ -256,20 +262,25 @@ public class SampleController {
                 ArrayList<String> hoursList = new ArrayList<String>();
                 ArrayList<Date> dateList = new ArrayList<Date>();
                 for(int i=1;i<=31;i++){
-                    myStmt =myConn.prepareStatement("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=? ORDER BY timeId DESC limit 1");
+                    myStmt =myConn.prepareStatement("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=? ORDER BY timeId DESC limit 1");
                     myStmt.setInt(1, parseInt(year));
                     myStmt.setInt(2,  parseInt(month) );
-                    myStmt.setInt(3,  i );
+                    myStmt.setInt(3,  parseInt(getEmployeeId(cookie)) );
+                    myStmt.setInt(4,  i );
                     rsExitTime = myStmt.executeQuery();
-                    myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=?  limit 1");
+                    myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=? and employeeId=?   limit 1");
                     myStmt.setInt(1, parseInt(year));
                     myStmt.setInt(2,  parseInt(month) );
                     myStmt.setInt(3, i );
+                    myStmt.setInt(4,  parseInt(getEmployeeId(cookie)) );
+
                     rsEnterTime = myStmt.executeQuery();
-                    myStmt =myConn.prepareStatement("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=?");
+                    myStmt =myConn.prepareStatement("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=? and employeeId=? ");
                     myStmt.setInt(1, parseInt(year));
                     myStmt.setInt(2,  parseInt(month) );
                     myStmt.setInt(3, i );
+                    myStmt.setInt(4,  parseInt(getEmployeeId(cookie)) );
+
 //rsSumTime.getFloat("total") / 60) + ":" + (int) (rsSumTime.getFloat("total") % 60)
                     rsSumTime = myStmt.executeQuery();
                     if(rsSumTime.next()&&rsEnterTime.next()&&rsExitTime.next()) {
@@ -291,7 +302,7 @@ public class SampleController {
                 myStmt =myConn.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=?");
                 myStmt.setInt(1, parseInt(year));
                 myStmt.setInt(2,  parseInt(month) );
-                myStmt.setInt(3,  employeeId );
+                myStmt.setInt(3,  parseInt(getEmployeeId(cookie)) );
                 rs = myStmt.executeQuery();
                 while (rs.next()) {
                     dayListDetails.add(rs.getString("dayOfTheWeek"));
@@ -351,8 +362,8 @@ public class SampleController {
         ResultSet rs = myStmt.executeQuery();
 
         if (rs.next()) {
-            name = rs.getString("employeeName");
-            employeeId = rs.getInt("employeeId");
+           // name = rs.getString("employeeName");
+            //employeeId = rs.getInt("employeeId");
 
 
             return true;
@@ -362,14 +373,58 @@ public class SampleController {
 
     }
 
- private String generateToken(int length){
+ private String generateToken(String login){
      String text = "";
-     String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-     for (int i = 0; i < length; i++)
-         text += possible.charAt((int)(Math.floor(Math.random() * possible.length())));
-
+     for (int i = 0; i < login.length(); i++){
+         if(login.charAt(i)=='0')
+             text+="a";
+         if(login.charAt(i)=='1')
+             text+="b";
+         if(login.charAt(i)=='2')
+             text+="c";
+         if(login.charAt(i)=='3')
+             text+="d";
+         if(login.charAt(i)=='4')
+             text+="e";
+         if(login.charAt(i)=='5')
+             text+="f";
+         if(login.charAt(i)=='6')
+             text+="g";
+         if(login.charAt(i)=='7')
+             text+="h";
+         if(login.charAt(i)=='8')
+             text+="i";
+         if(login.charAt(i)=='9')
+             text+="j";
+     }
+         text += "fgmdfgfdke34932HASDBAbsahdbsaBHbBHJBbhb";
      return text;
+ }
+ private String convertToken(String token){
+        String text="";
+     for (int i = 0; i < token.length()-39; i++){
+         if(token.charAt(i)=='a')
+             text+="0";
+         if(token.charAt(i)=='b')
+             text+="1";
+         if(token.charAt(i)=='c')
+             text+="2";
+         if(token.charAt(i)=='d')
+             text+="3";
+         if(token.charAt(i)=='e')
+             text+="4";
+         if(token.charAt(i)=='f')
+             text+="5";
+         if(token.charAt(i)=='g')
+             text+="6";
+         if(token.charAt(i)=='h')
+             text+="7";
+         if(token.charAt(i)=='i')
+             text+="8";
+         if(token.charAt(i)=='j')
+             text+="9";
+     }
+        return text;
  }
     private String timeString(float minutes){
             int hoursTime= (int) (minutes/60);
@@ -379,5 +434,27 @@ public class SampleController {
             else
                 return ""+hoursTime+":"+minutesTime;
     }
-
+    private String getEmployeeId(String phone) throws SQLException {
+        String id="";
+        String employeePhone=convertToken(phone);
+        PreparedStatement statement = myConn.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+        statement.setInt(1, parseInt(employeePhone));
+        ResultSet result = statement.executeQuery();
+        while(result.next()){
+            id=result.getString("employeeId");
+            //name=result.getString("employeeName");
+        }
+        return id;
+    }
+    private int enterTime(String phone) throws SQLException {
+        int timeEnter=0;
+        PreparedStatement statement = myConn.prepareStatement("select * from test2.worktime WHERE  employeeId=? order by timeId desc limit 1; ");
+        statement.setInt(1, parseInt(getEmployeeId(phone)));
+        ResultSet result = statement.executeQuery();
+        while(result.next()){
+            timeEnter= (int) result.getFloat("enterTime");
+            //name=result.getString("employeeName");
+        }
+        return timeEnter;
+    }
 }

@@ -44,7 +44,7 @@ var flag=false;
                  alert('Exception'+exception);
              }
          });
-         debugger;
+
           location.reload();//reloads the page
      }
      else
@@ -74,7 +74,10 @@ var flag=false;
 
      }
  }
+function main() {
+    window.location.href = 'main';
 
+}
  function clearCache()
  {
      history.go(1);
