@@ -40,14 +40,14 @@ public class SampleController {
   //  private static float enter;
   //  private static float exit;
   //  private static float total;
-   // private static float enterBpressed;
+   // private static float enterBpressed;qwewqsadSAsa
    // private static int clicked;
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
 
     @PostConstruct
     public void init() throws Exception {
-        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
