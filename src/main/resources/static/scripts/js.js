@@ -1,9 +1,3 @@
-/*$(function() {
-  $('.menulink').click(function(){
-    $("#bg").attr('src',"styles/images/exit-button.png");
-  });
-});
-*/
 
 var today = new Date();//today a date object
 var entered = false;
@@ -20,7 +14,7 @@ document.getElementById("date").innerHTML = days[today.getDay()] + "<br />" + to
 function getStatus() {
     $.ajax({
         type: 'POST',
-        url: "button",
+        url: "buttonStatus",
         success: function (data) {
             entered = data;
 
@@ -45,11 +39,9 @@ function changeImage() {
             + encodeURIComponent(enterTime)
         $.ajax({
             type: 'POST',
-            url: "update",
+            url: "addWorkTime",
             data: pressed,
             success: function (data) {
-                //console.log('success',data);
-
                 $("#enterBtn").attr("src","css/images/exit-button.png");
             },
             error: function (exception) {
@@ -71,10 +63,10 @@ function changeImage() {
             + encodeURIComponent(num);
         $.ajax({
             type: 'POST',
-            url: "result",
+            url: "updateWorkTime",
             data: data,
             success: function (data) {
-                document.getElementById("hide").innerHTML += data;
+                document.getElementById("hide").innerHTML += data+"<br>";
 
             },
             error: function (exception) {
@@ -84,7 +76,6 @@ function changeImage() {
         document.getElementById("enterBtn").src = "css/images/enter-button2.png";
         entered = false;
 
-        // location.reload();//reloads the page SA
 
     }
 }
@@ -112,71 +103,7 @@ function repComment() {
     });
 }
 
-/*function cookie(){
-    var id=makeid(25);
 
-    Cookies.set('entered', id);
-    'cookie='
-    +encodeURIComponent(id);
-    $.ajax({
-        type: 'POST',
-        url:"getAlldata",
-        data: id ,
-        success:function (data) {
-            console.log('success',data);
-
-        }   ,
-        error: function (exception) {
-            alert('Exception'+exception);
-        }
-    });
-}
-function delCookie() {
-    Cookies.remove('entered');
-
-    //window.location= "http://localhost:8666/logout";
-}
-function checkCookie(){
-    if(Cookies.get('entered')==""){
-        window.location.replace("http://localhost:8666/logout");
-    }
-}
-function redirect(){
-     axios.get('http://localhost:8666/logout')
-}
-function makeid(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < length; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
-*/
-// $(document).ready(function ($) {
-//
-//     $('.black-button').on({
-//         'click': function () {
-//             $('#change-image').attr('src', 'styles/images/exit-button.png');
-//         }
-//     });
-//
-//
-// });
-//  $('#sandbox-container input').datepicker({
-//      daysOfWeekDisabled: "6",
-//      todayHighlight: true
-//  });
-//  function myFunction() {
-//      var x = document.getElementById("myDIV");
-//      if (x.style.display === "none") {
-//          x.style.display = "block";
-//      } else {
-//          x.style.display = "none";
-//      }
-//  }
 // /*----------------------------sidebar----------------------------------------------*/
 
 function openNav() {

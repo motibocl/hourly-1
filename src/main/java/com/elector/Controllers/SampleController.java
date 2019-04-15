@@ -139,7 +139,7 @@ public class SampleController {
         }
     }
 
-    @RequestMapping("/button")
+    @RequestMapping("/buttonStatus")
     public @ResponseBody boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
         ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
         if(rs.next()) {
@@ -150,8 +150,8 @@ public class SampleController {
             return false;
     }
 
-    @RequestMapping("/update")
-    public String update(Model model, @RequestParam("button") int button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
+    @RequestMapping("/addWorkTime")
+    public String addWorkTime(Model model, @RequestParam("button") int button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
         if (checkCookie(cookie)) {
             persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
             Date day = new Date();
@@ -166,8 +166,8 @@ public class SampleController {
         return "Landing_page";
     }
 
-    @RequestMapping("/home")
-    public String home(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+    @RequestMapping("/loginPage")
+    public String loginPage(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         if (checkCookie(cookie))
             return "redirect:/main";
         return "Landing_page";
@@ -175,8 +175,8 @@ public class SampleController {
 
 
     @ResponseBody
-    @RequestMapping("/result")
-    public String resultTime(Model model, @RequestParam("button") int button, @RequestParam("exitTime") float exitTime, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+    @RequestMapping("/updateWorkTime")
+    public String updateWorkTime(Model model, @RequestParam("button") int button, @RequestParam("exitTime") float exitTime, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         if (checkCookie(cookie)) {
             float exit = exitTime;
             float total = exitTime - enterTime(cookie);

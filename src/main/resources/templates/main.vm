@@ -56,8 +56,7 @@
 
 
 <div class="container-fluid ent">
-    <button class="knisa" onclick="changeImage()" method="post" action="/result"><img class="img-fluid"
-                                                                                      src=$url id="enterBtn"></button>
+    <button class="knisa" onclick="changeImage()" method="post" action="/updateWorkTime"><img class="img-fluid" src=$url id="enterBtn"></button>
 </div>
 
 <div class="container workedDay">
@@ -67,6 +66,7 @@
                 <p class="enterTime">$timeWork</p>
             #end
             <p class="enterTime" id="hide"></p>
+
         </div>
     </div>
 </div>
