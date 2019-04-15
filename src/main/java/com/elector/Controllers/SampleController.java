@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ import static java.lang.Integer.parseInt;
 
 @Controller
 @EnableAutoConfiguration
+@Configuration
+@ComponentScan("com.elector")
 
 public class SampleController {
     private static Connection dbConnection;
@@ -39,7 +43,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
