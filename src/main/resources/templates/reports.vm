@@ -129,7 +129,7 @@
         <div class="col-3-fluid">
              #foreach( $hours in $hoursWorked )
                  <div>
-            <!-- Button trigger modal -->
+            <!-- Button trigger modal  -->
                      <button type="button" class="btn  btnrep" onclick="dayDetails()" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hours</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button>
                  </div>
              #end

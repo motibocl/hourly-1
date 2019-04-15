@@ -43,7 +43,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

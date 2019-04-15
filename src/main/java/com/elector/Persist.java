@@ -405,7 +405,7 @@ public class Persist {
     }
 
 
-    public List<String> getVotersIds (int oid, boolean voters) {
+    public List<String> getVotersIds (int oid , boolean voters) {
         Query query = null;
         if (voters) {
             query = getQuerySession().createQuery("SELECT v.voterId FROM VoterObject v WHERE v.adminUserObject.oid=:oid AND deleted=FALSE").setInteger(PARAM_OID, oid);
@@ -416,7 +416,7 @@ public class Persist {
     }
               /*hourly queries*/
 public PreparedStatement connect(String sql) throws SQLException {
-        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
         return dbConnection.prepareStatement(sql);
     }
 public  void sendReason(int employeeId,String howmanyHours,String reasonText,String date) throws SQLException {

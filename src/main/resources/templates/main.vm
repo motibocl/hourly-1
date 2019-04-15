@@ -58,7 +58,7 @@
 <div class="container-fluid ent">
     <button class="knisa" onclick="changeImage()" method="post" action="/updateWorkTime"  data-target="#myModal"><img class="img-fluid" src=$url id="enterBtn"></button>
 </div>
-<!-- Modal -->
+<!-- Modal  -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content modWind">
