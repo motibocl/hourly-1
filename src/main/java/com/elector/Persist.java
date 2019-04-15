@@ -403,6 +403,7 @@ public class Persist {
         }
         return exists;
     }
+//gf
 
     public List<String> getVotersIds (int oid, boolean voters) {
         Query query = null;
