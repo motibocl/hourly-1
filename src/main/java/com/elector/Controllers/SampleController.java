@@ -128,7 +128,7 @@ public class SampleController {
             while (rs3.next()) {
                 workedThisMonth += rs3.getFloat("totalhoursWorked");
             }
-            //the string.
+            //the string .
             String timeMonth = "הזמן שעבדת החודש: " + timeString(workedThisMonth);
             model.addAttribute("timeWorkMonth", timeMonth);
 
