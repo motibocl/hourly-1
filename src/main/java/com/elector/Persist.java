@@ -403,7 +403,7 @@ public class Persist {
         }
         return exists;
     }
-//gf
+
 
     public List<String> getVotersIds (int oid, boolean voters) {
         Query query = null;
@@ -435,6 +435,10 @@ public void sendComment(int employeeId,String comment) throws SQLException {
     preparedStmt.setInt(1, employeeId);
     preparedStmt.setString(2, comment);
     preparedStmt.execute();
+    PreparedStatement myStmt= connect("update test2.worktime set comment=? where employeeId=? order by timeId DESC limit 1");
+    myStmt.setString(1, comment);
+    myStmt.setInt(2, employeeId);
+    myStmt.execute();
 }
 public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
     PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");

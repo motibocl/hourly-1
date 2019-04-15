@@ -73,6 +73,7 @@ public class SampleController {
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
     public String getCommentary(@RequestParam String commentary, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
         persist.sendComment(parseInt(getEmployeeId(cookie)),commentary);//sendin the comment
+
         return "redirect:/reports";
     }
     //our home page.
@@ -142,9 +143,9 @@ public class SampleController {
             return "error";
         }
     }
-
+    @ResponseBody
     @RequestMapping("/buttonStatus")
-    public @ResponseBody boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
+    public  boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
         ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
         if(rs.next()) {
             boolean flagTest = rs.getBoolean("enterOrExit");

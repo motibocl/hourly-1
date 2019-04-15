@@ -73,7 +73,8 @@ function changeImage() {
                 alert('Exception' + exception);
             }
         });
-        document.getElementById("enterBtn").src = "css/images/enter-button2.png";
+        $('#myModal').modal('show')
+        $("#enterBtn").attr("src","css/images/enter-button2.png");
         entered = false;
 
 
@@ -101,8 +102,10 @@ function repComment() {
             alert('Exception' + exception);
         }
     });
+
 }
 
+//-------------------------------------------------------------///
 
 // /*----------------------------sidebar----------------------------------------------*/
 
