@@ -188,6 +188,13 @@ body, html {
     margin-top: 14%;
     margin-right: -3%;
 }
+.okBtnImg2{
+    max-width: 276px;
+
+    margin-top: 14%;
+    margin-right: 34%;
+}
+
 .borColor{
     border-color: #e07640;
 }

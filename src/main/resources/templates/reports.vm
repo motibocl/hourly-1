@@ -149,10 +149,9 @@
 
                         <div>
                             <div class="form-group">
-                                <input type="text" class="form-control borColor" name="commentary" id="exampleFormControlInput1" placeholder="הסבר" >
-                                <textarea class="inpForm1" rows="4" cols="50" class="form-control" name="commentary" id="exampleFormControlInput1"></textarea>
+                                <textarea class="inpForm1" rows="4" cols="50" class="form-control" name="commentary" id="exampleFormControlInput1" placeholder="הסבר" ></textarea>
                             </div>
-                            <button type="button" onclick="repComment()" class="close" data-dismiss="modal" class="btn btn-sm okBtn"  ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"></button>
+                            <button type="button" onclick="repComment()" class="close" data-dismiss="modal" class="btn btn-sm okBtn"  ><img src="css/images/okBtn.png"class="img-fluid okBtnImg2"></button>
                         </div>
 
                     </div>
