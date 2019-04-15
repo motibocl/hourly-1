@@ -14,15 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 import static com.elector.Utils.Definitions.*;
+import static java.lang.Integer.parseInt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Created by Sigal on 5/20/2016.
@@ -408,6 +412,109 @@ public class Persist {
             query = getQuerySession().createQuery("SELECT v.voterId FROM CampaignVoterObject v WHERE v.campaignObject.oid=:oid AND deleted=FALSE").setInteger(PARAM_OID, oid);
         }
         return query.list();
+    }
+              /*hourly queries*/
+public PreparedStatement connect(String sql) throws SQLException {
+        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        return dbConnection.prepareStatement(sql);
+    }
+public  void sendReason(int employeeId,String howmanyHours,String reasonText,String date) throws SQLException {
+    String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
+    PreparedStatement preparedStmt = connect(sql);
+    preparedStmt.setInt(1,employeeId );
+    preparedStmt.setString(2, howmanyHours);
+    preparedStmt.setString(3, reasonText);
+    preparedStmt.setString(4, date);
+    preparedStmt.execute();
+}
+
+public void sendComment(int employeeId,String comment) throws SQLException {
+    String sql = "insert into comments (employeeId,comments) values (?,?)";
+    PreparedStatement preparedStmt = connect(sql);
+    preparedStmt.setInt(1, employeeId);
+    preparedStmt.setString(2, comment);
+    preparedStmt.execute();
+}
+public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
+    PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+    statement.setInt(1, parseInt(phone));
+    return statement.executeQuery();
+}
+public ResultSet selectWorkTimeMonth(int todayMonth,int todayYear,int employeeId ) throws SQLException {
+    PreparedStatement Stmt2 = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
+    Stmt2.setInt(1, employeeId);
+    Stmt2.setInt(2, todayMonth );
+    Stmt2.setInt(3, todayYear);
+    return Stmt2.executeQuery();//excuting query.
+}
+    public ResultSet selectWorkTimeByDay(int employeeId , Date today) throws SQLException {
+        PreparedStatement Stmt =connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
+        Stmt.setInt(1, employeeId);
+        Stmt.setDate(2, (java.sql.Date) today);
+        return Stmt.executeQuery();
+    }
+     public ResultSet selectEmployeeById(int employeeId) throws SQLException {
+        PreparedStatement Stmt1 = connect("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
+        Stmt1.setInt(1, employeeId);
+        return  Stmt1.executeQuery();
+    }
+public void updateButtonStatus(int button,int employeeId)throws SQLException{
+    PreparedStatement preparedStmt = connect("update test2.employee set enterOrExit=? where employeeId=? ");
+    preparedStmt.setInt(1, button);
+    preparedStmt.setInt(2, employeeId);
+    preparedStmt.execute();
+}
+    public void addWorktime(int employeeId,Float enterTime,Date today,String dayOfTheWeek)throws SQLException {
+        PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)");
+        preparedStmt2.setInt(1,employeeId);
+        preparedStmt2.setFloat(2, enterTime);
+        preparedStmt2.setFloat(3, 0);
+        preparedStmt2.setFloat(4, 0);
+        preparedStmt2.setDate(5, (java.sql.Date) today);
+        preparedStmt2.setString(6, dayOfTheWeek);
+        preparedStmt2.execute();
+    }
+
+public void updateWorktime(Float exit,Float total,int employeeId)throws SQLException{
+    PreparedStatement preparedStmt = connect(" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1") ;
+    preparedStmt.setFloat(1, exit);
+    preparedStmt.setFloat(2, total);
+    preparedStmt.setInt(3, employeeId);
+    preparedStmt.execute();
+}
+public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLException{
+    PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=? order by  timeId desc limit 1");
+    Stmt.setInt(1, employeeId);
+    Stmt.setDate(2, (java.sql.Date) today);
+    return Stmt.executeQuery();
+}
+    public ResultSet selectLastWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+        PreparedStatement myStmt = connect("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=? ORDER BY timeId DESC limit 1");
+        myStmt.setInt(1, year);
+        myStmt.setInt(2, month);
+        myStmt.setInt(3, employeeId);
+        myStmt.setInt(4, day);
+        return myStmt.executeQuery();
+    }
+
+
+    public ResultSet selectFirstWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+        PreparedStatement myStmt = connect("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and   employeeId=?  and day(date)=?   limit 1");
+        myStmt.setInt(1, year);
+        myStmt.setInt(2, month);
+        myStmt.setInt(3, employeeId);
+        myStmt.setInt(4, day);
+        return myStmt.executeQuery();
+
+    }
+
+    public ResultSet totalHoursWorkedInDay(int year,int month,int employeeId,int day)throws SQLException{
+        PreparedStatement myStmt = connect("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=? and employeeId=? ");
+        myStmt.setInt(1, year);
+        myStmt.setInt(2, month);
+        myStmt.setInt(3,day);
+        myStmt.setInt(4, employeeId);
+        return myStmt.executeQuery();
     }
 
 

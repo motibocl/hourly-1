@@ -70,7 +70,7 @@
                     <textarea class="form-control borColor"  name="text" id="exampleFormControlTextarea1" rows="3"placeholder="סיבה"></textarea>
                 </div>
                 <div class="form-group">
-                    <button type="submit" formaction="http://localhost:8666/getAlltext" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
+                    <button type="submit" formaction="http://localhost:8666/addReason" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
                 </div>
 
             </form>

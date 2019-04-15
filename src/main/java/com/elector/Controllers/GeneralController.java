@@ -31,11 +31,11 @@ public class GeneralController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralController.class);
 
-    @Autowired
+  /*  @Autowired
     private ConfigUtils configUtils;
 
     @Autowired
-    private GeneralManager generalManager;
+    private GeneralManager generalManager;*/
 
     private static final int PAGE_MAIN = 0;
     private static final int PAGE_SECOND = 1;

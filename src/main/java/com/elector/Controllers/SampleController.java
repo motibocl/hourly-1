@@ -29,16 +29,7 @@ public class SampleController {
     private static Connection dbConnection;
     private static final String SECRET_KEY = "fgmdfgfdke34932HASDBAbsahdbsaBHbBHJBbhb";
     private static final String SESSION = "foo";
-    // private static boolean loggedIn;//if logged in
-    //  private static boolean entered;//if logged in
-    // private static int counter = 0;
-    // private static String name = null;
-    //private static int employeeId;
-    //  private static float enter;
-    //  private static float exit;
-    //  private static float total;
-    // private static float enterBpressed;qwewqsadSAsaF
-    // private static int clicked;
+
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
 
@@ -51,7 +42,7 @@ public class SampleController {
         dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
-    @RequestMapping(value = "/getAlldata", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String getdata(@RequestParam String login, @RequestParam String pass, HttpServletResponse response) throws SQLException {
         if (checkCredentials(login, pass)) {//if pass and phone correct
             response.addCookie(new Cookie(SESSION, generateToken(login)));//making a cookie
@@ -66,19 +57,10 @@ public class SampleController {
         return "admin";
 
     }
-
-    @RequestMapping(value = "/getAlltext", method = RequestMethod.GET)
+     //adding reason if the employee forgot to press the enter and exit button.
+    @RequestMapping(value = "/addReason", method = RequestMethod.GET)
     public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        if (cookie.equals(""))//cheack if loged in.
-            return "Landing_page";
-        String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
-        PreparedStatement preparedStmt = dbConnection.prepareStatement(sql);
-        preparedStmt.setInt(1, parseInt(getEmployeeId(cookie)));
-        preparedStmt.setString(2, hoursWorked);
-        preparedStmt.setString(3, text);
-        preparedStmt.setString(4, reasonDate);
-        preparedStmt.execute();
-
+            persist.sendReason(parseInt(getEmployeeId(cookie)),hoursWorked, text, reasonDate);//adding reason to dataBase
         return "redirect:/main";
     }
 
@@ -86,36 +68,26 @@ public class SampleController {
     //Sending comments "What did you do today"
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
     public String getCommentary(@RequestParam String commentary, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        String sql = "insert into comments (employeeId,comments) values (?,?)";
-        PreparedStatement preparedStmt = dbConnection.prepareStatement(sql);
-        preparedStmt.setInt(1, parseInt(getEmployeeId(cookie)));
-        preparedStmt.setString(2, commentary);
-        preparedStmt.execute();
-
+        persist.sendComment(parseInt(getEmployeeId(cookie)),commentary);//sendin the comment
         return "redirect:/reports";
     }
-
+    //our home page.
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String mainp(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
-        // if (cookie.equals(""))//cheack if loged in.
+        // if (cookie.equals(""))//check if logged in.
         String phone = convertToken(cookie);
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
         try {
             String name = "";
-            PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-            statement.setInt(1, parseInt(phone));
-            ResultSet result = statement.executeQuery();
+            ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
             while (result.next()) {
                 name = result.getString("employeeName");
             }
 
             model.addAttribute("name", "ברוך הבא  " + name);//the welcome back page title.
             //getting all the working time list
-            PreparedStatement Stmt = dbConnection.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
-            Stmt.setInt(1, parseInt(getEmployeeId(cookie)));
-            Stmt.setDate(2, today);
-            ResultSet rs2 = Stmt.executeQuery();
+            ResultSet rs2 = persist.selectWorkTimeByDay(parseInt(getEmployeeId(cookie)),today);
             float workedToday = 0;
             ArrayList<String> timeWorkList = new ArrayList<String>();
             //counting how many hours the employee worked this day.
@@ -124,22 +96,22 @@ public class SampleController {
                 timeWorkList.add("זמן עבודה: " + timeString(rs2.getFloat("enterTime")) + "  ->   " + timeString(rs2.getFloat("exitTime")));
                 //adding to a list of working hours.
             }
-            PreparedStatement Stmt1 = dbConnection.prepareStatement("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
-            Stmt1.setInt(1, parseInt(getEmployeeId(cookie)));
-            ResultSet rs = Stmt1.executeQuery();
+            ResultSet rs = persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));
             boolean clicked = false;
             while (rs.next()) {
                 clicked = rs.getBoolean("enterOrExit");
             }
+            //change button image if clicked or not.
             if (!clicked) {
                 model.addAttribute("url", "css/images/enter-button2.png");
                 model.addAttribute("id", "0");
-
-
             } else {
                 model.addAttribute("url", "css/images/exit-button.png");
                 model.addAttribute("id", "1");
-                timeWorkList.remove( timeWorkList.size()-1);
+                if(timeWorkList.size()>0)
+                    timeWorkList.remove( timeWorkList.size()-1);
+               // else
+                   // timeWorkList.remove( timeWorkList.size());
             }
 
             String time = "הזמן שעבדת היום: " + timeString(workedToday);//all the time that the employee worked.
@@ -151,12 +123,7 @@ public class SampleController {
             calendar.setTime(date);
             int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
             int todayYear = calendar.get(Calendar.YEAR);//year current
-            PreparedStatement Stmt2 = dbConnection.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
-            Stmt2.setInt(1, parseInt(getEmployeeId(cookie)));
-            Stmt2.setInt(2, todayMonth + 1);//because we want the current time we add 1.
-            Stmt2.setInt(3, todayYear);
-            ResultSet rs3 = Stmt2.executeQuery();//excuting query.
-
+            ResultSet rs3 = persist.selectWorkTimeMonth(todayMonth+1,todayYear ,parseInt(getEmployeeId(cookie)) );//getting resultset for all worked time in a month.
             float workedThisMonth = 0;//count the month working time.
             while (rs3.next()) {
                 workedThisMonth += rs3.getFloat("totalhoursWorked");
@@ -171,11 +138,10 @@ public class SampleController {
             return "error";
         }
     }
+
     @RequestMapping("/button")
     public @ResponseBody boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        PreparedStatement Stmt = dbConnection.prepareStatement("select * from test2.employee WHERE employeeId=? ");
-        Stmt.setInt(1, parseInt(getEmployeeId(cookie)));
-        ResultSet rs =  Stmt.executeQuery();
+        ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
         if(rs.next()) {
             boolean flagTest = rs.getBoolean("enterOrExit");
             return flagTest;
@@ -187,30 +153,13 @@ public class SampleController {
     @RequestMapping("/update")
     public String update(Model model, @RequestParam("button") int button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
         if (checkCookie(cookie)) {
-           // JSONObject jsonObject = new JSONObject();
-            //enterBpressed=enterTime;
-
-            String sql = "update test2.employee set enterOrExit=? where employeeId=? ";
-            PreparedStatement preparedStmt = dbConnection.prepareStatement(sql);
-            preparedStmt.setInt(1, button);
-            preparedStmt.setInt(2, parseInt(getEmployeeId(cookie)));
-            preparedStmt.execute();
+            persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
             Date day = new Date();
             Calendar c = Calendar.getInstance();
             c.setTime(day);
             String[] dayOfTheWeek = {"יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "יום ז"};
-            String sql2 = "insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)";
-            PreparedStatement preparedStmt2 = dbConnection.prepareStatement(sql2);
-            preparedStmt2.setInt(1, parseInt(getEmployeeId(cookie)));
-            preparedStmt2.setFloat(2, enterTime);
-            preparedStmt2.setFloat(3, 0);
-            preparedStmt2.setFloat(4, 0);
-            preparedStmt2.setDate(5, today);
-            preparedStmt2.setString(6, dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
-            preparedStmt2.execute();
+            persist.addWorktime(parseInt(getEmployeeId(cookie)),enterTime,today,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
             model.addAttribute("url", "css/images/exit-button.png");
-          //  jsonObject.put("success", "true");
-           // return jsonObject.toString();
 
              return "redirect:/main";
         }
@@ -231,39 +180,23 @@ public class SampleController {
         if (checkCookie(cookie)) {
             float exit = exitTime;
             float total = exitTime - enterTime(cookie);
-            String sql = " update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1";
-            PreparedStatement preparedStmt = dbConnection.prepareStatement(sql);
-            preparedStmt.setFloat(1, exit);
-            preparedStmt.setFloat(2, total);
-            preparedStmt.setInt(3, parseInt(getEmployeeId(cookie)));
-            preparedStmt.execute();
-            String sql2 = "update test2.employee set enterOrExit=? where employeeId=? ";
-            PreparedStatement preparedStmt2 = dbConnection.prepareStatement(sql2);
-            preparedStmt2.setInt(1, button);
-            preparedStmt2.setInt(2, parseInt(getEmployeeId(cookie)));
-            preparedStmt2.execute();
-            ///////////////////////////////////////////////////
-            PreparedStatement Stmt = dbConnection.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=? order by  timeId desc limit 1");
-            Stmt.setInt(1, parseInt(getEmployeeId(cookie)));
-            Stmt.setDate(2, today);
-            ResultSet rs2 = Stmt.executeQuery();
+            persist.updateWorktime(exit,total,parseInt(getEmployeeId(cookie)));//updating total and exitTime.
+            persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));//updating button status.
+            ResultSet rs2 = persist.selectLastWorktime(parseInt(getEmployeeId(cookie)),today);//getting the last working time registered in the db by the user.
             float workedToday = 0;
             String workingTime="" ;
             //counting how many hours the employee worked this day.
             while (rs2.next()) {
-
                 workingTime+=("זמן עבודה: " + timeString(rs2.getFloat("enterTime")) + "  ->   " + timeString(rs2.getFloat("exitTime"))+"</br>");
                 //adding to a list of working hours.
             }
             return workingTime;
         }
-
         return "Landing_page";
     }
 
     @RequestMapping("/logout")
     public String logout(Model model, HttpServletResponse response) throws Exception {
-        //loggedIn = false;
         Cookie cookie = new Cookie(SESSION, null);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
@@ -280,11 +213,7 @@ public class SampleController {
             return "Landing_page";
         try {
             if (!month.equals("") && !year.equals("")) {
-                PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.worktime WHERE test2.worktime.employeeId=? and YEAR (date)=? and MONTH (date)=?");
-                myStmt.setInt(1, parseInt(getEmployeeId(cookie)));
-                myStmt.setInt(2, parseInt(year));
-                myStmt.setInt(3, parseInt(month));
-                ResultSet rs = myStmt.executeQuery();
+                ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(getEmployeeId(cookie)));
                 ResultSet rsExitTime;
                 ResultSet rsEnterTime;
                 ResultSet rsSumTime;
@@ -294,28 +223,11 @@ public class SampleController {
                 ArrayList<String> hoursList = new ArrayList<String>();
                 ArrayList<Date> dateList = new ArrayList<Date>();
                 for (int i = 1; i <= 31; i++) {
-                    myStmt = dbConnection.prepareStatement("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=? ORDER BY timeId DESC limit 1");
-                    myStmt.setInt(1, parseInt(year));
-                    myStmt.setInt(2, parseInt(month));
-                    myStmt.setInt(3, parseInt(getEmployeeId(cookie)));
-                    myStmt.setInt(4, i);
-                    rsExitTime = myStmt.executeQuery();
-                    myStmt = dbConnection.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and    day(date)=? and employeeId=?   limit 1");
-                    myStmt.setInt(1, parseInt(year));
-                    myStmt.setInt(2, parseInt(month));
-                    myStmt.setInt(3, i);
-                    myStmt.setInt(4, parseInt(getEmployeeId(cookie)));
+                    rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the last worktime in a day.
+                    rsEnterTime = persist.selectFirstWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the first worktime in a day.;
+                    rsSumTime = persist.totalHoursWorkedInDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the total time worked in a day.
 
-                    rsEnterTime = myStmt.executeQuery();
-                    myStmt = dbConnection.prepareStatement("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=? and employeeId=? ");
-                    myStmt.setInt(1, parseInt(year));
-                    myStmt.setInt(2, parseInt(month));
-                    myStmt.setInt(3, i);
-                    myStmt.setInt(4, parseInt(getEmployeeId(cookie)));
-
-//rsSumTime.getFloat("total") / 60) + ":" + (int) (rsSumTime.getFloat("total") % 60)
-                    rsSumTime = myStmt.executeQuery();
-                    if (rsSumTime.next() && rsEnterTime.next() && rsExitTime.next()) {
+                    if (rsSumTime.next() && rsEnterTime.next()&& rsExitTime.next()) {
                         dayList.add(rsEnterTime.getString("dayOfTheWeek"));
                         hoursWorked.add(timeString(rsSumTime.getFloat("total")));
                         hoursList.add(timeString(rsEnterTime.getFloat("enterTime")) + "   ->   " + timeString(rsExitTime.getFloat("exitTime")));
@@ -331,11 +243,8 @@ public class SampleController {
                 ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
                 ArrayList<String> hoursListDetails = new ArrayList<String>();
                 ArrayList<Date> dateListDetails = new ArrayList<Date>();
-                myStmt = dbConnection.prepareStatement("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=?");
-                myStmt.setInt(1, parseInt(year));
-                myStmt.setInt(2, parseInt(month));
-                myStmt.setInt(3, parseInt(getEmployeeId(cookie)));
-                rs = myStmt.executeQuery();
+
+                rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(getEmployeeId(cookie)));
                 while (rs.next()) {
                     dayListDetails.add(rs.getString("dayOfTheWeek"));
                     hoursListDetails.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
@@ -365,10 +274,10 @@ public class SampleController {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleController.class, args);
-        delete(2);
+       // delete(2);//delete all comment of employee test
     }
-
-    public static void delete(int employeeId) throws Exception {
+//test
+  /*  public static void delete(int employeeId) throws Exception {
         String sqlDel = "delete from test2.comments where employeeId=?";
         PreparedStatement preparedStmt = dbConnection.prepareStatement(sqlDel);
         preparedStmt.setInt(1, employeeId);
@@ -379,7 +288,7 @@ public class SampleController {
         preparedStmt.executeQuery();
 
     }
-
+*/
     //iliya said to add try catch final.
     private static boolean checkCredentials(String login, String pass) throws SQLException {
         PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
