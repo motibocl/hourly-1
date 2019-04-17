@@ -10,6 +10,7 @@ days[4] = "יום חמישי,";
 days[5] = "יום שישי,";
 days[6] = "יום שבת,";
 document.getElementById("date").innerHTML = days[today.getDay()] + "<br />" + today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
+document.getElementById("showTime").innerHTML = today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
 
 function getStatus() {
     $.ajax({

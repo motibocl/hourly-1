@@ -36,14 +36,14 @@ public class SampleController {
 
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());
-
+//
 
     @Autowired
     private Persist persist;
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

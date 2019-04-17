@@ -28,7 +28,7 @@
                     <a href="reports.vm"><h4 class=" nav">דוחות נוכחות</h4></a>
                     <a href="special_report.vm"><h4 class="nav">דיווח מיוחד</h4></a>
                     <a href="http://localhost:8666/logout"><h4 class="nav">התנתק</h4></a>
-                    <div class="version">7.4.2019</div>
+                    <div class="version" id="showTime"></div>
                 </div>
             </div>
         </div>
