@@ -28,11 +28,10 @@
                     <a href="reports.vm"><h4 class=" nav">דוחות נוכחות</h4></a>
                     <a href="special_report.vm"><h4 class="nav">דיווח מיוחד</h4></a>
                     <a href="http://localhost:8666/logout"><h4 class="nav">התנתק</h4></a>
-                    <div class="version" id="showTime"></div>
+                    <div class="version">17.4.2019</div>
                 </div>
             </div>
         </div>
-
         <div class="col-6 page1Logo">
             <img onclick="main()" src="css/images/Logo-second.png" class="img-fluid mainLogo">
         </div>

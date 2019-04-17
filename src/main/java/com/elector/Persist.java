@@ -416,7 +416,7 @@ public class Persist {
     }
               /*hourly queries*/
 public PreparedStatement connect(String sql) throws SQLException {
-        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
         return dbConnection.prepareStatement(sql);
     }
 public  void sendReason(int employeeId,String howmanyHours,String reasonText,String date) throws SQLException {
@@ -501,7 +501,14 @@ public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLExceptio
         myStmt.setInt(4, day);
         return myStmt.executeQuery();
     }
-
+    public ResultSet selectWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+        PreparedStatement myStmt = connect("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=?");
+        myStmt.setInt(1, year);
+        myStmt.setInt(2, month);
+        myStmt.setInt(3, employeeId);
+        myStmt.setInt(4, day);
+        return myStmt.executeQuery();
+    }
 
     public ResultSet selectFirstWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
         PreparedStatement myStmt = connect("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and   employeeId=?  and day(date)=?   limit 1");

@@ -25,7 +25,7 @@
                     <a href="reports.vm">    <div class="glyphicon glyphicon-envelope"></div>    <h4 class=" nav">דוחות נוכחות</h4></a>
                     <a href="special_report.vm"><h4 class="nav">דיווח מיוחד</h4></a>
                     <a href="http://localhost:8666/logout"><h4 class="nav">התנתק</h4></a>
-                    <div class="version">7.4.2019</div>
+                    <div class="version">17.4.2019</div>
                 </div>
             </div>
         </div>
@@ -98,42 +98,55 @@
 <div class="container " >
     <div class="row rowBorder">
 
+<table>
+    #set($end =$days.size())
+    #set($stop = $end - 1)
+    #if($stop)
+
+    #foreach($i in [0..$stop])
+<tr>
 ##        1. day
-        <div class="col-3 infCol">
-            #foreach( $day in $days )
-         <p class="inf">$day</p>
-            #end
-        </div>
+       ## <div class="col-3 infCol">
+         ##   #foreach( $day in $days )
+        <td> <p class="inf">$days.get($i)</p></td>
+        ##    #end
+     ##   </div>
 
 ##    2 hours
-        <div class="col-3-fluid">
-             #foreach( $hour in $hours )
+      ##  <div class="col-3-fluid">
+           ##  #foreach( $hour in $hours )
 
-    <p class="inf">$hour</p>
+   <td> <p class="inf">$hours.get($i)</p></td>
 
-            #end
-        </div>
+         ##   #end
+        ##</div>
 
 ##    3. date
-        <div class="col-3-fluid">
-            #foreach( $date in $dateWorked )
+    ##  <div class="col-3-fluid">
+          ##  #foreach( $date in $dateWorked )
 
-            <p class="inf">$date</p>
-                #end
+          <td>  <p class="inf">$dateWorked.get($i)</p></td>
+               ## #end
 
-        </div>
+    ##    </div>
 
 ##        <div class="col-2 infCol ">
 
 ##    4. hours
-        <div class="col-3-fluid">
-             #foreach( $hours in $hoursWorked )
-                 <div>
+     ##   <div class="col-3-fluid">
+##      #foreach( $hours in $hoursWorked )
+               ##  <div>
             <!-- Button trigger modal  -->
-                     <button type="button" class="btn  btnrep" onclick="dayDetails()" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hours</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button>
-                 </div>
-             #end
-        </div>
+                 <td>    <button type="button" class="btn  btnrep" onclick="dayDetails(id)" id="$dateWorked.get($i)" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hoursWorked.get($i)</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button></td>
+                ## </div>
+##   #end
+
+</tr>
+    #end
+    #end
+</table>
+    </div>
+</div>
 
             <!-- Modal for the details -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -142,7 +155,7 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLongTitle"></h5>
                             <p2>פירוט זמני עבודה</p2>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -152,36 +165,37 @@
                             <div class="form-group">
                                 <div class="container " >
                                     <div class="row rowBorder">
+
                                         <div class="col-3 infCol">
-                                            #foreach( $dayDetail in $daysDetails )
-                                                <p class="inf">$dayDetail</p>
-                                            #end
+
+                                                <p class="inf" id="daylist"></p>
+
                                         </div>
                                         <div class="col-3-fluid">
-                                            #foreach( $hourDetail in $hoursDetails )
+                                         ##   #foreach( $hourDetail in $hoursDetails )
 
-                                                <p class="inf">$hourDetail</p>
+                                                <p class="inf" id="hourDetail"></p>
 
-                                            #end
+                                          ##  #end
                                         </div>
                                         <div class="col-3-fluid">
-                                            #foreach( $dateDetail in $dateWorkedDetails )
+                                        ##   #foreach( $dateDetail in $dateWorkedDetails )
 
-                                                <p class="inf">$dateDetail</p>
-                                            #end
+                                                <p class="inf" id="dateDetail"></p>
+                                        ##    #end
 
                                         </div>
                                         <div class="col-2 infCol ">
 
                                             <div class="col-3-fluid">
-                                                #foreach( $hoursDetail in $hoursWorkedDetails )
-                                                    <p class="inf">$hoursDetail</p>
-                                                #end
+                                             ##   #foreach( $hoursDetail in $hoursWorkedDetails )
+                                                    <p class="inf" id="hoursWorkedDetails"></p>
+                                               ## #end
 
 
                                             </div>
                             </div>
-                            <button type="button" class="close" data-dismiss="modal"  ><img src="css/images/okBtn.png"class="img-fluid okBtnImg ok"></button>
+                            <button type="button" class="close" data-dismiss="modal"><img src="css/images/okBtn.png"class="img-fluid okBtnImg ok"></button>
                         </div>
 
                     </div>

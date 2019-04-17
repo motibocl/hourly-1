@@ -2,7 +2,6 @@ package com.elector.Controllers;
 
 
 import com.elector.Persist;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "Elector2019");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -210,6 +210,49 @@ public class SampleController {
 
         return "Landing_page";
     }
+    //this function is gettin the date throw js and returnning list with all the info about all the clickes in the same day.
+    @ResponseBody
+    @RequestMapping("/workTimeDetails")
+    public ArrayList<ArrayList<String>> workTimeDetails(Model model, @RequestParam("date")String date, @CookieValue(value = SESSION, defaultValue = "") String cookie)throws Exception{
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateInString = date;
+        Date dateChoosed = formatter.parse(dateInString);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateChoosed);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        ArrayList<String> dayListDetails = new ArrayList<String>();
+        ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
+        ArrayList<String> hoursListDetails = new ArrayList<String>();
+        ArrayList<String> dateListDetails = new ArrayList<>();
+        ResultSet rs=persist.selectWorktimeDay(year,month+1,parseInt(getEmployeeId(cookie)),day);
+        while (rs.next()) {
+            dayListDetails.add(rs.getString("dayOfTheWeek"));
+            hoursListDetails.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
+            hoursWorkedDetails.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
+            dateListDetails.add(formatter.format(rs.getDate("date")));
+        }
+        ArrayList<ArrayList<String> > aList = new ArrayList<ArrayList<String>>();
+        aList.add(dayListDetails);
+        aList.add(hoursWorkedDetails);
+        aList.add(hoursListDetails);
+        aList.add(dateListDetails);
+
+        //for the details
+       // model.addAttribute("daysDetails", dayListDetails);
+       // model.addAttribute("hoursDetails", hoursListDetails);
+      //  model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
+       // model.addAttribute("dateWorkedDetails", dateListDetails);
+
+
+        return  aList;
+    }
+
+
+   // @RequestMapping("/reports")
+   // public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "daysDetails",defaultValue ="" )ArrayList<String> daysDetails,@RequestParam(value = "hoursDetails",defaultValue ="" )ArrayList<String> hoursDetails,@RequestParam(value = "hoursWorkedDetails",defaultValue ="" )ArrayList<String> hoursWorkedDetails,@RequestParam(value = "dateWorkedDetails",defaultValue ="" )ArrayList<String> dateWorkedDetails) throws Exception {
+
 
     @RequestMapping("/reports")
     public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year) throws Exception {
@@ -227,6 +270,7 @@ public class SampleController {
                 ArrayList<String> hoursWorked = new ArrayList<String>();
                 ArrayList<String> hoursList = new ArrayList<String>();
                 ArrayList<Date> dateList = new ArrayList<Date>();
+
                 for (int i = 1; i <= 31; i++) {
                     rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the last worktime in a day.
                     rsEnterTime = persist.selectFirstWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the first worktime in a day.;
@@ -237,14 +281,16 @@ public class SampleController {
                         hoursWorked.add(timeString(rsSumTime.getFloat("total")));
                         hoursList.add(timeString(rsEnterTime.getFloat("enterTime")) + "   ->   " + timeString(rsExitTime.getFloat("exitTime")));
                         dateList.add(rsEnterTime.getDate("date"));
+
                     }
                 }
                 model.addAttribute("days", dayList);
                 model.addAttribute("hours", hoursList);
                 model.addAttribute("hoursWorked", hoursWorked);
                 model.addAttribute("dateWorked", dateList);
+
                 /*this is queris for the details modal*/
-                ArrayList<String> dayListDetails = new ArrayList<String>();
+             /*   ArrayList<String> dayListDetails = new ArrayList<String>();
                 ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
                 ArrayList<String> hoursListDetails = new ArrayList<String>();
                 ArrayList<Date> dateListDetails = new ArrayList<Date>();
@@ -256,12 +302,13 @@ public class SampleController {
                     hoursWorkedDetails.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
                     dateListDetails.add(rs.getDate("date"));
                 }
-
+*/
                 //for the details
-                model.addAttribute("daysDetails", dayListDetails);
-                model.addAttribute("hoursDetails", hoursListDetails);
-                model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
-                model.addAttribute("dateWorkedDetails", dateListDetails);
+
+              // model.addAttribute("daysDetails",daysDetails);
+              // model.addAttribute("hoursDetails", hoursDetails);
+              // model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
+              // model.addAttribute("dateWorkedDetails", dateWorkedDetails);
             }
             return "reports";
         } catch (Exception exc) {

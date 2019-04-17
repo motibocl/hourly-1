@@ -1,6 +1,7 @@
 
 var today = new Date();//today a date object
 var entered = false;
+//var modalPressed=false;//for clearing
 var days = [];
 days[0] = "יום ראשון,";//in index 0
 days[1] = "יום שני,";//in index 1 becouse 0 place isnt empty
@@ -74,15 +75,52 @@ function changeImage() {
                 alert('Exception' + exception);
             }
         });
-        $('#myModal').modal('show')
+        $('#myModal').modal('show');
         $("#enterBtn").attr("src","css/images/enter-button2.png");
         entered = false;
 
 
     }
 }
+//sanding the clicked date and getting array lists of the information.
+function dayDetails(date) {
+    var data='date='
+    +encodeURIComponent(date);
+    $.ajax({
+        type: 'POST',
+        url: "workTimeDetails",
+        data: data,
+        success: function (data) {
+               //clearing old data .
+                $("#daylist").empty();
+                $("#hourDetail").empty();
+                $("#dateDetail").empty();
+                $("#hoursWorkedDetails").empty();
+            //getting lists.
+            var dayList=data[0];
+            for(var i=0;i<dayList.length;i++) {
+                document.getElementById("daylist").innerHTML += dayList[i] + "<br>";
+            }
+            var hourDetail=data[2];
+            for(var i=0;i<hourDetail.length;i++) {
+                document.getElementById("hourDetail").innerHTML += hourDetail[i] + "<br>";
+            }
+            var dateDetail=data[3];
+            for(var i=0;i<dateDetail.length;i++) {
+                document.getElementById("dateDetail").innerHTML += dateDetail[i] + "<br>";
+            }
+            var hoursWorkedDetails=data[1];
+            for(var i=0;i<hoursWorkedDetails.length;i++) {
+                document.getElementById("hoursWorkedDetails").innerHTML += hoursWorkedDetails[i] + "<br>";
+            }
 
 
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+}
 function clearCache() {
     history.go(1);
 }
@@ -105,8 +143,6 @@ function repComment() {
     });
 
 }
-
-//----------- --------------------------------------------------///
 
 // /*----------------------------sidebar----------------------------------------------*/
 
