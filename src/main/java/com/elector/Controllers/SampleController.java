@@ -115,8 +115,7 @@ public class SampleController {
                 model.addAttribute("id", "1");
                 if(timeWorkList.size()>0)
                     timeWorkList.remove( timeWorkList.size()-1);
-               // else
-                   // timeWorkList.remove( timeWorkList.size());
+
             }
 
             String time = "הזמן שעבדת היום: " + timeString(workedToday);//all the time that the employee worked.
@@ -188,13 +187,13 @@ public class SampleController {
             persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));//updating button status.
             ResultSet rs2 = persist.selectLastWorktime(parseInt(getEmployeeId(cookie)),today);//getting the last working time registered in the db by the user.
             float workedToday = 0;
-            String workingTime="" ;
+            StringBuilder workingTime= new StringBuilder();
             //counting how many hours the employee worked this day.
             while (rs2.next()) {
-                workingTime+=("זמן עבודה: " + timeString(rs2.getFloat("enterTime")) + "  ->   " + timeString(rs2.getFloat("exitTime"))+"</br>");
+                workingTime.append("זמן עבודה: ").append(timeString(rs2.getFloat("enterTime"))).append("  ->   ").append(timeString(rs2.getFloat("exitTime"))).append("</br>");
                 //adding to a list of working hours.
             }
-            return workingTime;
+            return workingTime.toString();
         }
         return "Landing_page";
     }
@@ -232,26 +231,13 @@ public class SampleController {
             hoursWorkedDetails.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
             dateListDetails.add(formatter.format(rs.getDate("date")));
         }
-        ArrayList<ArrayList<String> > aList = new ArrayList<ArrayList<String>>();
-        aList.add(dayListDetails);
-        aList.add(hoursWorkedDetails);
-        aList.add(hoursListDetails);
-        aList.add(dateListDetails);
-
-        //for the details
-       // model.addAttribute("daysDetails", dayListDetails);
-       // model.addAttribute("hoursDetails", hoursListDetails);
-      //  model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
-       // model.addAttribute("dateWorkedDetails", dateListDetails);
-
-
-        return  aList;
+        ArrayList<ArrayList<String> > worktimeList = new ArrayList<ArrayList<String>>();
+        worktimeList.add(dayListDetails);
+        worktimeList.add(hoursWorkedDetails);
+        worktimeList.add(hoursListDetails);
+        worktimeList.add(dateListDetails);
+        return  worktimeList;
     }
-
-
-   // @RequestMapping("/reports")
-   // public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "daysDetails",defaultValue ="" )ArrayList<String> daysDetails,@RequestParam(value = "hoursDetails",defaultValue ="" )ArrayList<String> hoursDetails,@RequestParam(value = "hoursWorkedDetails",defaultValue ="" )ArrayList<String> hoursWorkedDetails,@RequestParam(value = "dateWorkedDetails",defaultValue ="" )ArrayList<String> dateWorkedDetails) throws Exception {
-
 
     @RequestMapping("/reports")
     public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year) throws Exception {
@@ -340,7 +326,6 @@ public class SampleController {
 
     }
 */
-    //iliya said to add try catch final.
     private static boolean checkCredentials(String login, String pass) throws SQLException {
         PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
         try {
@@ -350,11 +335,7 @@ public class SampleController {
             return false;
         }
         ResultSet rs = myStmt.executeQuery();
-
-        if (rs.next()) {
-            return true;
-        }
-        return false;
+        return rs.next() ;
     }
 
     private String generateToken(String login) {
@@ -419,11 +400,7 @@ public class SampleController {
         PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
         statement.setInt(1, parseInt(convertToken(cookie)));
         ResultSet result = statement.executeQuery();
-        if (result.next())
-            return true;
-        else
-            return false;
-
+        return result.next();
     }
 
     private String timeString(float minutes) {
