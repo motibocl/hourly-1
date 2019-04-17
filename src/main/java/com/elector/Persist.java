@@ -39,17 +39,24 @@ public class Persist {
     private static final Logger LOGGER = LoggerFactory.getLogger(Persist.class);
 
     private SessionFactory sessionFactory;
+    private Connection dbConnection;
 
     @Autowired
     public Persist(SessionFactory sf) {
         this.sessionFactory = sf;
     }
 
+    @PostConstruct
+    private void init () throws Exception {
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+
+    }
+
     public Session getQuerySession() {
         return sessionFactory.getCurrentSession();
     }
 
-    public List<String> getDbClasses () {
+    public List<String> getDbClasses() {
         return new ArrayList<>(sessionFactory.getAllClassMetadata().keySet());
     }
 
@@ -185,7 +192,7 @@ public class Persist {
         return stats;
     }
 
-    public Map<Integer, LinkedHashMap<Integer, Integer>>  getActivistsDataMap (boolean today) {
+    public Map<Integer, LinkedHashMap<Integer, Integer>> getActivistsDataMap(boolean today) {
         Map<Integer, LinkedHashMap<Integer, Integer>> activistsDataMap = new LinkedHashMap<>();
         List<Object[]> rawData = (getQuerySession().createSQLQuery(
                 String.format("SELECT " +
@@ -207,7 +214,7 @@ public class Persist {
         return activistsDataMap;
     }
 
-    public Map<Integer, LinkedHashMap<Integer, Integer>>  activistsDataFromYesterday () {
+    public Map<Integer, LinkedHashMap<Integer, Integer>> activistsDataFromYesterday() {
         Map<Integer, LinkedHashMap<Integer, Integer>> activistsDataMap = new LinkedHashMap<>();
         List<Object[]> rawData = (getQuerySession().createSQLQuery("SELECT " +
                 "  admin_user_oid, " +
@@ -226,7 +233,7 @@ public class Persist {
         return activistsDataMap;
     }
 
-    public Map<Integer, LinkedHashMap<Integer, Integer>>  activistsSupportStats (boolean onlyYesterday) {
+    public Map<Integer, LinkedHashMap<Integer, Integer>> activistsSupportStats(boolean onlyYesterday) {
         Map<Integer, LinkedHashMap<Integer, Integer>> activistsDataMap = new LinkedHashMap<>();
         List<Object[]> rawData = (getQuerySession().createSQLQuery(
                 String.format(
@@ -392,7 +399,7 @@ public class Persist {
         for (String table : tables) {
             int count = ((BigInteger) (
                     getQuerySession().createSQLQuery(
-                    String.format("SELECT COUNT(*) FROM %s WHERE phone=:phone", table))
+                            String.format("SELECT COUNT(*) FROM %s WHERE phone=:phone", table))
                             .setString(PARAM_PHONE, phone)
                             .uniqueResult()))
                     .intValue();
@@ -405,7 +412,7 @@ public class Persist {
     }
 
 
-    public List<String> getVotersIds (int oid , boolean voters) {
+    public List<String> getVotersIds(int oid, boolean voters) {
         Query query = null;
         if (voters) {
             query = getQuerySession().createQuery("SELECT v.voterId FROM VoterObject v WHERE v.adminUserObject.oid=:oid AND deleted=FALSE").setInteger(PARAM_OID, oid);
@@ -414,64 +421,71 @@ public class Persist {
         }
         return query.list();
     }
-              /*hourly queries*/
-public PreparedStatement connect(String sql) throws SQLException {
-        Connection dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+
+    /*hourly queries*/
+    public PreparedStatement connect(String sql) throws SQLException {
         return dbConnection.prepareStatement(sql);
-    }
-public  void sendReason(int employeeId,String howmanyHours,String reasonText,String date) throws SQLException {
-    String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
-    PreparedStatement preparedStmt = connect(sql);
-    preparedStmt.setInt(1,employeeId );
-    preparedStmt.setString(2, howmanyHours);
-    preparedStmt.setString(3, reasonText);
-    preparedStmt.setString(4, date);
-    preparedStmt.execute();
 }
 
-public void sendComment(int employeeId,String comment) throws SQLException {
-    String sql = "insert into comments (employeeId,comments) values (?,?)";
-    PreparedStatement preparedStmt = connect(sql);
-    preparedStmt.setInt(1, employeeId);
-    preparedStmt.setString(2, comment);
-    preparedStmt.execute();
-    PreparedStatement myStmt= connect("update test2.worktime set comment=? where employeeId=? order by timeId DESC limit 1");
-    myStmt.setString(1, comment);
-    myStmt.setInt(2, employeeId);
-    myStmt.execute();
-}
-public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
-    PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-    statement.setInt(1, parseInt(phone));
-    return statement.executeQuery();
-}
-public ResultSet selectWorkTimeMonth(int todayMonth,int todayYear,int employeeId ) throws SQLException {
-    PreparedStatement Stmt2 = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
-    Stmt2.setInt(1, employeeId);
-    Stmt2.setInt(2, todayMonth );
-    Stmt2.setInt(3, todayYear);
-    return Stmt2.executeQuery();//excuting query.
-}
-    public ResultSet selectWorkTimeByDay(int employeeId , Date today) throws SQLException {
-        PreparedStatement Stmt =connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
+    public void sendReason(int employeeId, String howmanyHours, String reasonText, String date) throws SQLException {
+        String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
+        PreparedStatement preparedStmt = connect(sql);
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setString(2, howmanyHours);
+        preparedStmt.setString(3, reasonText);
+        preparedStmt.setString(4, date);
+        preparedStmt.execute();
+    }
+
+    public void sendComment(int employeeId, String comment) throws SQLException {
+        String sql = "insert into comments (employeeId,comments) values (?,?)";
+        PreparedStatement preparedStmt = connect(sql);
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setString(2, comment);
+        preparedStmt.execute();
+        PreparedStatement myStmt = connect("update test2.worktime set comment=? where employeeId=? order by timeId DESC limit 1");
+        myStmt.setString(1, comment);
+        myStmt.setInt(2, employeeId);
+        myStmt.execute();
+    }
+
+    public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
+        PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+        statement.setInt(1, parseInt(phone));
+        return statement.executeQuery();
+    }
+
+    public ResultSet selectWorkTimeMonth(int todayMonth, int todayYear, int employeeId) throws SQLException {
+        PreparedStatement Stmt2 = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
+        Stmt2.setInt(1, employeeId);
+        Stmt2.setInt(2, todayMonth);
+        Stmt2.setInt(3, todayYear);
+        return Stmt2.executeQuery();//excuting query.
+    }
+
+    public ResultSet selectWorkTimeByDay(int employeeId, Date today) throws SQLException {
+        PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
         Stmt.setInt(1, employeeId);
         Stmt.setDate(2, (java.sql.Date) today);
         return Stmt.executeQuery();
     }
-     public ResultSet selectEmployeeById(int employeeId) throws SQLException {
+
+    public ResultSet selectEmployeeById(int employeeId) throws SQLException {
         PreparedStatement Stmt1 = connect("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
         Stmt1.setInt(1, employeeId);
-        return  Stmt1.executeQuery();
+        return Stmt1.executeQuery();
     }
-public void updateButtonStatus(int button,int employeeId)throws SQLException{
-    PreparedStatement preparedStmt = connect("update test2.employee set enterOrExit=? where employeeId=? ");
-    preparedStmt.setInt(1, button);
-    preparedStmt.setInt(2, employeeId);
-    preparedStmt.execute();
-}
-    public void addWorktime(int employeeId,Float enterTime,Date today,String dayOfTheWeek)throws SQLException {
+
+    public void updateButtonStatus(int button, int employeeId) throws SQLException {
+        PreparedStatement preparedStmt = connect("update test2.employee set enterOrExit=? where employeeId=? ");
+        preparedStmt.setInt(1, button);
+        preparedStmt.setInt(2, employeeId);
+        preparedStmt.execute();
+    }
+
+    public void addWorktime(int employeeId, Float enterTime, Date today, String dayOfTheWeek) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)");
-        preparedStmt2.setInt(1,employeeId);
+        preparedStmt2.setInt(1, employeeId);
         preparedStmt2.setFloat(2, enterTime);
         preparedStmt2.setFloat(3, 0);
         preparedStmt2.setFloat(4, 0);
@@ -480,20 +494,22 @@ public void updateButtonStatus(int button,int employeeId)throws SQLException{
         preparedStmt2.execute();
     }
 
-public void updateWorktime(Float exit,Float total,int employeeId)throws SQLException{
-    PreparedStatement preparedStmt = connect(" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1") ;
-    preparedStmt.setFloat(1, exit);
-    preparedStmt.setFloat(2, total);
-    preparedStmt.setInt(3, employeeId);
-    preparedStmt.execute();
-}
-public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLException{
-    PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=? order by  timeId desc limit 1");
-    Stmt.setInt(1, employeeId);
-    Stmt.setDate(2, (java.sql.Date) today);
-    return Stmt.executeQuery();
-}
-    public ResultSet selectLastWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+    public void updateWorktime(Float exit, Float total, int employeeId) throws SQLException {
+        PreparedStatement preparedStmt = connect(" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1");
+        preparedStmt.setFloat(1, exit);
+        preparedStmt.setFloat(2, total);
+        preparedStmt.setInt(3, employeeId);
+        preparedStmt.execute();
+    }
+
+    public ResultSet selectLastWorktime(int employeeId, Date today) throws SQLException {
+        PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=? order by  timeId desc limit 1");
+        Stmt.setInt(1, employeeId);
+        Stmt.setDate(2, (java.sql.Date) today);
+        return Stmt.executeQuery();
+    }
+
+    public ResultSet selectLastWorktimeDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=? ORDER BY timeId DESC limit 1");
         myStmt.setInt(1, year);
         myStmt.setInt(2, month);
@@ -501,7 +517,8 @@ public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLExceptio
         myStmt.setInt(4, day);
         return myStmt.executeQuery();
     }
-    public ResultSet selectWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+
+    public ResultSet selectWorktimeDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=?");
         myStmt.setInt(1, year);
         myStmt.setInt(2, month);
@@ -510,7 +527,7 @@ public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLExceptio
         return myStmt.executeQuery();
     }
 
-    public ResultSet selectFirstWorktimeDay(int year,int month,int employeeId,int day)throws SQLException {
+    public ResultSet selectFirstWorktimeDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT * FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and   employeeId=?  and day(date)=?   limit 1");
         myStmt.setInt(1, year);
         myStmt.setInt(2, month);
@@ -520,16 +537,14 @@ public ResultSet selectLastWorktime(int employeeId,Date today)throws SQLExceptio
 
     }
 
-    public ResultSet totalHoursWorkedInDay(int year,int month,int employeeId,int day)throws SQLException{
+    public ResultSet totalHoursWorkedInDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=? and employeeId=? ");
         myStmt.setInt(1, year);
         myStmt.setInt(2, month);
-        myStmt.setInt(3,day);
+        myStmt.setInt(3, day);
         myStmt.setInt(4, employeeId);
         return myStmt.executeQuery();
     }
-
-
 
 
 }

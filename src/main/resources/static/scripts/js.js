@@ -1,7 +1,6 @@
 
 var today = new Date();//today a date object
 var entered = false;
-//var modalPressed=false;//for clearing
 var days = [];
 days[0] = "יום ראשון,";//in index 0
 days[1] = "יום שני,";//in index 1 becouse 0 place isnt empty
@@ -156,7 +155,7 @@ function closeNav() {
 }
 
 /*----------------------------------logo-----------------------------------------*/
-function main() {
+function returnToMainPage() {
     window.location.replace("main");
 
 }
