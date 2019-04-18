@@ -9,8 +9,11 @@
     <title>Hourly|main</title>
 </head>
 <body id="page1" onload="clearCache();getStatus()">
+    #if($admin)
+        #parse("adminNav.vm")
+    #{else}
     #parse("header.vm")
-
+   #end
 <p class="spring">$name</p>
 <div class="container timeEnter">
     <div class="row">

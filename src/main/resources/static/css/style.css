@@ -232,9 +232,14 @@ body, html {
 }
 .ok{
     width: 191px;
+    margin: auto;
+
 }
 
-
+.midlle{
+    width: 100%;
+    text-align: center;
+}
 /*------------------------Modal---------------*/
 .modWind {
     width: 478px;
@@ -316,4 +321,8 @@ body, html {
     color: #1d1f31;
     opacity: .6;
     font-size: 12px;
+}
+/*----------------------------------administration-------------------------------*/
+.addEmp{
+    text-align: center;
 }

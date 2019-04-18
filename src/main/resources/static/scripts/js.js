@@ -82,9 +82,11 @@ function changeImage() {
     }
 }
 //sanding the clicked date and getting array lists of the information.
-function dayDetails(date) {
+function dayDetails(date,empId) {
     var data='date='
-    +encodeURIComponent(date);
+    +encodeURIComponent(date)
+    +'&id='
+    +encodeURIComponent(empId);
     $.ajax({
         type: 'POST',
         url: "workTimeDetails",

@@ -545,6 +545,27 @@ public class Persist {
         myStmt.setInt(4, employeeId);
         return myStmt.executeQuery();
     }
+    public ResultSet selectEmployee( int employeeId) throws SQLException {
+        PreparedStatement myStmt = connect("SELECT * from employee where employeeId=? ");
+        myStmt.setInt(1, employeeId);
+        return myStmt.executeQuery();
+    }
+    public void addEmployee(int employeeId,String employeeName,int employeePhone,String employeePassword) throws SQLException {
+        PreparedStatement preparedStmt = connect("insert into employee (employeeId,employeeName,employeePhone,employeePassword,isAdmin,companyId,enterOrExit) values (?,?,?,?,?,?,?)");
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.setString(2, employeeName);
+        preparedStmt.setInt(3, employeePhone);
+        preparedStmt.setString(4, employeePassword);
+        preparedStmt.setBoolean(5, false);//can change
+        preparedStmt.setInt(6, 1234);//can change
+        preparedStmt.setBoolean(7, false);
 
+        preparedStmt.execute();
+    }
+    public void removeEmployee(int employeeId) throws SQLException {
+        PreparedStatement preparedStmt = connect("delete from employee where employeeId=?");
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.execute();
 
-}
+    }
+    }

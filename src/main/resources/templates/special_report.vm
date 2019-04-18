@@ -8,8 +8,11 @@
 </head>
 
     <body id="page1"onload="clearCache()">
-        #parse("header.vm")
-
+        #if($admin)
+            #parse("adminNav.vm")
+        #{else}
+            #parse("header.vm")
+        #end
     <div class="container-fluid  backButtonCon">
         <div class="row">
             <div class="col">

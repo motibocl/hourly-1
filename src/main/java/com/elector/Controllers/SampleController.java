@@ -55,10 +55,13 @@ public class SampleController {
             return "Landing_page";
     }
 
-    @RequestMapping("/admin")
-    public String admin(Model model) throws SQLException {
-
-        return "admin";
+    @RequestMapping("/administration")
+    public String admin(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
+        String phone = convertToken(cookie);
+        if (!isPhoneNumberExist(phone))
+            return "Landing_page";
+        model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+        return "administration";
 
     }
      //adding reason if the employee forgot to press the enter and exit button.
@@ -68,6 +71,16 @@ public class SampleController {
         return "redirect:/main";
     }
 
+    @RequestMapping("/add-employee")
+    public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
+        persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
+        return "administration";
+    }
+    @RequestMapping("/remove-employee")
+    public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
+        persist.removeEmployee(parseInt(id));
+        return "administration";
+    }
 
     //Sending comments "What did you do today"
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
@@ -84,6 +97,8 @@ public class SampleController {
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
         try {
+            model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+
             String name = "";
             ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
             while (result.next()) {
@@ -208,10 +223,15 @@ public class SampleController {
 
         return "Landing_page";
     }
+    //@RequestMapping("/header")
+   // public String header(Model model,@CookieValue(value = SESSION, defaultValue = "")String cookie) throws Exception {
+        //model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+       // return "header"  ;
+   // }
     //this function is gettin the date throw js and returnning list with all the info about all the clickes in the same day.
     @ResponseBody
     @RequestMapping("/workTimeDetails")
-    public ArrayList<ArrayList<String>> workTimeDetails(Model model, @RequestParam("date")String date, @CookieValue(value = SESSION, defaultValue = "") String cookie)throws Exception{
+    public ArrayList<ArrayList<String>> workTimeDetails(Model model, @RequestParam("date")String date, @CookieValue(value = SESSION, defaultValue = "")String cookie,@RequestParam(value ="id",defaultValue = "")String id) throws Exception{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
@@ -224,7 +244,8 @@ public class SampleController {
         ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
         ArrayList<String> hoursListDetails = new ArrayList<String>();
         ArrayList<String> dateListDetails = new ArrayList<>();
-        ResultSet rs=persist.selectWorktimeDay(year,month+1,parseInt(getEmployeeId(cookie)),day);
+        ResultSet rs;
+            rs=persist.selectWorktimeDay(year,month+1,parseInt(id),day);
         while (rs.next()) {
             dayListDetails.add(rs.getString("dayOfTheWeek"));
             hoursListDetails.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
@@ -240,12 +261,45 @@ public class SampleController {
     }
 
     @RequestMapping("/reports")
-    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year) throws Exception {
+    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id) throws Exception {
 
         if (!checkCookie(cookie))
             return "Landing_page";
         try {
-            if (!month.equals("") && !year.equals("")) {
+
+                model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+              if(!id.equals("")&&!month.equals("") && !year.equals("")) {
+                  model.addAttribute("empId",id);
+                  ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
+                  ResultSet rsExitTime;
+                  ResultSet rsEnterTime;
+                  ResultSet rsSumTime;
+
+                  ArrayList<String> dayList = new ArrayList<String>();
+                  ArrayList<String> hoursWorked = new ArrayList<String>();
+                  ArrayList<String> hoursList = new ArrayList<String>();
+                  ArrayList<Date> dateList = new ArrayList<Date>();
+
+                  for (int i = 1; i <= 31; i++) {
+                      rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(id),i);//get the last worktime in a day.
+                      rsEnterTime = persist.selectFirstWorktimeDay(parseInt(year),parseInt(month),parseInt(id),i);//get the first worktime in a day.;
+                      rsSumTime = persist.totalHoursWorkedInDay(parseInt(year),parseInt(month),parseInt(id),i);//get the total time worked in a day.
+
+                      if (rsSumTime.next() && rsEnterTime.next()&& rsExitTime.next()) {
+                          dayList.add(rsEnterTime.getString("dayOfTheWeek"));
+                          hoursWorked.add(timeString(rsSumTime.getFloat("total")));
+                          hoursList.add(timeString(rsEnterTime.getFloat("enterTime")) + "   ->   " + timeString(rsExitTime.getFloat("exitTime")));
+                          dateList.add(rsEnterTime.getDate("date"));
+
+                      }
+                  }
+                  model.addAttribute("days", dayList);
+                  model.addAttribute("hours", hoursList);
+                  model.addAttribute("hoursWorked", hoursWorked);
+                  model.addAttribute("dateWorked", dateList);
+              }
+            else if (!month.equals("") && !year.equals("")) {
+                model.addAttribute("empId",getEmployeeId(cookie));
                 ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(getEmployeeId(cookie)));
                 ResultSet rsExitTime;
                 ResultSet rsEnterTime;
@@ -306,6 +360,8 @@ public class SampleController {
     public String special_reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         if (!checkCookie(cookie))
             return "Landing_page";
+        model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+
         return "special_report";
     }
 
@@ -443,5 +499,11 @@ public class SampleController {
         ResultSet result = statement.executeQuery();
         return result.next();
     }
-
+    private boolean isAdmin(String id) throws SQLException {
+        ResultSet result=persist.selectEmployee(parseInt(id));
+        if(result.next())
+        return result.getBoolean("isAdmin");
+        else
+            return false;
+    }
 }

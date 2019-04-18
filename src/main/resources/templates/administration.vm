@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("metaTagsTemp.vm")
+    #parse("cssTemp.vm")
+
+    <title>Hourly|Administration</title>
+</head>
+<body id="page1"  onload="stay(), clearCache()">
+    #if($admin)
+        #parse("adminNav.vm")
+    #{else}
+        #parse("header.vm")
+    #end
+<h3 class="addEmp">הוספת עובד:</h3>
+<br/>
+<form  class="container report" >
+<div class="row">
+    <div class="col-2 formRep">
+
+
+        <div class="form-group">
+            <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
+        </div>
+    </div>
+    <div class="col-2 formRep">
+
+
+        <div class="form-group">
+            <input type="text" class="form-control borColor" id="exampleFormControlInput1" name="name" placeholder="שם עובד">
+        </div>
+    </div>
+    <div class="col-2 formRep">
+
+        <div class="form-group">
+            <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="empPhone" placeholder="טלפון עובד">
+
+            </input>
+        </div>
+    </div>
+    <div class="col-2 formRep">
+
+        <div class="form-group">
+            <input type="text" class="form-control borColor" id="exampleFormControlInput1" name="password" placeholder="סיסמא">
+        </div>
+    </div>
+    <div class="col-2 formRep">
+
+        <div class="form-group">
+        <button class="btn btn-primary loginBtn" type="submit"  formaction="add-employee" >הוסף</button>
+        </div>
+       </div>
+
+    </div>
+</form>>
+
+<br/>
+<h3 class="addEmp">מחיקת עובד:</h3>
+<form class="container report" >
+    <div class="row">
+        <div class="col-3 formRep">
+
+
+            <div class="form-group">
+                <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
+            </div>
+        </div>
+        <div class="col-3 formRep">
+
+            <div class="form-group">
+                <button class="btn btn-primary loginBtn" type="submit"  formaction="remove-employee" >מחק</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+    #parse("jsTemp.vm")
+</body>
+</html>

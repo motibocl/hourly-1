@@ -7,8 +7,11 @@
     <title>Hourly|reports</title>
 </head>
 <body id="page1" onload="clearCache()">
-    #parse("header.vm")
-
+    #if($admin)
+        #parse("adminNav.vm")
+    #{else}
+        #parse("header.vm")
+    #end
 <div class="container-fluid  backButtonCon">
     <div class="row">
         <div class="col">
@@ -26,10 +29,55 @@
         </div>
     </div>
 </div>
+    #if($admin)  ##CHECKING IF ITS ADMIN FOR ADDITIONAL FEATURES.
 
 <form class="container report" >
     <div class="row">
 
+            <div class="col-4 formRep">
+
+
+                 <div class="form-group">
+                     <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
+                 </div>
+             </div>
+                 <div class="col-4 formRep">
+
+                     <div class="form-group">
+                         <select class="form-control borColor" id="exampleFormControlSelect1" name="month" >
+                             <option value="0">בחר חודש...</option>
+                             <option value="1">ינואר</option>
+                             <option value="2">פברואר</option>
+                             <option value="3">מרץ</option>
+                             <option value="4">אפריל</option>
+                             <option value="5">מאי</option>
+                             <option value="6">יוני</option>
+                             <option value="7">יולי</option>
+                             <option value="8">אוגוסט</option>
+                             <option value="9">ספטמבר</option>
+                             <option value="10">אוקטובר</option>
+                             <option value="11">נובמבר</option>
+                             <option value="12">דצמבר</option>
+                         </select>
+                     </div>
+
+                 </div>
+
+                 <div class="col-4 formRep">
+
+
+                     <div class="form-group">
+                         <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="year" placeholder="שנה">
+                     </div>
+
+                     <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
+                 </div>
+             </div>
+         </form >
+
+         #{else}   ##if its not admin
+         <form class="container report" >
+         <div class="row">
         <div class="col-6 formRep">
 
                 <div class="form-group">
@@ -61,14 +109,16 @@
 
                 <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
         </div>
-    </div>
-</form >
 
-
+         </div>
+</form>
+#end
 <div class="container " >
     <div class="row rowBorder">
 
 <table>
+    #if($days.size()!=0)
+
     #set($end =$days.size())
     #set($stop = $end - 1)
     #if($stop)
@@ -84,11 +134,12 @@
           <td>  <p class="inf">$dateWorked.get($i)</p></td>
 
             <!-- Button trigger modal  -->
-                 <td>    <button type="button" class="btn  btnrep" onclick="dayDetails(id)" id="$dateWorked.get($i)" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hoursWorked.get($i)</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button></td>
+                 <td>    <button type="button" class="btn  btnrep" onclick="dayDetails(id,$empId)" id="$dateWorked.get($i)" data-toggle="modal" data-target="#exampleModalCenter"><p3 style ="color:white">$hoursWorked.get($i)</p3>&nbsp;&nbsp;<img src="css/images/pencilSticker.png" class="editPic"></button></td>
 
    </tr>
        #end
        #end
+    #end
        </table>
     </div>
 </div>
@@ -123,7 +174,7 @@
                                                     <p class="inf" id="hoursWorkedDetails"></p>
                                             </div>
                             </div>
-                            <button type="button" class="close" data-dismiss="modal"><img src="css/images/okBtn.png"class="img-fluid okBtnImg ok"></button>
+                            <button type="button" class="close midlle" data-dismiss="modal"><img src="css/images/okBtn.png"class="img-fluid okBtnImg ok"></button>
                         </div>
 
                     </div>
