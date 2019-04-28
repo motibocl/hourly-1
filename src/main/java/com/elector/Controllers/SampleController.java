@@ -44,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -76,7 +76,7 @@ public class SampleController {
     public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
         persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
 
-        return "administration";
+        return "redirect:/administration";
     }
     @RequestMapping("/remove-employee")
     public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
@@ -188,6 +188,7 @@ public class SampleController {
 
     @RequestMapping("/request")
     public String req(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+        model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
         String  days[]={ "יום ראשון", "יום שני" ,"יום שלישי" ,"יום רביעי" ,"יום חמישי" ,"יום שישי", "יום שבת"};
             ArrayList<String> reasons=new ArrayList<>();
             ArrayList<String> employeeId=new ArrayList<>();

@@ -11,7 +11,7 @@
                     <a href="administration"><h4 class="nav">ניהול עובדים</h4></a>
                     <a href="request"><h4 class="nav">בקשות עובדים</h4></a>
                     <a href="logout"><h4 class="nav">התנתק</h4></a>
-                    <div class="version">18.4.2019</div>
+                    <div class="version">28.4.2019</div>
                 </div>
             </div>
         </div>

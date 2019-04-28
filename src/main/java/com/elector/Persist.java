@@ -48,7 +48,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
 
     }
 
@@ -563,7 +563,7 @@ public class Persist {
         preparedStmt.setInt(3, employeePhone);
         preparedStmt.setString(4, employeePassword);
         preparedStmt.setBoolean(5, false);//can change
-        preparedStmt.setInt(6, 1);//can change
+        preparedStmt.setInt(6, 1234);//can change
         preparedStmt.setBoolean(7, false);
 
         preparedStmt.execute();

@@ -144,6 +144,11 @@ function repComment() {
     });
 
 }
+function open() {
+    $('#exampleModalLong').modal('show');
+
+}
+
 
 // /*----------------------------sidebar----------------------------------------------*/
 
