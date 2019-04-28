@@ -17,12 +17,10 @@
                 <br>
                 <br>
                 <form class="input" action="" method="post" id="login">
-                    <input class="form-control" type="text" name="login" placeholder="טלפון">
+                    <input class="form-control" type="text" name="login" placeholder="הכנס מס' טלפון">
                     <br>
-                    <input class="form-control" type="password" name="pass" placeholder="סיסמה">
-                    <a class="forgot" href="forgotPass" >שכחתי את הסיסמה?</a>
                 </form>
-                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="login" >התחבר</button>
+                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="sendSms" >קבל סיסמא</button>
 
             </header>
         </div>

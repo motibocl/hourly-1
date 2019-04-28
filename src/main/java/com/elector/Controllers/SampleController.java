@@ -2,6 +2,11 @@ package com.elector.Controllers;
 
 
 import com.elector.Persist;
+import com.elector.Utils.sendSMS;
+import com.nexmo.client.NexmoClient;
+import com.nexmo.client.sms.SmsSubmissionResponse;
+import com.nexmo.client.sms.SmsSubmissionResponseMessage;
+import com.nexmo.client.sms.messages.TextMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -219,7 +224,37 @@ public class SampleController {
       return "request";
     }
 
+    @RequestMapping("/sendSms")
+    public String sendSms(Model model, @RequestParam("login")String phone) throws Exception {
+        ResultSet rs=persist.selectEmployeeByPhone(phone);
+        String pass="";
+        while (rs.next()){
+            pass=rs.getString("employeePassword");
+            sendSMS sms=new  sendSMS ();
+            sms.sendSms(pass);
+        }
 
+        /*  NexmoClient client = new NexmoClient.Builder()
+                .apiKey("6e230eed")
+                .apiSecret("Cq0K3qn70SjHI2pi")
+                .build();
+
+        String messageText = "Hello from Nexmo";
+        TextMessage message = new TextMessage("Nexmo", "972524704502", messageText);
+
+        SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
+
+        for (SmsSubmissionResponseMessage responseMessage : response.getMessages()) {
+            System.out.println(responseMessage);
+        }*/
+        return "Landing_page";
+    }
+
+    @RequestMapping("/forgotPass")
+    public String forgotPass(Model model) throws Exception {
+
+        return "forgotPass";
+    }
 
 
     @RequestMapping("/loginPage")
