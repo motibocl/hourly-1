@@ -5,7 +5,6 @@
 
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
-
     <title>Hourly|main</title>
 </head>
 <body id="page1" onload="clearCache();getStatus()">

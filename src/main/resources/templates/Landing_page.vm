@@ -22,7 +22,7 @@
                     <input class="form-control" type="password" name="pass" placeholder="סיסמה">
                     <a class="forgot" href="#" >שכחתי את הסיסמה?</a>
                 </form>
-                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="http://localhost:8666/login" >התחבר</button>
+                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="login" >התחבר</button>
 
             </header>
         </div>

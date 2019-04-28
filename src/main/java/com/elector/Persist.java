@@ -48,7 +48,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
 
     }
 
@@ -126,6 +126,7 @@ public class Persist {
         }
         return votersSupportStatusMap;
     }
+
 
     public void removeActivistVoterMapObjects(List<Integer> oidsList) {
         getQuerySession().createQuery("UPDATE ActivistVoterMapObject a SET deleted=TRUE WHERE a.voter.oid IN(:oidsList)")
@@ -448,6 +449,11 @@ public class Persist {
         myStmt.setInt(2, employeeId);
         myStmt.execute();
     }
+    public ResultSet showRequests() throws SQLException {
+        PreparedStatement statement = connect("select reasonText,date,a.employeeId,employeeName,howmanyHours from test2.reason as a,test2.employee as b where a.employeeId=b.employeeId order by date asc");
+        return statement.executeQuery();
+    }
+
 
     public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
         PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
@@ -557,7 +563,7 @@ public class Persist {
         preparedStmt.setInt(3, employeePhone);
         preparedStmt.setString(4, employeePassword);
         preparedStmt.setBoolean(5, false);//can change
-        preparedStmt.setInt(6, 1234);//can change
+        preparedStmt.setInt(6, 1);//can change
         preparedStmt.setBoolean(7, false);
 
         preparedStmt.execute();
@@ -567,5 +573,16 @@ public class Persist {
         preparedStmt.setInt(1, employeeId);
         preparedStmt.execute();
 
+    }
+    public void addAfterConfirm(int employeeId,Date dateOfWork,Float totalTimeWork,String dayOfTheWeek,String comment ) throws SQLException {
+        PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek,comment) values (?,?,?,?,?,?,?)");
+        preparedStmt2.setInt(1, employeeId);
+        preparedStmt2.setFloat(2, 0);//צריך לשנות
+        preparedStmt2.setFloat(3, 0);//צריך לשנות
+        preparedStmt2.setFloat(4, totalTimeWork);
+        preparedStmt2.setDate(5, (java.sql.Date) dateOfWork);
+        preparedStmt2.setString(6, dayOfTheWeek);
+        preparedStmt2.setString(7, comment);
+        preparedStmt2.execute();
     }
     }

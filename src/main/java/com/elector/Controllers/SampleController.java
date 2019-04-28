@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class SampleController {
     private static final String SESSION = "foo";
 
     Date now = new Date();
-    java.sql.Date today = new java.sql.Date(now.getTime());
+    java.sql.Date today = new java.sql.Date(now.getTime());//להגדיר בכל פונקציה כי יכול להיות שמשתמש לא יכבה מחשב והתאריך יהיה התאריך האחרון שהוצב במשתנה
 //
 
     @Autowired
@@ -43,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -74,10 +75,11 @@ public class SampleController {
     @RequestMapping("/add-employee")
     public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
         persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
+
         return "administration";
     }
     @RequestMapping("/remove-employee")
-    public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
+    public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
         persist.removeEmployee(parseInt(id));
         return "administration";
     }
@@ -92,7 +94,7 @@ public class SampleController {
     //our home page.
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String mainp(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
-        // if (cookie.equals(""))//check if logged in.
+        //check if logged in.
         String phone = convertToken(cookie);
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
@@ -170,7 +172,7 @@ public class SampleController {
 
     @RequestMapping("/addWorkTime")
     public String addWorkTime(Model model, @RequestParam("button") int button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
-        if (checkCookie(cookie)) {
+        if (checkCookie(cookie)) {//לשנות לא צריך
             persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
             Date day = new Date();
             Calendar c = Calendar.getInstance();
@@ -183,6 +185,41 @@ public class SampleController {
         }
         return "Landing_page";
     }
+
+    @RequestMapping("/request")
+    public String req(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+        String  days[]={ "יום ראשון", "יום שני" ,"יום שלישי" ,"יום רביעי" ,"יום חמישי" ,"יום שישי", "יום שבת"};
+            ArrayList<String> reasons=new ArrayList<>();
+            ArrayList<String> employeeId=new ArrayList<>();
+            ArrayList<Date> date=new ArrayList<>();
+            ArrayList<Float> hours=new ArrayList<Float>();
+            ArrayList<String> names=new ArrayList<>();
+            ArrayList<String> dayOfWeek=new ArrayList<>();
+            ResultSet rs= persist.showRequests();
+            Calendar cal = Calendar.getInstance();
+            while(rs.next()){
+                cal.setTime(rs.getDate("date"));
+                int day = cal.get(Calendar.DAY_OF_WEEK);
+                dayOfWeek.add(days[day-1]);
+                names.add(rs.getString("employeeName"));
+                hours.add(rs.getFloat("howmanyHours"));
+                employeeId.add(rs.getString("employeeId"));
+                date.add(rs.getDate("date"));
+                reasons.add(rs.getString("reasonText"));
+            }
+
+            model.addAttribute("names",names);
+            model.addAttribute("hours",hours);
+            model.addAttribute("dayOfWeek",dayOfWeek);
+            model.addAttribute("emplId",employeeId);
+            model.addAttribute("reasonsList",reasons);
+            model.addAttribute("dateList1",date);
+
+      return "request";
+    }
+
+
+
 
     @RequestMapping("/loginPage")
     public String loginPage(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
@@ -492,7 +529,7 @@ public class SampleController {
         }
         return timeEnter;
     }
-
+//Integer.valueOf(phone)
     private boolean isPhoneNumberExist (String phone) throws SQLException {
         PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
         statement.setInt(1, Integer.valueOf(phone));

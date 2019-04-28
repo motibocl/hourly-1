@@ -37,7 +37,7 @@ function changeImage() {
         var pressed = 'button='
             + encodeURIComponent(num)
             + '&enterTime='
-            + encodeURIComponent(enterTime)
+            + encodeURIComponent(enterTime);
         $.ajax({
             type: 'POST',
             url: "addWorkTime",
