@@ -34,18 +34,19 @@
         <div class="col formRep">
             <form>
                 <div class="form-group">
-                    <input type="date" name="reasonDate">
+                    <h4 style="display: inline-block;">תאריך:</h4>
+                    <input type="date" style="margin-right: 20px;" name="reasonDate">
 
                 </div>
                 <div class="form-group">
                     <div >
-                        <p>שעת כניסה</p>
+                        <h4 style="display: inline-block;">שעת כניסה:</h4>
                         <input type="number" min="0" max="59"  name="enterMinutes">:
                         <input type="number" min="0" max="23" name="enterHours">
                     </div>
                     </br>
                     <div>
-                        <p>שעת יציאה</p>
+                        <h4 style="display: inline-block;">שעת יציאה:</h4>
                         <input type="number" min="0" max="59"  name="exitMinutes">:
                         <input type="number" min="0" max="23"  name="exitHours">
                     </div>

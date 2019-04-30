@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
 
     }
 
@@ -481,7 +481,7 @@ public class Persist {
     }
 
     public ResultSet selectEmployeeById(int employeeId) throws SQLException {
-        PreparedStatement Stmt1 = connect("select enterOrExit from test2.employee WHERE test2.employee.employeeId=?;");
+        PreparedStatement Stmt1 = connect("select * from test2.employee WHERE test2.employee.employeeId=?;");
         Stmt1.setInt(1, employeeId);
         return Stmt1.executeQuery();
     }

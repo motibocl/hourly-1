@@ -51,7 +51,7 @@
                             <td><p class="inf">$enterTime.get($i)</p></td>
                             <td><p class="inf">$exitTime.get($i)</p></td>
                             <td><p class="inf">$reasonsList.get($i)</p></td>
-                            <td><button type="button" class="inf test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)' )">accept</button></td>
+                            <td><button type="button" class="inf test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)' )">אשר</button></td>
                             <td><button type="button" class="inf test"  >דחה</button></td>
                         </tr>
                     #end

@@ -3,10 +3,6 @@ package com.elector.Controllers;
 
 import com.elector.Persist;
 import com.elector.Utils.sendSMS;
-import com.nexmo.client.NexmoClient;
-import com.nexmo.client.sms.SmsSubmissionResponse;
-import com.nexmo.client.sms.SmsSubmissionResponseMessage;
-import com.nexmo.client.sms.messages.TextMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,7 +44,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -93,6 +88,7 @@ public class SampleController {
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
         persist.addAfterConfirm(emplid,enterTime,exitTime,sqldate,day,comment);
+
         return "request";
     }
 
@@ -262,20 +258,6 @@ public class SampleController {
             sendSMS sms=new  sendSMS ();
             sms.sendSms(pass);
         }
-
-        /*  NexmoClient client = new NexmoClient.Builder()
-                .apiKey("6e230eed")
-                .apiSecret("Cq0K3qn70SjHI2pi")
-                .build();
-
-        String messageText = "Hello from Nexmo";
-        TextMessage message = new TextMessage("Nexmo", "972524704502", messageText);
-
-        SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
-
-        for (SmsSubmissionResponseMessage responseMessage : response.getMessages()) {
-            System.out.println(responseMessage);
-        }*/
         return "Landing_page";
     }
 
@@ -350,8 +332,8 @@ public class SampleController {
             rs=persist.selectWorktimeDay(year,month+1,parseInt(id),day);
         while (rs.next()) {
             dayListDetails.add(rs.getString("dayOfTheWeek"));
-            hoursListDetails.add((int) (rs.getFloat("enterTime") / 60) + ":" + (int) (rs.getFloat("enterTime") % 60) + "  ->   " + (int) (rs.getFloat("exitTime") / 60) + ":" + (int) (rs.getFloat("exitTime") % 60));
-            hoursWorkedDetails.add((int) (rs.getFloat("totalhoursWorked") / 60) + ":" + (int) (rs.getFloat("totalhoursWorked") % 60));
+            hoursListDetails.add(timeString(rs.getFloat("enterTime"))+ "  ->   " + timeString (rs.getFloat("exitTime")));
+            hoursWorkedDetails.add(timeString(rs.getFloat("totalhoursWorked")));
             dateListDetails.add(formatter.format(rs.getDate("date")));
         }
         ArrayList<ArrayList<String> > worktimeList = new ArrayList<ArrayList<String>>();
@@ -367,11 +349,19 @@ public class SampleController {
 
         if (!checkCookie(cookie))
             return "Landing_page";
-        try {
 
-                model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
-              if(!id.equals("")&&!month.equals("") && !year.equals("")) {
-                  model.addAttribute("empId",id);
+        try {
+            model.addAttribute("employeeName","");
+
+            model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+            if(!id.equals("")&&!month.equals("") && !year.equals("")) {
+                model.addAttribute("empId",id);
+                ResultSet result=persist.selectEmployeeById(parseInt(id));
+                String employeeName="";//GET THE NAME OF THE EMPLOYEE.
+                while (result.next()){
+                    employeeName=result.getString("employeeName");
+                }
+                model.addAttribute("employeeName","פירוט החודש של "+employeeName);
                   ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
                   ResultSet rsExitTime;
                   ResultSet rsEnterTime;
