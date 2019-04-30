@@ -9,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ import javax.annotation.PostConstruct;
  */
 @Transactional
 @Component
+
 @SuppressWarnings("unchecked")
 public class Persist {
 
@@ -48,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
 
     }
 
@@ -428,29 +430,31 @@ public class Persist {
         return dbConnection.prepareStatement(sql);
 }
 
-    public void sendReason(int employeeId, String howmanyHours, String reasonText, String date) throws SQLException {
-        String sql = "insert into reason (employeeId,howmanyHours,reasonText,date) values (?,?,?,?)";
+    public void sendReason(int employeeId, String reasonText, String date,float enterTime,float exitTime) throws SQLException {
+        String sql = "insert into reason (employeeId,howmanyHours,reasonText,date,enterTime,exitTime) values (?,?,?,?,?,?)";
         PreparedStatement preparedStmt = connect(sql);
         preparedStmt.setInt(1, employeeId);
-        preparedStmt.setString(2, howmanyHours);
+        preparedStmt.setFloat(2, exitTime-enterTime);
         preparedStmt.setString(3, reasonText);
         preparedStmt.setString(4, date);
+        preparedStmt.setFloat(5, enterTime);
+        preparedStmt.setFloat(6, exitTime);
         preparedStmt.execute();
     }
 
     public void sendComment(int employeeId, String comment) throws SQLException {
-        String sql = "insert into comments (employeeId,comments) values (?,?)";
+        /*String sql = "insert into comments (employeeId,comments) values (?,?)";
         PreparedStatement preparedStmt = connect(sql);
         preparedStmt.setInt(1, employeeId);
         preparedStmt.setString(2, comment);
-        preparedStmt.execute();
+        preparedStmt.execute();*/
         PreparedStatement myStmt = connect("update test2.worktime set comment=? where employeeId=? order by timeId DESC limit 1");
         myStmt.setString(1, comment);
         myStmt.setInt(2, employeeId);
         myStmt.execute();
     }
     public ResultSet showRequests() throws SQLException {
-        PreparedStatement statement = connect("select reasonText,date,a.employeeId,employeeName,howmanyHours from test2.reason as a,test2.employee as b where a.employeeId=b.employeeId order by date asc");
+        PreparedStatement statement = connect("select reasonText,date,a.employeeId,employeeName,howmanyHours,exitTime,enterTime from test2.reason as a,test2.employee as b where a.employeeId=b.employeeId order by date asc");
         return statement.executeQuery();
     }
 
@@ -574,12 +578,12 @@ public class Persist {
         preparedStmt.execute();
 
     }
-    public void addAfterConfirm(int employeeId,Date dateOfWork,Float totalTimeWork,String dayOfTheWeek,String comment ) throws SQLException {
+    public void addAfterConfirm(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String dayOfTheWeek,String comment ) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek,comment) values (?,?,?,?,?,?,?)");
         preparedStmt2.setInt(1, employeeId);
-        preparedStmt2.setFloat(2, 0);//צריך לשנות
-        preparedStmt2.setFloat(3, 0);//צריך לשנות
-        preparedStmt2.setFloat(4, totalTimeWork);
+        preparedStmt2.setFloat(2, enterTime);
+        preparedStmt2.setFloat(3, exitTime);
+        preparedStmt2.setFloat(4, exitTime-enterTime);
         preparedStmt2.setDate(5, (java.sql.Date) dateOfWork);
         preparedStmt2.setString(6, dayOfTheWeek);
         preparedStmt2.setString(7, comment);

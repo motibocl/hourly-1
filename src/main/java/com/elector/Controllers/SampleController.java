@@ -21,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,10 +32,9 @@ import static java.lang.Integer.parseInt;
 //
 
 @Controller
-@EnableAutoConfiguration
 @Configuration
+@EnableAutoConfiguration
 @ComponentScan("com.elector")
-
 public class SampleController {
     private static Connection dbConnection;
     private static final String SECRET_KEY = "fgmdfgfdke34932HASDBAbsahdbsaBHbBHJBbhb";
@@ -49,7 +49,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -71,11 +71,14 @@ public class SampleController {
 
     }
      //adding reason if the employee forgot to press the enter and exit button.
-    @RequestMapping(value = "/addReason", method = RequestMethod.GET)
-    public String getText(@RequestParam String text, @RequestParam String hoursWorked, @RequestParam String reasonDate, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-            persist.sendReason(parseInt(getEmployeeId(cookie)),hoursWorked, text, reasonDate);//adding reason to dataBase
-        return "redirect:/main";
-    }
+     @RequestMapping(value = "/addReason", method = RequestMethod.GET)
+     public String getText(@RequestParam String text,@RequestParam String enterHours,@RequestParam String enterMinutes,@RequestParam String exitHours,@RequestParam String exitMinutes, @RequestParam String reasonDate, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
+         float enterTime=parseInt(enterHours)*60+parseInt(enterMinutes);
+         float exitTime=parseInt(exitHours)*60+parseInt(exitMinutes);
+
+         persist.sendReason(parseInt(getEmployeeId(cookie)), text, reasonDate,enterTime,exitTime);//adding reason to dataBase
+         return "redirect:/main";
+     }
 
     @RequestMapping("/add-employee")
     public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
@@ -83,10 +86,20 @@ public class SampleController {
 
         return "redirect:/administration";
     }
+    @RequestMapping("/confirmAndAdd")
+    public String confirmAndAdd(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "day", defaultValue = "")String day,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateInString = date;
+        Date dateChoosed = formatter.parse(dateInString);
+        java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
+        persist.addAfterConfirm(emplid,enterTime,exitTime,sqldate,day,comment);
+        return "request";
+    }
+
     @RequestMapping("/remove-employee")
     public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
         persist.removeEmployee(parseInt(id));
-        return "administration";
+        return "redirect:/administration";
     }
 
     //Sending comments "What did you do today"
@@ -194,36 +207,52 @@ public class SampleController {
     @RequestMapping("/request")
     public String req(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
-        String  days[]={ "יום ראשון", "יום שני" ,"יום שלישי" ,"יום רביעי" ,"יום חמישי" ,"יום שישי", "יום שבת"};
-            ArrayList<String> reasons=new ArrayList<>();
-            ArrayList<String> employeeId=new ArrayList<>();
-            ArrayList<Date> date=new ArrayList<>();
-            ArrayList<Float> hours=new ArrayList<Float>();
-            ArrayList<String> names=new ArrayList<>();
-            ArrayList<String> dayOfWeek=new ArrayList<>();
-            ResultSet rs= persist.showRequests();
-            Calendar cal = Calendar.getInstance();
-            while(rs.next()){
-                cal.setTime(rs.getDate("date"));
-                int day = cal.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek.add(days[day-1]);
-                names.add(rs.getString("employeeName"));
-                hours.add(rs.getFloat("howmanyHours"));
-                employeeId.add(rs.getString("employeeId"));
-                date.add(rs.getDate("date"));
-                reasons.add(rs.getString("reasonText"));
-            }
+        String  days[]={ "יום א", "יום ב" ,"יום ג" ,"יום ד" ,"יום ה" ,"יום ו", "יום ז"};
+        ArrayList<String> reasons=new ArrayList<>();
+        ArrayList<String> employeeId=new ArrayList<>();
+        ArrayList<Date> date=new ArrayList<>();
+        ArrayList<Float> hours=new ArrayList<Float>();
+        ArrayList<String> names=new ArrayList<>();
+        ArrayList<String> dayOfWeek=new ArrayList<>();
+        ArrayList<String> enterTime=new ArrayList<>();
+        ArrayList<String> exitTime=new ArrayList<>();
+        ResultSet rs= persist.showRequests();
+        Calendar cal = Calendar.getInstance();
+        int hour,minutes;
+        while(rs.next()){
+            hour=(int)(rs.getFloat("exitTime"))/60;
+            minutes=(int)rs.getFloat("exitTime")%60;
+            if (minutes < 10)
+                exitTime.add(hour+ ":" + "0" + minutes);
+            else
+                exitTime.add(hour+ ":" + minutes);
+            hour=(int)(rs.getFloat("enterTime"))/60;
+            minutes=(int)rs.getFloat("enterTime")%60;
+            if (minutes < 10)
+                enterTime.add(hour+ ":" + "0" + minutes);
+            else
+                enterTime.add(hour+ ":" + minutes);
+            cal.setTime(rs.getDate("date"));
+            int day = cal.get(Calendar.DAY_OF_WEEK);
+            dayOfWeek.add(days[day-1]);
+            names.add(rs.getString("employeeName"));
+            hours.add(rs.getFloat("howmanyHours"));
+            employeeId.add(rs.getString("employeeId"));
+            date.add(rs.getDate("date"));
+            reasons.add(rs.getString("reasonText"));
+        }
 
-            model.addAttribute("names",names);
-            model.addAttribute("hours",hours);
-            model.addAttribute("dayOfWeek",dayOfWeek);
-            model.addAttribute("emplId",employeeId);
-            model.addAttribute("reasonsList",reasons);
-            model.addAttribute("dateList1",date);
+        model.addAttribute("names",names);
+        model.addAttribute("enterTime",enterTime);
+        model.addAttribute("exitTime",exitTime);
+        model.addAttribute("hours",hours);
+        model.addAttribute("dayOfWeek",dayOfWeek);
+        model.addAttribute("emplId",employeeId);
+        model.addAttribute("reasonsList",reasons);
+        model.addAttribute("dateList1",date);
 
-      return "request";
+        return "request";
     }
-
     @RequestMapping("/sendSms")
     public String sendSms(Model model, @RequestParam("login")String phone) throws Exception {
         ResultSet rs=persist.selectEmployeeByPhone(phone);

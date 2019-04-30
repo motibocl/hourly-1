@@ -31,31 +31,28 @@
 </div>
 </br>
 </br>
-<div class="container " >
+<div class="container" >
     <div class="row rowBorder">
 
         <table>
-         ##   #set($moti=$emplId.size())
+
             #if($emplId.size()!=0)
 
                 #set($end =$emplId.size())
                 #set($stop = $end - 1)
                 #if($stop)
-
+                ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                     #foreach($i in [0..$stop])
                         <tr>
-
-                            <td> <p class="inf">$emplId.get($i)</p></td>
-                            <td>  <p class="inf">$names.get($i)</p></td>
-                            <td>  <p class="inf">$dateList1.get($i)</p></td>
-                            <td>  <p class="inf">$dayOfWeek.get($i)</p></td>
-                            <td>  <p class="inf">$hours.get($i)</p></td>
-                            <td> <p class="inf">$reasonsList.get($i)</p></td>
-                            <td> <button type="button" class="inf test" >אישור</button></td>
-                            <td> <button type="button" class="inf test"  >דחה</button></td>
-
-##onclick="confirmAndAdd($emplId.get($i),$dateList1.get($i),$hours.get($i),
-
+                            <td><p class="inf">$emplId.get($i)</p></td>
+                            <td><p class="inf">$names.get($i)</p></td>
+                            <td><p class="inf">$dateList1.get($i)</p></td>
+                            <td><p class="inf">$dayOfWeek.get($i)</p></td>
+                            <td><p class="inf">$enterTime.get($i)</p></td>
+                            <td><p class="inf">$exitTime.get($i)</p></td>
+                            <td><p class="inf">$reasonsList.get($i)</p></td>
+                            <td><button type="button" class="inf test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)' )">accept</button></td>
+                            <td><button type="button" class="inf test"  >דחה</button></td>
                         </tr>
                     #end
                 #end

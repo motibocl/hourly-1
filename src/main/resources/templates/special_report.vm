@@ -7,56 +7,68 @@
     <title>Hourly|special-report</title>
 </head>
 
-    <body id="page1"onload="clearCache()">
-        #if($admin)
-            #parse("adminNav.vm")
-        #{else}
-            #parse("header.vm")
-        #end
-    <div class="container-fluid  backButtonCon">
-        <div class="row">
-            <div class="col">
-        <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backBtn.png"class="img-fluid back"> </button>
-            </div>
+<body id="page1"onload="clearCache()">
+    #if($admin)
+        #parse("adminNav.vm")
+    #{else}
+        #parse("header.vm")
+    #end
+<div class="container-fluid  backButtonCon">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backBtn.png"class="img-fluid back"> </button>
         </div>
     </div>
+</div>
 
-    <div class="container-fluid  specialRepCon">
-        <div class="row">
-            <div class="col">
-                <p class="speRep">דיווח מיוחד</p>
-            </div>
+<div class="container-fluid  specialRepCon">
+    <div class="row">
+        <div class="col">
+            <p class="speRep">דיווח מיוחד</p>
         </div>
     </div>
+</div>
 
-    <div class="container report">
-        <div class="row">
-            <div class="col formRep">
-                <form>
-                    <div class="form-group">
-                        <input type="date" name="reasonDate">
-
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control borColor" name="hoursWorked" id="exampleFormControlInput1" placeholder="כמות שעות">
-                    </div>
-
-                    <div class="form-group">
-                        <textarea class="form-control borColor"  name="text" id="exampleFormControlTextarea1" rows="3"placeholder="סיבה"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" formaction="http://localhost:8666/addReason" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
-                    </div>
-
-                </form>
-                </div>
+<div class="container report">
+    <div class="row">
+        <div class="col formRep">
+            <form>
+                <div class="form-group">
+                    <input type="date" name="reasonDate">
 
                 </div>
-            </div>
+                <div class="form-group">
+                    <div >
+                        <p>שעת כניסה</p>
+                        <input type="number" min="0" max="59"  name="enterMinutes">:
+                        <input type="number" min="0" max="23" name="enterHours">
+                    </div>
+                    </br>
+                    <div>
+                        <p>שעת יציאה</p>
+                        <input type="number" min="0" max="59"  name="exitMinutes">:
+                        <input type="number" min="0" max="23"  name="exitHours">
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <textarea class="form-control borColor"  name="text" id="exampleFormControlTextarea1" rows="3"placeholder="סיבה"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" formaction="addReason" class="btn btn-sm okBtn" ><img src="css/images/okBtn.png"class="img-fluid okBtnImg"> </button>
+                </div>
+
+            </form>
         </div>
 
+    </div>
+</div>
+</div>
 
-        #parse("jsTemp.vm")
 
-    </body>
+    #parse("jsTemp.vm")
+
+</body>
 </html>
+

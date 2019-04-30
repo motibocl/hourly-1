@@ -9,7 +9,7 @@ days[3] = "יום רביעי,";
 days[4] = "יום חמישי,";
 days[5] = "יום שישי,";
 days[6] = "יום שבת,";
-document.getElementById("date").innerHTML = days[today.getDay()] + "<br />" + today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
+document.getElementById("date").innerHTML = days[today.getDay()] + "<br/>" + today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
 document.getElementById("showTime").innerHTML = today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
 
 function getStatus() {
@@ -165,4 +165,46 @@ function closeNav() {
 function returnToMainPage() {
     window.location.replace("main");
 
+}
+/*------------------------------------------------------------------*/
+function convert(string) {
+    var minutes2;
+    var hours2=parseInt(string.slice(0,2));
+    if(hours2<10){
+        minutes2=parseInt(string.slice(2,6));
+    }
+    else{
+        minutes2=parseInt(string.slice(3,6));
+    }
+    hours2=hours2*60;
+    var total1=hours2+minutes2;
+    return total1;
+}
+function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day) {
+    var enter = convert(enterTime);
+    var exit = convert(exitTime);
+    var data = 'emplid='
+        + encodeURIComponent(emplid)
+        + '&enterTime='
+        + encodeURIComponent(enter)
+        + '&exitTime='
+        + encodeURIComponent(exit)
+        + '&date='
+        + encodeURIComponent(date)
+        + '&day='
+        + encodeURIComponent(day)
+        + '&reason='
+        + encodeURIComponent(reason);
+    $.ajax({
+        type: 'POST',
+        url: "confirmAndAdd",
+        data: data,
+        success: function (data) {
+            console.log('success', data);
+
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
 }
