@@ -1,13 +1,18 @@
 package com.elector.Controllers;
 
 
+import com.elector.Objects.Entities.EmployeeObject;
 import com.elector.Persist;
 import com.elector.Utils.sendSMS;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
@@ -34,7 +40,7 @@ public class SampleController {
     private static Connection dbConnection;
     private static final String SECRET_KEY = "fgmdfgfdke34932HASDBAbsahdbsaBHbBHJBbhb";
     private static final String SESSION = "foo";
-
+    //private static String jsonString="{id : \"\", month : \"\",year : \"\"}";
     Date now = new Date();
     java.sql.Date today = new java.sql.Date(now.getTime());//להגדיר בכל פונקציה כי יכול להיות שמשתמש לא יכבה מחשב והתאריך יהיה התאריך האחרון שהוצב במשתנה
 //
@@ -91,7 +97,24 @@ public class SampleController {
 
         return "request";
     }
+/*--------------------------------------------------------------------------------------------------------------------------------------*/
+@RequestMapping(value = "test" , method = RequestMethod.POST)
+public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
+    System.out.print(jsonString);
+   // JSONObject json1=new JSONObject(jsonString);
+    JSONObject json=new JSONObject();
+   // System.out.print(json1.getString("name"));
+    json.put("name","moti");
+    json.put("age",25);
 
+    return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+
+}
+
+
+
+
+ /*--------------------------------------------------------------------------------------------------------------------------------------*/
     @RequestMapping("/remove-employee")
     public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
         persist.removeEmployee(parseInt(id));
@@ -115,13 +138,15 @@ public class SampleController {
         try {
             model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
 
-            String name = "";
-            ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
-            while (result.next()) {
-                name = result.getString("employeeName");
-            }
+          //  String name = "";
+            //ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
+            EmployeeObject employeeObject=persist. getEmployeeByPhone(phone);
 
-            model.addAttribute("name", "ברוך הבא  " + name);//the welcome back page title.
+            //  while (result.next()) {
+           //     name = result.getString("employeeName");
+          //  }
+
+            model.addAttribute("name", "ברוך הבא  " + employeeObject.getName());//the welcome back page title.
             //getting all the working time list
             ResultSet rs2 = persist.selectWorkTimeByDay(parseInt(getEmployeeId(cookie)),today);
             float workedToday = 0;
@@ -251,12 +276,10 @@ public class SampleController {
     }
     @RequestMapping("/sendSms")
     public String sendSms(Model model, @RequestParam("login")String phone) throws Exception {
-        ResultSet rs=persist.selectEmployeeByPhone(phone);
-        String pass="";
-        while (rs.next()){
-            pass=rs.getString("employeePassword");
+        EmployeeObject employeeObject=persist. getEmployeeByPhone(phone);
+       if(employeeObject!=null){
             sendSMS sms=new  sendSMS ();
-            sms.sendSms(pass);
+            sms.sendSms(employeeObject.getPassword());
         }
         return "Landing_page";
     }
@@ -343,14 +366,24 @@ public class SampleController {
         worktimeList.add(dateListDetails);
         return  worktimeList;
     }
-
+    //@RequestParam (value = "jsonString", defaultValue = "{id : \"\", month : \"\",year : \"\"}") String jsonString
+//,@RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id
     @RequestMapping("/reports")
-    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id) throws Exception {
+    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie,@RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id
+    ) throws Exception {
 
         if (!checkCookie(cookie))
             return "Landing_page";
 
         try {
+           // EmployeeObject employeeObject = persist.loadObject(EmployeeObject.class, 1);;
+           // List<EmployeeObject> employeeObjectList = persist.loadList(EmployeeObject.class);
+
+            //JSONObject json=new JSONObject(jsonString);
+           // String month=json.getString("month");
+           //String year=json.getString("year");
+          //  String id=json.getString("id");
+
             model.addAttribute("employeeName","");
 
             model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));

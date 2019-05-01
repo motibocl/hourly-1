@@ -27,8 +27,8 @@ public class ConfigUtils {
 
     @PostConstruct
     private void initialize() {
-        config = generalManager.getList(ConfigObject.class);
-        LOGGER.info("Config is initialized with properties size {}", config.size());
+//        config = generalManager.getList(ConfigObject.class);
+//        LOGGER.info("Config is initialized with properties size {}", config.size());
     }
 
     public void reloadConfig () {

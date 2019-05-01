@@ -459,11 +459,20 @@ public class Persist {
     }
 
 
-    public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
+  /*  public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
         PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
         statement.setInt(1, parseInt(phone));
         return statement.executeQuery();
     }
+*/
+    public EmployeeObject getEmployeeByPhone (String phone){
+        EmployeeObject employeeObject = (EmployeeObject) getQuerySession()
+                .createQuery("FROM EmployeeObject WHERE phone =:phone")
+                .setString("phone",phone)
+                .uniqueResult();
+        return employeeObject;
+    }
+
 
     public ResultSet selectWorkTimeMonth(int todayMonth, int todayYear, int employeeId) throws SQLException {
         PreparedStatement Stmt2 = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and MONTH(date)=? and YEAR (date)=?");
@@ -484,6 +493,13 @@ public class Persist {
         PreparedStatement Stmt1 = connect("select * from test2.employee WHERE test2.employee.employeeId=?;");
         Stmt1.setInt(1, employeeId);
         return Stmt1.executeQuery();
+    }
+    public EmployeeObject getEmployeeById (int employeeId){
+        EmployeeObject employeeObject = (EmployeeObject) getQuerySession()
+                .createQuery("FROM EmployeeObject WHERE id =:id")
+                .setInteger("id",employeeId)
+                .uniqueResult();
+        return employeeObject;
     }
 
     public void updateButtonStatus(int button, int employeeId) throws SQLException {

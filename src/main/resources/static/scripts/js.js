@@ -25,7 +25,49 @@ function getStatus() {
         }
     });
 }
+function f() {
+   /* var obj = new Object();
+    obj.id =  document.getElementById("id").value;
+    obj.year  =document.getElementById("month").value;
+    obj.month = document.getElementById("year").value;
+    var jsonString= JSON.stringify(obj);
+    $.ajax({
+        url:"reports",
+        type:"POST",
+        contentType: "application/json; charset=utf-8",
+        data: jsonString, //Stringified Json Object
+        async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+        cache: false,    //This will force requested pages not to be cached by the browser
+        processData:false, //To avoid making query String instead of JSON
+        success: function(resposeJsonObject){
+            // Success Message Handler
+            var obj = JSON.parse(resposeJsonObject);
+           alert(obj.name.toString()) ;
+        }
+    });*/
+    var month=document.getElementById("month").value;
+    var id=$('input[name=id]').val();
+    var year=$('input[name=year]').val();
+    var data = 'id='
+        + encodeURIComponent(id)
+        + '&month='
+        + encodeURIComponent(month)
+        + '&year='
+        + encodeURIComponent(year);
+    $.ajax({
+        type: 'POST',
+        url: "reports",
+        data:data,
+        success: function (data) {
+            console.log('success', data);
 
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+
+}
 function changeImage() {
 
     if (!entered) {

@@ -32,7 +32,7 @@ public class AppConfig {
         dataSource.setDriverClass("com.mysql.jdbc.Driver");
         Properties dbProps = new Properties();
         dbProps.load(new FileInputStream(new File(dbPropertiesPath)));
-        dataSource.setJdbcUrl(String.format("jdbc:mysql://%s/office?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf8", dbProps.getProperty("server")));
+        dataSource.setJdbcUrl(String.format("jdbc:mysql://%s/test2?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf8", dbProps.getProperty("server")));
         dataSource.setUser(dbProps.getProperty("user"));
         dataSource.setPassword(dbProps.getProperty("password"));
         dataSource.setMaxPoolSize(20);

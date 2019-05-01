@@ -37,15 +37,15 @@
             <div class="col-4 formRep">
 
 
-                 <div class="form-group">
-                     <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
-                 </div>
+                ## <div class="form-group">
+                     <input type="number" class="form-control borColor" id="id" name="id" placeholder="מספר עובד">
+              ##   </div>
              </div>
                  <div class="col-4 formRep">
 
-                     <div class="form-group">
-                         <select class="form-control borColor" id="exampleFormControlSelect1" name="month" >
-                             <option value="0">בחר חודש...</option>
+                     ##<div class="form-group">
+                         <select class="form-control borColor" id="month" name="month" >
+                             <option value="">בחר חודש...</option>
                              <option value="1">ינואר</option>
                              <option value="2">פברואר</option>
                              <option value="3">מרץ</option>
@@ -61,19 +61,23 @@
                          </select>
                      </div>
 
-                 </div>
+                ## </div>
 
-                 <div class="col-4 formRep">
+                 <div class="col-3 formRep">
 
 
-                     <div class="form-group">
-                         <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="year" placeholder="שנה">
+                 ##    <div class="form-group">
+                         <input type="number" class="form-control borColor" id="year" name="year" placeholder="שנה">
+                     </div>
+               ##  </div>
+                     <div class="col-1 formRep">
+
+                  ##   <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
+                     <button  style="margin-top:auto;" class="btn btn-primary loginBtn" onclick="f()">בחר</button>
                      </div>
 
-                     <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
-                 </div>
              </div>
-         </form >
+</form>
 
          #{else}   ##if its not admin
          <form class="container report" >

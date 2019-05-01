@@ -4,46 +4,37 @@
 <hibernate-mapping>
 
 
-    <class name="com.elector.Objects.Entities.ConfigObject" table="config">
-        <id name="oid" type="int" column="oid">
+    <!--<class name="com.elector.Objects.Entities.EmployeeObject" table="employee">-->
+    <!--<id name="oid" type="int" column="oid">-->
+    <!--<generator class="native"/>-->
+    <!--</id>-->
+    <!--<property name="configKey" type="string" column="config_key"/>-->
+    <!--<property name="configValue" type="string" column="config_value"/>-->
+    <!--<property  name="deleted" type="boolean">-->
+    <!--<column name="deleted"  default="false"/>-->
+    <!--</property>-->
+
+    <!--</class>-->
+
+
+    <class name="com.elector.Objects.Entities.EmployeeObject" table="employee" lazy="false">
+        <id name="id" type="int" column="employeeId">
             <generator class="native"/>
         </id>
-        <property name="configKey" type="string" column="config_key"/>
-        <property name="configValue" type="string" column="config_value"/>
-        <property  name="deleted" type="boolean">
-            <column name="deleted"  default="false"/>
-        </property>
-
+        <property name="name" type="string" column="employeeName"/>
+        <property name="phone" type="string" column="employeePhone"/>
+        <property name="password" type="string" column="employeePassword"/>
+        <property name="enterOrExit" type="boolean" column="enterOrExit"/>
+        <many-to-one name="companyObject" column="companyId" class="com.elector.Objects.Entities.CompanyObject"/>
     </class>
 
-
-    <class name="com.elector.Objects.Entities.TranslationObject" table="translations" lazy="false">
-        <id name="oid" type="int" column="oid">
+    <class name="com.elector.Objects.Entities.CompanyObject" table="company" lazy="false">
+        <id name="id" type="int" column="companyId">
             <generator class="native"/>
         </id>
-        <property name="translationKey" column="translation_key" type="string"/>
-        <property name="translationValue" column="translation_value" type="string"/>
-        <property name="en" column="en" type="string"/>
-        <property  name="deleted" type="boolean">
-            <column name="deleted"  default="false"/>
-        </property>
+        <property name="name" type="string" column="companyName"/>
+        <property name="address" type="string" column="companyAdress"/>
     </class>
-
-    <class name="com.elector.Objects.Entities.LangObject" table="languages">
-        <id name="oid" type="int" column="oid">
-            <generator class="native"/>
-        </id>
-        <property name="code" type="int" column="code"/>
-        <property name="name" type="string" column="name"/>
-        <property  name="active" type="boolean">
-            <column name="active"  default="false"/>
-        </property>
-        <property  name="deleted" type="boolean">
-            <column name="deleted"  default="false"/>
-        </property>
-
-    </class>
-
 
 
 </hibernate-mapping>
