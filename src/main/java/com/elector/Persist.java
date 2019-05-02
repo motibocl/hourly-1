@@ -489,11 +489,11 @@ public class Persist {
         return Stmt.executeQuery();
     }
 
-    public ResultSet selectEmployeeById(int employeeId) throws SQLException {
+    /*public ResultSet selectEmployeeById(int employeeId) throws SQLException {
         PreparedStatement Stmt1 = connect("select * from test2.employee WHERE test2.employee.employeeId=?;");
         Stmt1.setInt(1, employeeId);
         return Stmt1.executeQuery();
-    }
+    }*/
     public EmployeeObject getEmployeeById (int employeeId){
         EmployeeObject employeeObject = (EmployeeObject) getQuerySession()
                 .createQuery("FROM EmployeeObject WHERE id =:id")
@@ -501,13 +501,26 @@ public class Persist {
                 .uniqueResult();
         return employeeObject;
     }
-
-    public void updateButtonStatus(int button, int employeeId) throws SQLException {
+    public AdminObject getAdminById (int id){
+        AdminObject adminObject = (AdminObject) getQuerySession()
+                .createQuery("FROM AdminObject WHERE id =:id")
+                .setInteger("id",id)
+                .uniqueResult();
+        return adminObject;
+    }
+    public AdminObject getAdminByPhone (String phone){
+        AdminObject adminObject = (AdminObject) getQuerySession()
+                .createQuery("FROM AdminObject WHERE phone =:phone")
+                .setString("phone",phone)
+                .uniqueResult();
+        return adminObject;
+    }
+  /*  public void updateButtonStatus(int button, int employeeId) throws SQLException {
         PreparedStatement preparedStmt = connect("update test2.employee set enterOrExit=? where employeeId=? ");
         preparedStmt.setInt(1, button);
         preparedStmt.setInt(2, employeeId);
         preparedStmt.execute();
-    }
+    }*/
 
     public void addWorktime(int employeeId, Float enterTime, Date today, String dayOfTheWeek) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)");
@@ -571,7 +584,7 @@ public class Persist {
         myStmt.setInt(4, employeeId);
         return myStmt.executeQuery();
     }
-    public ResultSet selectEmployee( int employeeId) throws SQLException {
+    public ResultSet selectEmployee( int employeeId) throws SQLException {//erase when we open table for admin
         PreparedStatement myStmt = connect("SELECT * from employee where employeeId=? ");
         myStmt.setInt(1, employeeId);
         return myStmt.executeQuery();
@@ -589,10 +602,15 @@ public class Persist {
         preparedStmt.execute();
     }
     public void removeEmployee(int employeeId) throws SQLException {
-        PreparedStatement preparedStmt = connect("delete from employee where employeeId=?");
+        PreparedStatement preparedStmt = connect("delete from reasons where employeeId=?");
         preparedStmt.setInt(1, employeeId);
         preparedStmt.execute();
-
+        preparedStmt = connect("delete from worktime where employeeId=? ");
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.execute();
+        preparedStmt = connect("delete from employee where employeeId=? ");
+        preparedStmt.setInt(1, employeeId);
+        preparedStmt.execute();
     }
     public void addAfterConfirm(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String dayOfTheWeek,String comment ) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek,comment) values (?,?,?,?,?,?,?)");

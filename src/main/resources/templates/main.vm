@@ -7,12 +7,14 @@
     #parse("cssTemp.vm")
     <title>Hourly|main</title>
 </head>
-<body id="page1" onload="clearCache();getStatus()">
     #if($admin)
-        #parse("adminNav.vm")
+        #parse("adminMain.vm")
     #{else}
+
+    <body id="page1" onload="clearCache();getStatus()">
+
     #parse("header.vm")
-   #end
+
 <p class="spring">$name</p>
 <div class="container timeEnter">
     <div class="row">
@@ -77,3 +79,4 @@
 
 </body>
 </html>
+    #end

@@ -1,8 +1,11 @@
 package com.elector.Controllers;
 
 
+import com.elector.Objects.Entities.AdminObject;
+import com.elector.Objects.Entities.CompanyObject;
 import com.elector.Objects.Entities.EmployeeObject;
 import com.elector.Persist;
+import com.elector.Sms.model.Phone;
 import com.elector.Utils.sendSMS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -77,13 +80,24 @@ public class SampleController {
          float enterTime=parseInt(enterHours)*60+parseInt(enterMinutes);
          float exitTime=parseInt(exitHours)*60+parseInt(exitMinutes);
 
-         persist.sendReason(parseInt(getEmployeeId(cookie)), text, reasonDate,enterTime,exitTime);//adding reason to dataBase
+         persist.sendReason(getEmployeeId(cookie), text, reasonDate,enterTime,exitTime);//adding reason to dataBase
          return "redirect:/main";
      }
 
     @RequestMapping("/add-employee")
     public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
-        persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
+        CompanyObject companyObject= persist.loadObject(CompanyObject.class, 1);
+        EmployeeObject employeeObject=new EmployeeObject();
+        employeeObject.setId(parseInt(id));
+        employeeObject.setCompanyObject(companyObject);
+        employeeObject.setName(name);
+        employeeObject.setPassword(password);
+        employeeObject.setPhone(empPhone);
+        persist.save(employeeObject);
+
+
+
+        // persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
 
         return "redirect:/administration";
     }
@@ -124,7 +138,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
     //Sending comments "What did you do today"
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
     public String getCommentary(@RequestParam String commentary, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        persist.sendComment(parseInt(getEmployeeId(cookie)),commentary);//sendin the comment
+        persist.sendComment(getEmployeeId(cookie),commentary);//sendin the comment
 
         return "reports";
     }
@@ -137,7 +151,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
             return "Landing_page";
         try {
             model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
-
+            AdminObject adminObject=persist.getAdminByPhone(phone);
           //  String name = "";
             //ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
             EmployeeObject employeeObject=persist. getEmployeeByPhone(phone);
@@ -145,10 +159,13 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
             //  while (result.next()) {
            //     name = result.getString("employeeName");
           //  }
-
+            if (adminObject!=null)
+                model.addAttribute("name", "ברוך הבא  " + adminObject.getName());//the welcome back page title.
+            else
             model.addAttribute("name", "ברוך הבא  " + employeeObject.getName());//the welcome back page title.
             //getting all the working time list
-            ResultSet rs2 = persist.selectWorkTimeByDay(parseInt(getEmployeeId(cookie)),today);
+            if (employeeObject!=null) {
+            ResultSet rs2 = persist.selectWorkTimeByDay(getEmployeeId(cookie),today);
             float workedToday = 0;
             ArrayList<String> timeWorkList = new ArrayList<String>();
             //counting how many hours the employee worked this day.
@@ -157,42 +174,43 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                 timeWorkList.add("זמן עבודה: " + timeString(rs2.getFloat("enterTime")) + "  ->   " + timeString(rs2.getFloat("exitTime")));
                 //adding to a list of working hours.
             }
-            ResultSet rs = persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));
-            boolean clicked = false;
-            while (rs.next()) {
-                clicked = rs.getBoolean("enterOrExit");
-            }
-            //change button image if clicked or not.
-            if (!clicked) {
-                model.addAttribute("url", "css/images/enter-button2.png");
-                model.addAttribute("id", "0");
-            } else {
-                model.addAttribute("url", "css/images/exit-button.png");
-                model.addAttribute("id", "1");
-                if(timeWorkList.size()>0)
-                    timeWorkList.remove( timeWorkList.size()-1);
+            //ResultSet rs = persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));
+         //   boolean clicked = false;
+           // while (rs.next()) {
+
+                boolean clicked = employeeObject.isEnterOrExit();
+                //}
+                //change button image if clicked or not.
+                if (!clicked) {
+                    model.addAttribute("url", "css/images/enter-button2.png");
+                    // model.addAttribute("id", "0");
+                } else {
+                    model.addAttribute("url", "css/images/exit-button.png");
+                    //  model.addAttribute("id", "1");
+                    if (timeWorkList.size() > 0)
+                        timeWorkList.remove(timeWorkList.size() - 1);
+
+                }
+
+                String time = "הזמן שעבדת היום: " + timeString(workedToday);//all the time that the employee worked.
+                model.addAttribute("workedToday", time);
+                model.addAttribute("timeWorkList", timeWorkList);
+                //getting the month and the year from calendar object.
+                Date date = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
+                int todayYear = calendar.get(Calendar.YEAR);//year current
+                ResultSet rs3 = persist.selectWorkTimeMonth(todayMonth + 1, todayYear, getEmployeeId(cookie));//getting resultset for all worked time in a month.
+                float workedThisMonth = 0;//count the month working time.
+                while (rs3.next()) {
+                    workedThisMonth += rs3.getFloat("totalhoursWorked");
+                }
+                //the string .
+                String timeMonth = "הזמן שעבדת החודש: " + timeString(workedThisMonth);
+                model.addAttribute("timeWorkMonth", timeMonth);
 
             }
-
-            String time = "הזמן שעבדת היום: " + timeString(workedToday);//all the time that the employee worked.
-            model.addAttribute("workedToday", time);
-            model.addAttribute("timeWorkList", timeWorkList);
-            //getting the month and the year from calendar object.
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
-            int todayYear = calendar.get(Calendar.YEAR);//year current
-            ResultSet rs3 = persist.selectWorkTimeMonth(todayMonth+1,todayYear ,parseInt(getEmployeeId(cookie)) );//getting resultset for all worked time in a month.
-            float workedThisMonth = 0;//count the month working time.
-            while (rs3.next()) {
-                workedThisMonth += rs3.getFloat("totalhoursWorked");
-            }
-            //the string .
-            String timeMonth = "הזמן שעבדת החודש: " + timeString(workedThisMonth);
-            model.addAttribute("timeWorkMonth", timeMonth);
-
-
             return "main";
         } catch (Exception exc) {
             return "error";
@@ -201,23 +219,27 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
     @ResponseBody
     @RequestMapping("/buttonStatus")
     public  boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
-        boolean enterOrExit = false;
-        if(rs.next()) {
-            enterOrExit = rs.getBoolean("enterOrExit");
-        }
+        EmployeeObject employeeObject=persist. getEmployeeById(getEmployeeId(cookie));
+
+       // ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
+       // boolean enterOrExit = false;
+       // if(rs.next()) {
+        boolean  enterOrExit = employeeObject.isEnterOrExit();
+       // }
         return enterOrExit;
     }
-
     @RequestMapping("/addWorkTime")
-    public String addWorkTime(Model model, @RequestParam("button") int button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
+    public String addWorkTime(Model model, @RequestParam("button") boolean button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
         if (checkCookie(cookie)) {//לשנות לא צריך
-            persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
+            EmployeeObject employeeObject=persist. getEmployeeById(getEmployeeId(cookie));
+            employeeObject.setEnterOrExit(button);
+            persist.save(employeeObject);//for saving updates.
+            //  persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
             Date day = new Date();
             Calendar c = Calendar.getInstance();
             c.setTime(day);
             String[] dayOfTheWeek = {"יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "יום ז"};
-            persist.addWorktime(parseInt(getEmployeeId(cookie)),enterTime,today,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
+            persist.addWorktime(getEmployeeId(cookie),enterTime,today,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
             model.addAttribute("url", "css/images/exit-button.png");
 
              return "redirect:/main";
@@ -301,13 +323,17 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
 
     @ResponseBody
     @RequestMapping("/updateWorkTime")
-    public String updateWorkTime(Model model, @RequestParam("button") int button, @RequestParam("exitTime") float exitTime, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+    public String updateWorkTime(Model model, @RequestParam("button") boolean button, @RequestParam("exitTime") float exitTime, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         if (checkCookie(cookie)) {
+            EmployeeObject employeeObject=persist. getEmployeeById(getEmployeeId(cookie));
+
             float exit = exitTime;
             float total = exitTime - enterTime(cookie);
-            persist.updateWorktime(exit,total,parseInt(getEmployeeId(cookie)));//updating total and exitTime.
-            persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));//updating button status.
-            ResultSet rs2 = persist.selectLastWorktime(parseInt(getEmployeeId(cookie)),today);//getting the last working time registered in the db by the user.
+            persist.updateWorktime(exit,total,getEmployeeId(cookie));//updating total and exitTime.
+            employeeObject.setEnterOrExit(button);
+            persist.save(employeeObject);
+            // persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));//updating button status.
+            ResultSet rs2 = persist.selectLastWorktime(getEmployeeId(cookie),today);//getting the last working time registered in the db by the user.
             float workedToday = 0;
             StringBuilder workingTime= new StringBuilder();
             //counting how many hours the employee worked this day.
@@ -365,6 +391,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         worktimeList.add(hoursListDetails);
         worktimeList.add(dateListDetails);
         return  worktimeList;
+
     }
     //@RequestParam (value = "jsonString", defaultValue = "{id : \"\", month : \"\",year : \"\"}") String jsonString
 //,@RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id
@@ -387,13 +414,15 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
             model.addAttribute("employeeName","");
 
             model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+            EmployeeObject employeeObject=persist. getEmployeeById(getEmployeeId(cookie));
+
             if(!id.equals("")&&!month.equals("") && !year.equals("")) {
                 model.addAttribute("empId",id);
-                ResultSet result=persist.selectEmployeeById(parseInt(id));
-                String employeeName="";//GET THE NAME OF THE EMPLOYEE.
-                while (result.next()){
-                    employeeName=result.getString("employeeName");
-                }
+                //ResultSet result=persist.selectEmployeeById(parseInt(id));
+                //String employeeName="";//GET THE NAME OF THE EMPLOYEE.
+               // while (result.next()){
+                   String employeeName=employeeObject.getName();
+               // }
                 model.addAttribute("employeeName","פירוט החודש של "+employeeName);
                   ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
                   ResultSet rsExitTime;
@@ -425,7 +454,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
               }
             else if (!month.equals("") && !year.equals("")) {
                 model.addAttribute("empId",getEmployeeId(cookie));
-                ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(getEmployeeId(cookie)));
+                ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));
                 ResultSet rsExitTime;
                 ResultSet rsEnterTime;
                 ResultSet rsSumTime;
@@ -436,9 +465,9 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                 ArrayList<Date> dateList = new ArrayList<Date>();
 
                 for (int i = 1; i <= 31; i++) {
-                    rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the last worktime in a day.
-                    rsEnterTime = persist.selectFirstWorktimeDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the first worktime in a day.;
-                    rsSumTime = persist.totalHoursWorkedInDay(parseInt(year),parseInt(month),parseInt(getEmployeeId(cookie)),i);//get the total time worked in a day.
+                    rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the last worktime in a day.
+                    rsEnterTime = persist.selectFirstWorktimeDay(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the first worktime in a day.;
+                    rsSumTime = persist.totalHoursWorkedInDay(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the total time worked in a day.
 
                     if (rsSumTime.next() && rsEnterTime.next()&& rsExitTime.next()) {
                         dayList.add(rsEnterTime.getString("dayOfTheWeek"));
@@ -507,19 +536,28 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
 
     }
 */
-    private static boolean checkCredentials(String login, String pass) throws SQLException {
-        PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
-        try {
-            myStmt.setInt(1, parseInt(login));
-            myStmt.setString(2, pass);
-        } catch (Exception exc) {
-            return false;
-        }
-        ResultSet rs = myStmt.executeQuery();
-        return rs.next() ;
+    private boolean checkCredentials(String phone, String pass) throws SQLException {
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(phone);
+        AdminObject adminObject=persist.getAdminByPhone(phone);
+        if (adminObject!=null&&adminObject.getPassword().equals(pass))
+            return true;
+        if (employeeObject!=null&&employeeObject.getPassword().equals(pass))
+            return true;
+        return false;
+       // PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
+       // try {
+
+          //  myStmt.setInt(1, parseInt(phone));
+         //   myStmt.setString(2, pass);
+       // } catch (Exception exc) {
+          //  return false;
+       // }
+      //  ResultSet rs = myStmt.executeQuery();
+      //  return rs.next() ;
     }
 
     private String generateToken(String login) {
+
         StringBuilder text = new StringBuilder();
         for (int i = 0; i < login.length(); i++) {
             if (login.charAt(i) == '0')
@@ -593,23 +631,30 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
             return "" + hoursTime + ":" + minutesTime;
     }
 
-    private String getEmployeeId(String phone) throws SQLException {
-        String id = "";
+    private int getEmployeeId(String phone) throws SQLException {
         String employeePhone = convertToken(phone);
-        PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-        statement.setInt(1, parseInt(employeePhone));
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            id = result.getString("employeeId");
+        int id = 0;
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(employeePhone);
+        AdminObject adminObject=persist.getAdminByPhone(employeePhone);
+        if (adminObject!=null)
+           id=adminObject.getId();
+        if (employeeObject!=null)
+            id=employeeObject.getId();
+       // String employeePhone = convertToken(phone);
+        //PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+       // statement.setInt(1, parseInt(employeePhone));
+       // ResultSet result = statement.executeQuery();
+       // while (result.next()) {
+          //  id = result.getString("employeeId");
             //name=result.getString("employeeName");
-        }
+       // }
         return id;
     }
 
     private int enterTime(String phone) throws SQLException {
         int timeEnter = 0;
-        PreparedStatement statement = dbConnection.prepareStatement("select * from test2.worktime WHERE  employeeId=? order by timeId desc limit 1; ");
-        statement.setInt(1, parseInt(getEmployeeId(phone)));
+        PreparedStatement statement = dbConnection.prepareStatement("select * from test2.worktime WHERE  id=? order by timeId desc limit 1; ");
+        statement.setInt(1, getEmployeeId(phone));
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             timeEnter = (int) result.getFloat("enterTime");
@@ -619,15 +664,24 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
     }
 //Integer.valueOf(phone)
     private boolean isPhoneNumberExist (String phone) throws SQLException {
-        PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-        statement.setInt(1, Integer.valueOf(phone));
-        ResultSet result = statement.executeQuery();
-        return result.next();
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(phone);
+        AdminObject adminObject=persist.getAdminByPhone(phone);
+        if (adminObject!=null)
+            return true;
+        if (employeeObject!=null)
+            return true;
+        return false;
+
+        // PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+        //statement.setInt(1, Integer.valueOf(phone));
+        //ResultSet result = statement.executeQuery();
+       // return result.next();
     }
-    private boolean isAdmin(String id) throws SQLException {
-        ResultSet result=persist.selectEmployee(parseInt(id));
-        if(result.next())
-        return result.getBoolean("isAdmin");
+    private boolean isAdmin(int id) throws SQLException {
+        AdminObject adminObject=persist.getAdminById(id);
+       // ResultSet result=persist.selectEmployee(parseInt(id));
+        if(adminObject!=null)
+        return true;
         else
             return false;
     }

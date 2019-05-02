@@ -1,0 +1,12 @@
+
+<body id="page1" onload="clearCache()">
+
+        #parse("adminNav.vm")
+        <p class="spring">$name</p>
+
+
+
+    #parse("jsTemp.vm")
+
+</body>
+</html>

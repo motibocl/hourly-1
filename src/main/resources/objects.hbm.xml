@@ -15,16 +15,38 @@
     <!--</property>-->
 
     <!--</class>-->
+    <class name="com.elector.Objects.Entities.ReasonObject" table="reasons" lazy="false">
+        <id name="reasonId" type="int"  column="reasonId" >
+            <generator class="native"/>
+        </id>
+        <property name="enterTime" type="float" column="enterTime"/>
+        <property name="exitTime" type="float" column="exitTime"/>
+        <property name="howManyHours" type="int" column="howManyHours" />
+        <property name="reasonText" type="string" column="reasonText"/>
+        <property name="date" type="string" column="date"/>
+        <many-to-one name="EmployeeObject" column="id" class="com.elector.Objects.Entities.EmployeeObject"/>
+    </class>
+
+    <class name="com.elector.Objects.Entities.AdminObject" table="Admins" lazy="false">
+        <id name="id" type="int"  column="id" >
+            <generator class="native"/>
+        </id>
+        <property name="email" type="string" column="email"/>
+        <property name="name" type="string" column="name"/>
+        <property name="phone" type="string" column="phone" />
+        <property name="password" type="string" column="password"/>
+        <many-to-one name="companyObject" column="companyId" class="com.elector.Objects.Entities.CompanyObject"/>
+    </class>
 
 
     <class name="com.elector.Objects.Entities.EmployeeObject" table="employee" lazy="false">
-        <id name="id" type="int" column="employeeId">
+        <id name="id" type="int" column="id">
             <generator class="native"/>
         </id>
-        <property name="name" type="string" column="employeeName"/>
-        <property name="phone" type="string" column="employeePhone"/>
-        <property name="password" type="string" column="employeePassword"/>
-        <property name="enterOrExit" type="boolean" column="enterOrExit"/>
+        <property name="name" type="string" column="name"/>
+        <property name="phone" type="string" column="phone"/>
+        <property name="password" type="string" column="password"/>
+        <property name="enterOrExit" type="boolean" column="enterOrExit" not-null="true"/>
         <many-to-one name="companyObject" column="companyId" class="com.elector.Objects.Entities.CompanyObject"/>
     </class>
 
