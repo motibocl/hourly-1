@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
 
     }
 
@@ -458,6 +458,18 @@ public class Persist {
         return statement.executeQuery();
     }
 
+   /* public List<ReasonObject>  showRequests() throws SQLException {
+        List<ReasonObject> reasonObject=(List<ReasonObject>) getQuerySession()
+                .createQuery("SELECT reasonText,date, FROM ReasonObject ")
+                .setInteger("id",employeeId)
+                .setInteger("month",todayMonth)
+                .setInteger("year",todayYear)
+                .list();
+
+
+        return statement.executeQuery();
+    }
+*/
 
   /*  public ResultSet selectEmployeeByPhone(String phone) throws SQLException {
         PreparedStatement statement = connect("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
@@ -481,12 +493,30 @@ public class Persist {
         Stmt2.setInt(3, todayYear);
         return Stmt2.executeQuery();//excuting query.
     }
-
-    public ResultSet selectWorkTimeByDay(int employeeId, Date today) throws SQLException {
+    public List<WorktimeObject> getWorkTimeMonth(int todayMonth, int todayYear, int employeeId) throws SQLException {
+        List<WorktimeObject> worktimeObject=(List<WorktimeObject>) getQuerySession()
+                .createQuery("FROM WorktimeObject WHERE EmployeeObject=:id AND month(date)=:month AND year(date)=:year")
+                .setInteger("id",employeeId)
+                .setInteger("month",todayMonth)
+                .setInteger("year",todayYear)
+                .list();
+        return worktimeObject;//excuting query.
+    }
+   /* public ResultSet selectWorkTimeByDay(int employeeId, Date today) throws SQLException {
         PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
         Stmt.setInt(1, employeeId);
         Stmt.setDate(2, (java.sql.Date) today);
         return Stmt.executeQuery();
+    }*/
+    public List<WorktimeObject> getWorkTimeByDay (int id,Date today){
+        List<WorktimeObject> worktimeObject = (List<WorktimeObject>) getQuerySession()
+                .createQuery("FROM WorktimeObject WHERE EmployeeObject=:id AND date=:date ")
+                .setInteger("id",id)
+                .setDate("date",today)
+                .list();
+       // worktimeObject.get(1).getEmployeeObject().getId()
+
+        return worktimeObject;
     }
 
     /*public ResultSet selectEmployeeById(int employeeId) throws SQLException {
@@ -496,7 +526,7 @@ public class Persist {
     }*/
     public EmployeeObject getEmployeeById (int employeeId){
         EmployeeObject employeeObject = (EmployeeObject) getQuerySession()
-                .createQuery("FROM EmployeeObject WHERE id =:id")
+                .createQuery("FROM EmployeeObject WHERE id=:id")
                 .setInteger("id",employeeId)
                 .uniqueResult();
         return employeeObject;
@@ -522,7 +552,7 @@ public class Persist {
         preparedStmt.execute();
     }*/
 
-    public void addWorktime(int employeeId, Float enterTime, Date today, String dayOfTheWeek) throws SQLException {
+    /*public void addWorktime(int employeeId, Float enterTime, Date today, String dayOfTheWeek) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek) values (?,?,?,?,?,?)");
         preparedStmt2.setInt(1, employeeId);
         preparedStmt2.setFloat(2, enterTime);
@@ -531,22 +561,31 @@ public class Persist {
         preparedStmt2.setDate(5, (java.sql.Date) today);
         preparedStmt2.setString(6, dayOfTheWeek);
         preparedStmt2.execute();
-    }
+    }*/
 
-    public void updateWorktime(Float exit, Float total, int employeeId) throws SQLException {
+   /* public void updateWorktime(Float exit, Float total, int employeeId) throws SQLException {
         PreparedStatement preparedStmt = connect(" update test2.worktime set exitTime=?,totalhoursWorked=?  where employeeId=? order by timeId DESC limit 1");
         preparedStmt.setFloat(1, exit);
         preparedStmt.setFloat(2, total);
         preparedStmt.setInt(3, employeeId);
         preparedStmt.execute();
+    }*/
+
+    public  WorktimeObject getWorktime(int employeeId) throws SQLException {
+        WorktimeObject worktimeObject = (WorktimeObject) getQuerySession()
+                .createQuery("FROM WorktimeObject WHERE EmployeeObject=:id ORDER BY timeId DESC")
+                .setInteger("id",employeeId)
+                .setMaxResults(1)
+                .uniqueResult();
+        return worktimeObject;
     }
 
-    public ResultSet selectLastWorktime(int employeeId, Date today) throws SQLException {
+   /* public ResultSet selectLastWorktime(int employeeId, Date today) throws SQLException {
         PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=? order by  timeId desc limit 1");
         Stmt.setInt(1, employeeId);
         Stmt.setDate(2, (java.sql.Date) today);
         return Stmt.executeQuery();
-    }
+    }*/
 
     public ResultSet selectLastWorktimeDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT exitTime FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and employeeId=? and day(date)=? ORDER BY timeId DESC limit 1");

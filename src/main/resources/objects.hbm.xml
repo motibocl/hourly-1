@@ -15,6 +15,20 @@
     <!--</property>-->
 
     <!--</class>-->
+    <class name="com.elector.Objects.Entities.WorktimeObject" table="workTimes" lazy="false">
+        <id name="timeId" type="int"  column="timeId" >
+            <generator class="native"/>
+        </id>
+        <property name="enterTime" type="float" column="enterTime"/>
+        <property name="exitTime" type="float" column="exitTime"/>
+        <property name="date" type="java.sql.Date" column="date" />
+        <property name="totalHoursWorked" type="float" column="totalHoursWorked"/>
+        <property name="dayOfTheWeek" type="string" column="dayOfTheWeek"/>
+        <property name="comment" type="string" column="comment"/>
+        <many-to-one name="EmployeeObject" column="id" class="com.elector.Objects.Entities.EmployeeObject"/>
+    </class>
+
+
     <class name="com.elector.Objects.Entities.ReasonObject" table="reasons" lazy="false">
         <id name="reasonId" type="int"  column="reasonId" >
             <generator class="native"/>
@@ -23,7 +37,7 @@
         <property name="exitTime" type="float" column="exitTime"/>
         <property name="howManyHours" type="int" column="howManyHours" />
         <property name="reasonText" type="string" column="reasonText"/>
-        <property name="date" type="string" column="date"/>
+        <property name="date" type="java.sql.Date" column="date"/>
         <many-to-one name="EmployeeObject" column="id" class="com.elector.Objects.Entities.EmployeeObject"/>
     </class>
 
@@ -39,7 +53,7 @@
     </class>
 
 
-    <class name="com.elector.Objects.Entities.EmployeeObject" table="employee" lazy="false">
+    <class name="com.elector.Objects.Entities.EmployeeObject" table="employees" lazy="false">
         <id name="id" type="int" column="id">
             <generator class="native"/>
         </id>
@@ -50,7 +64,7 @@
         <many-to-one name="companyObject" column="companyId" class="com.elector.Objects.Entities.CompanyObject"/>
     </class>
 
-    <class name="com.elector.Objects.Entities.CompanyObject" table="company" lazy="false">
+    <class name="com.elector.Objects.Entities.CompanyObject" table="companies" lazy="false">
         <id name="id" type="int" column="companyId">
             <generator class="native"/>
         </id>

@@ -1,12 +1,14 @@
 package com.elector.Objects.Entities;
 
+import java.sql.Date;
+
 public class ReasonObject {
     private float exitTime;
     private float enterTime;
     private int howManyHours;
     private int reasonId;
     private String reasonText;
-    private String date;
+    private Date date;
     private EmployeeObject employeeObject;
 
     public float getExitTime() {
@@ -49,11 +51,11 @@ public class ReasonObject {
         this.reasonText = reasonText;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

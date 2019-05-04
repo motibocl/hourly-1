@@ -16,11 +16,11 @@
                 <img onclick="returnToMainPage()" src="css/images/logo2.png" class="img-fluid" alt="Responsive image" id="logo">
                 <br>
                 <br>
-                <form class="input" action="" method="post" id="login">
-                    <input class="form-control" type="text" name="login" placeholder="הכנס מס' טלפון">
+                <form class="input" action="" method="post" id="forgot">
+                    <input class="form-control" type="text" name="phone" placeholder="הכנס מס' טלפון">
                     <br>
                 </form>
-                <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="sendSms" >קבל סיסמא</button>
+                <button class="btn btn-primary loginBtn" type="submit" form="forgot" formaction="sendSms" >קבל סיסמא</button>
 
             </header>
         </div>
