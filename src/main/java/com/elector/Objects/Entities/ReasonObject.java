@@ -10,6 +10,15 @@ public class ReasonObject {
     private String reasonText;
     private Date date;
     private EmployeeObject employeeObject;
+public ReasonObject(){}
+    public ReasonObject(float exitTime,float enterTime,String reasonText,Date date,EmployeeObject employeeObject,int howManyHours){
+    this.enterTime=enterTime;
+    this.exitTime=exitTime;
+    this.date=date;
+    this.howManyHours=howManyHours;
+    this.employeeObject=employeeObject;
+    this.reasonText=reasonText;
+    }
 
     public float getExitTime() {
         return exitTime;

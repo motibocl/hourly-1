@@ -169,9 +169,10 @@ function clearCache() {
 }
 
 function repComment() {
-    var commentary = document.getElementsByName('commentary')[0].value;
-    var data = 'commentary='
-        + encodeURIComponent(commentary);
+
+    var comment = document.getElementsByName('commentary')[0].value;
+    var data = 'comment='
+        + encodeURIComponent(comment);
     $.ajax({
         type: 'POST',
         url: "sendComment",

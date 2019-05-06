@@ -9,7 +9,7 @@
                     <a href="reports"><h4 class=" nav">דוחות נוכחות</h4></a>
                     <a href="special_report"><h4 class="nav">דיווח מיוחד</h4></a>
                     <a href="administration"><h4 class="nav">ניהול עובדים</h4></a>
-                    <a href="request"><h4 class="nav">בקשות עובדים</h4></a>
+                    <a href="requests"><h4 class="nav">בקשות עובדים</h4></a>
                     <a href="logout"><h4 class="nav">התנתק</h4></a>
                     <div class="version">28.4.2019</div>
                 </div>
