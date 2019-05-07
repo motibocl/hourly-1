@@ -55,7 +55,6 @@
 
     <class name="com.elector.Objects.Entities.EmployeeObject" table="employees" lazy="false">
         <id name="id" type="int" column="id">
-            <generator class="native"/>
         </id>
         <property name="name" type="string" column="name"/>
         <property name="phone" type="string" column="phone"/>

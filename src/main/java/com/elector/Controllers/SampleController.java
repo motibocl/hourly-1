@@ -68,7 +68,22 @@ public class SampleController {
         String phone = convertToken(cookie);
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
-        model.addAttribute("admin",isAdmin(phone));
+        List<EmployeeObject>employeeObjectList=persist.loadList(EmployeeObject.class);
+        ArrayList<Integer>id=new ArrayList<Integer>() ;
+        ArrayList<String>name=new ArrayList<String>() ;
+        ArrayList<String>password=new ArrayList<String>() ;
+        ArrayList<String>phoneNum=new ArrayList<String>() ;
+        for (int i=0;i<employeeObjectList.size();i++){
+            id.add(employeeObjectList.get(i).getId());
+            name.add(employeeObjectList.get(i).getName());
+            password.add(employeeObjectList.get(i).getPassword());
+            phoneNum.add(employeeObjectList.get(i).getPhone());
+        }
+        model.addAttribute("id",id);
+        model.addAttribute("name",name);
+        model.addAttribute("password",password);
+        model.addAttribute("phone",phoneNum);
+
         return "administration";
 
     }
@@ -90,21 +105,30 @@ public class SampleController {
      }
 
     @RequestMapping("/add-employee")
-    public String addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "empPhone", defaultValue = "") String empPhone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
+    public @ResponseBody ResponseEntity addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "phone", defaultValue = "") String phone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
         CompanyObject companyObject= persist.loadObject(CompanyObject.class, 1);
         EmployeeObject employeeObject=new EmployeeObject();
         employeeObject.setId(parseInt(id));
         employeeObject.setCompanyObject(companyObject);
         employeeObject.setName(name);
         employeeObject.setPassword(password);
-        employeeObject.setPhone(empPhone);
+        employeeObject.setPhone(phone);
+        employeeObject.setEnterOrExit(false);
         persist.save(employeeObject);
+        JSONObject json=new JSONObject();
+        json.put("name",name);
+        json.put("id",id);
+        json.put("password",password);
+        json.put("phone",phone);
+
 
 
 
         // persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
 
-        return "redirect:/administration";
+        //return "redirect:/administration";
+        return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+
     }
     @RequestMapping("/confirmAndAdd")
     public String confirmAndAdd(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "day", defaultValue = "")String day,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
@@ -466,8 +490,6 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                       sumTimeObject = persist.workTimeInADay(parseInt(year),parseInt(month),parseInt(id),i);//get the total time worked in a day.
                         for (int j=0;j<sumTimeObject.size();j++)
                             total+=sumTimeObject.get(j).getTotalHoursWorked();
-
-//rsSumTime.next() &&
                       if (enterTimeObject!=null&& exitTimeObject!=null) {
                           dayList.add(enterTimeObject.getDayOfTheWeek());
                           hoursWorked.add(timeString(total));
@@ -496,6 +518,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                 ArrayList<Date> dateList = new ArrayList<Date>();
 
                 for (int i = 1; i <= 31; i++) {
+                    total=0;
                     exitTimeObject =   exitTimeObject=persist.selectLastWorktimeInAday(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the last worktime in a day.
                     enterTimeObject =  persist.selectFirstWorktimeInAday(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the first worktime in a day.;
                     sumTimeObject = persist.workTimeInADay(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the total time worked in a day.

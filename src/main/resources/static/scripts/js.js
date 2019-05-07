@@ -58,8 +58,13 @@ function f() {
         type: 'POST',
         url: "reports",
         data:data,
-        success: function (data) {
-            console.log('success', data);
+        success: function (resposeJsonObject) {
+            //console.log('success', data);
+            var obj = JSON.parse(resposeJsonObject);
+            document.getElementById("idEmp").innerHTML = obj.id.toString();
+            document.getElementById("nameEmp").innerHTML = obj.name.toString();
+            document.getElementById("phoneEmp").innerHTML = obj.phone.toString();
+            document.getElementById("passwordEmp").innerHTML = obj.password.toString();
 
         },
         error: function (exception) {
@@ -122,6 +127,35 @@ function changeImage() {
 
 
     }
+}
+function addEmployee() {
+
+    var id=$('input[name=id]').val();
+    var name=$('input[name=name]').val();
+    var password=$('input[name=password]').val();
+    var phone=$('input[name=phone]').val();
+    var data='id='
+    +encodeURIComponent(id)
+    +'&name='
+    +encodeURIComponent(name)
+    +'&password='
+    +encodeURIComponent(password)
+    +'&phone='
+    +encodeURIComponent(phone);
+    $.ajax({
+        type: 'POST',
+        url: "add-employee",
+        data: data,
+        success: function (data) {
+            console.log('success', data);
+
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+
+
 }
 //sanding the clicked date and getting array lists of the information.
 function dayDetails(date,empId) {

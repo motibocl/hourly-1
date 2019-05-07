@@ -7,76 +7,106 @@
     <title>Hourly|Administration</title>
 </head>
 <body id="page1"  onload="stay(), clearCache()">
-    #if($admin)
         #parse("adminNav.vm")
-    #{else}
-        #parse("header.vm")
-    #end
-<h3 class="addEmp">הוספת עובד:</h3>
+
+<h3 class="addEmp">רשימת עובדים:</h3>
 <br/>
-<form  class="container report" >
+<div class="container report" >
 <div class="row">
-    <div class="col-2 formRep">
+    <div class="col-12 removeEmp">
+        <table cellspacing="15">
+            <tr>
+                <th >
+                  <h4>תז עובד &nbsp; </h4>
+                </th>
+                <th >
+                    <h4>&nbsp;שם עובד </h4>
+                </th >
+
+                <th >
+                     <h4>&nbsp;טלפון</h4>
+                </th>
+                <th >
+                    <h4>&nbsp;סיסמא</h4>
+                </th>
+                <th >
+                    <h4>&nbsp;הסרה</h4>
+                </th>
+            </tr>
+            #if($Id.size()!=0)
+               #set($end =$id.size())
+               #set($stop = $end - 1)
+            #if($stop)
+            ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
+            #foreach($i in [0..$stop])
+            <tr>
+                <td>
+                    <h4>$id.get($i)</h4>
+                </td>
+                <td>
+                    <h4>$name.get($i)</h4>
+                </td>
+
+                <td>
+                    <h4>$phone.get($i)</h4>
+                </td>
+                <td>
+                    <h4>$password.get($i)</h4>
+                </td>
+                <td>
+                    <button>x</button>
+                </td>
+    #end
+    #end
+            #end
+<tr>
+    <td ><h4 id="idEmp"></h4></td>
+    <td ><h4 id="nameEmp"></h4></td>
+    <td ><h4 id="phoneEmp"></h4></td>
+    <td ><h4 id="passwordEmp"></h4></td>
+    <td ><h4 id="buttonEmp"></h4></td>
+</tr>
+        </table>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          +
+        </button>
+
+</div>
+</div>
 
 
-        <div class="form-group">
-            <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
-        </div>
-    </div>
-    <div class="col-2 formRep">
-
-
-        <div class="form-group">
-            <input type="text" class="form-control borColor" id="exampleFormControlInput1" name="name" placeholder="שם עובד">
-        </div>
-    </div>
-    <div class="col-2 formRep">
-
-        <div class="form-group">
-            <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="empPhone" placeholder="טלפון עובד">
-
-            </input>
-        </div>
-    </div>
-    <div class="col-2 formRep">
-
-        <div class="form-group">
-            <input type="text" class="form-control borColor" id="exampleFormControlInput1" name="password" placeholder="סיסמא">
-        </div>
-    </div>
-    <div class="col-2 formRep">
-
-        <div class="form-group">
-        <button class="btn btn-primary loginBtn" type="submit"   formaction="add-employee" >הוסף</button>
-
-        </div>
-       </div>
-
-    </div>
-
-</form>
-
-<br/>
-<h3 class="addEmp">מחיקת עובד:</h3>
-<form class="container report" >
-    <div class="row">
-        <div class="col-3 formRep">
-
-
-            <div class="form-group">
-                <input type="number" class="form-control borColor" id="exampleFormControlInput1" name="id" placeholder="מספר עובד">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">הוספת עובד</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                    <input type="number" class="form-control borColor" id="id" name="id" placeholder="מס זהות">
+                    </div>
+                    <div>
+                        <input type="text" class="form-control borColor" id="name" name="name" placeholder="שם">
+                    </div>
+                    <div>
+                        <input type="number" class="form-control borColor" id="phone" name="phone" placeholder="מס טלפון">
+                    </div>
+                    <div>
+                        <input type="number" class="form-control borColor" id="password" name="password" placeholder="סיסמא">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="addEmployee()"data-dismiss="modal">Save changes</button>
+                </div>
             </div>
         </div>
-        <div class="col-3 formRep">
-
-            <div class="form-group">
-                <button class="btn btn-primary loginBtn" type="submit"  formaction="remove-employee" >מחק</button>
-            </div>
-        </div>
     </div>
-</form>
-
-
     #parse("jsTemp.vm")
 </body>
 </html>

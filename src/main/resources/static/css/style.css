@@ -323,6 +323,9 @@ body, html {
     font-size: 12px;
 }
 /*----------------------------------administration-------------------------------*/
+.removeEmp{
+    text-align: -webkit-center;
+}
 .addEmp{
     text-align: center;
 }
