@@ -1,4 +1,5 @@
-
+var indexRow=0;
+//var rocounter=0;//for counting rows
 var today = new Date();//today a date object
 var entered = false;
 var days = [];
@@ -58,13 +59,9 @@ function f() {
         type: 'POST',
         url: "reports",
         data:data,
-        success: function (resposeJsonObject) {
-            //console.log('success', data);
-            var obj = JSON.parse(resposeJsonObject);
-            document.getElementById("idEmp").innerHTML = obj.id.toString();
-            document.getElementById("nameEmp").innerHTML = obj.name.toString();
-            document.getElementById("phoneEmp").innerHTML = obj.phone.toString();
-            document.getElementById("passwordEmp").innerHTML = obj.password.toString();
+        success: function (data) {
+            console.log('success', data);
+
 
         },
         error: function (exception) {
@@ -128,6 +125,9 @@ function changeImage() {
 
     }
 }
+function rowNum(rowNum) {
+    counter=rowNum;
+}
 function addEmployee() {
 
     var id=$('input[name=id]').val();
@@ -148,6 +148,18 @@ function addEmployee() {
         data: data,
         success: function (data) {
             console.log('success', data);
+            var obj = JSON.parse(data);
+
+            document.getElementById("addEmpTable").innerHTML += "<tr  onclick=\"getRow(this)\">\n" +
+                "    <td ><h4 id=\"idEmp\">"+obj.id+"</h4></td>\n" +
+                "    <td ><h4 id=\"nameEmp\">"+obj.name+"</h4></td>\n" +
+                "    <td ><h4 id=\"phoneEmp\">"+obj.phone+"</h4></td>\n" +
+                "    <td ><h4 id=\"passwordEmp\">"+obj.password+"</h4></td>\n" +
+                "    <td ><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#removeModal\"\ name=\"$i\">x</button></td>\n" +
+                "</tr>";
+           // document.getElementById("nameEmp").innerHTML = obj.name;
+         //   document.getElementById("phoneEmp").innerHTML = obj.phone;
+           // document.getElementById("passwordEmp").innerHTML = obj.password;
 
         },
         error: function (exception) {
@@ -155,6 +167,34 @@ function addEmployee() {
         }
     });
 
+
+}
+function register(){
+    window.location.replace("registration");
+}
+
+function getRow(x){
+    indexRow=x.rowIndex;
+}
+function removeEmployee() {
+    var table=document.getElementById("addEmpTable");
+    var Row = table.rows[indexRow];
+    var Cells = Row.getElementsByTagName("td");
+    var id=Cells[0].innerText;
+    var data='id='
+        +encodeURIComponent(id);
+    $.ajax({
+        type: 'POST',
+        url: "remove-employee",
+        data: data,
+        success: function (data) {
+            //console.log('success', data);
+            document.getElementById("addEmpTable").deleteRow(indexRow);
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
 
 }
 //sanding the clicked date and getting array lists of the information.

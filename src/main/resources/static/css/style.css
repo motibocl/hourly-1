@@ -337,3 +337,11 @@ body, html {
     text-align: center;
     font-size: xx-large;
 }
+/*----------------------------------registration--------------------------------*/
+.regInput{
+    float: right;
+}
+.regBtn{
+    margin-top: 25px;
+    float: none;
+}

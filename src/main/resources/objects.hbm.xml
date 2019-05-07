@@ -43,7 +43,6 @@
 
     <class name="com.elector.Objects.Entities.AdminObject" table="Admins" lazy="false">
         <id name="id" type="int"  column="id" >
-            <generator class="native"/>
         </id>
         <property name="email" type="string" column="email"/>
         <property name="name" type="string" column="name"/>
@@ -65,7 +64,6 @@
 
     <class name="com.elector.Objects.Entities.CompanyObject" table="companies" lazy="false">
         <id name="id" type="int" column="companyId">
-            <generator class="native"/>
         </id>
         <property name="name" type="string" column="companyName"/>
         <property name="address" type="string" column="companyAdress"/>

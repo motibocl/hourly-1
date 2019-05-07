@@ -6,7 +6,7 @@
 
     <title>Hourly|Administration</title>
 </head>
-<body id="page1"  onload="stay(), clearCache()">
+<body id="page1"  onload="clearCache(); rowNum($id.size())">
         #parse("adminNav.vm")
 
 <h3 class="addEmp">רשימת עובדים:</h3>
@@ -14,8 +14,8 @@
 <div class="container report" >
 <div class="row">
     <div class="col-12 removeEmp">
-        <table cellspacing="15">
-            <tr>
+        <table id="addEmpTable"cellspacing="15">
+            <tr >
                 <th >
                   <h4>תז עובד &nbsp; </h4>
                 </th>
@@ -33,15 +33,15 @@
                     <h4>&nbsp;הסרה</h4>
                 </th>
             </tr>
-            #if($Id.size()!=0)
+            #if($id.size()!=0)
                #set($end =$id.size())
                #set($stop = $end - 1)
             #if($stop)
             ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
             #foreach($i in [0..$stop])
-            <tr>
+            <tr onclick="getRow(this)" >
                 <td>
-                    <h4>$id.get($i)</h4>
+                    <h4 >$id.get($i)</h4>
                 </td>
                 <td>
                     <h4>$name.get($i)</h4>
@@ -54,21 +54,16 @@
                     <h4>$password.get($i)</h4>
                 </td>
                 <td>
-                    <button>x</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#removeModal" name="$i">x</button>
                 </td>
+            </tr>
     #end
     #end
             #end
-<tr>
-    <td ><h4 id="idEmp"></h4></td>
-    <td ><h4 id="nameEmp"></h4></td>
-    <td ><h4 id="phoneEmp"></h4></td>
-    <td ><h4 id="passwordEmp"></h4></td>
-    <td ><h4 id="buttonEmp"></h4></td>
-</tr>
+
         </table>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
           +
         </button>
 
@@ -76,8 +71,8 @@
 </div>
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- addModal -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -101,9 +96,27 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addEmployee()"data-dismiss="modal">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">דחה</button>
+                    <button type="button" class="btn btn-primary" onclick="addEmployee()"data-dismiss="modal">אשר</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- removeModal -->
+    <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">הסרת עובד</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>האם אתה בטוח שאתה רוצה להסיר את העובד?</p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">דחה</button>
+                    <button type="button" class="btn btn-primary" onclick="removeEmployee()"data-dismiss="modal">אשר</button>
+
             </div>
         </div>
     </div>

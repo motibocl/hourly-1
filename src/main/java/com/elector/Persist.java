@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
 
     }
 
@@ -674,7 +674,7 @@ there is no need */
 
         preparedStmt.execute();
     }
-    public void removeEmployee(int employeeId) throws SQLException {
+   /* public void removeEmployee(int employeeId) throws SQLException {
         PreparedStatement preparedStmt = connect("delete from reasons where employeeId=?");
         preparedStmt.setInt(1, employeeId);
         preparedStmt.execute();
@@ -684,7 +684,13 @@ there is no need */
         preparedStmt = connect("delete from employee where employeeId=? ");
         preparedStmt.setInt(1, employeeId);
         preparedStmt.execute();
-    }
+    }*/
+   public void removeEmployee(int id){
+       getQuerySession().createQuery("DELETE WorktimeObject WHERE EmployeeObject=:id ").setInteger("id",id).executeUpdate();
+       getQuerySession().createQuery("DELETE ReasonObject WHERE EmployeeObject=:id ").setInteger("id",id).executeUpdate();
+       getQuerySession().createQuery("DELETE EmployeeObject WHERE id=:id ").setInteger("id",id).executeUpdate();
+
+   }
     public void addAfterConfirm(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String dayOfTheWeek,String comment ) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek,comment) values (?,?,?,?,?,?,?)");
         preparedStmt2.setInt(1, employeeId);

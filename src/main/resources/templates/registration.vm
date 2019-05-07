@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("metaTagsTemp.vm")
+    #parse("cssTemp.vm")
+
+    <meta charset="UTF-8">
+    <title>Notebook</title>
+</head>
+<body >
+<div class="img">
+    <div class="container" >
+        <div class="row">
+            <header class="col">
+
+                <img onclick="returnToMainPage()" src="css/images/logo2.png" class="img-fluid" alt="Responsive image" id="logo">
+
+                <form class="input" action="" method="post" id="register">
+                    <div class="col">
+                        <div class="col-6 regInput">
+                           <h5>שם משתמש:</h5>
+                           <input class="form-control" type="text" name="adminName" placeholder="שם משתמש" required>
+                        </div>
+                       <div class="col-6 regInput">
+                           <h5>אימייל:</h5>
+                           <input class="form-control" type="text" name="email" placeholder="אימייל" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                    <div class="col-6 regInput">
+                           <h5>מס טלפון:</h5>
+                           <input class="form-control" type="text" name="phone" placeholder="מס טלפון" required>
+                    </div>
+
+                    <div class="col-6 regInput">
+                           <h5>סיסמה:</h5>
+                           <input class="form-control" type="password" name="password" placeholder="סיסמה" required>
+                    </div>
+                    </div>
+                    <div class="col">
+                        <div class="col-6 regInput">
+                           <h5>שם החברה:</h5>
+                           <input class="form-control" type="text" name="companyName" placeholder="שם החברה" required>
+                        </div>
+
+                        <div class="col-6 regInput">
+                           <h5>כתובת חברה:</h5>
+                           <input class="form-control" type="text" name="companyAdress" placeholder="כתובת חברה" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col-6 regInput">
+                            <h5>ח.פ חברה</h5>
+                            <input class="form-control" type="number" name="companyId" placeholder="ח.פ חברה" required>
+                        </div>
+
+                        <div class="col-6 regInput">
+                            <h5>מס' זהות:</h5>
+                            <input class="form-control" type="text" name="adminId" placeholder="מס' זהות" required>
+                        </div>
+                    </div>
+                </form>
+                <button class="btn btn-primary loginBtn regBtn" type="submit" form="register" formaction="register"  >הירשם!</button>
+
+            </header>
+        </div>
+
+    </div>
+</div>
+</div>
+    #parse("jsTemp.vm")
+
+</body>
+</html>

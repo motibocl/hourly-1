@@ -51,7 +51,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -160,8 +160,21 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
  /*--------------------------------------------------------------------------------------------------------------------------------------*/
     @RequestMapping("/remove-employee")
     public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
+
         persist.removeEmployee(parseInt(id));
         return "redirect:/administration";
+    }
+    @RequestMapping("/register")
+    public String register(Model model,@RequestParam String adminName,@RequestParam String companyName,@RequestParam int adminId,@RequestParam String password,@RequestParam String companyAdress,@RequestParam int companyId,@RequestParam String phone,@RequestParam String email)  throws SQLException {
+        CompanyObject companyObject=new CompanyObject(companyId,companyName,companyAdress);
+        persist.save(companyObject);
+        AdminObject adminObject=new AdminObject(adminName,password,email,adminId,phone,companyObject);
+        persist.save(adminObject);
+        return "Landing_page";
+    }
+    @RequestMapping("/registration")
+    public String registration(Model model)  throws SQLException {
+        return "registration";
     }
 
     //Sending comments "What did you do today"

@@ -8,6 +8,17 @@ public class AdminObject {
     private String phone ;
     private CompanyObject companyObject;
 
+
+    public AdminObject(){}
+    public AdminObject(String name, String password,String email,int id,String phone,CompanyObject companyObject){
+        this.id=id;
+        this.email=email;
+        this.name=name;
+        this.password=password;
+        this.phone=phone;
+        this.companyObject=companyObject;
+    }
+
     public String getPhone() {
         return phone;
     }
