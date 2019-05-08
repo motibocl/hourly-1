@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
 
     }
 
@@ -692,6 +692,8 @@ there is no need */
 
    }
     public void addAfterConfirm(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String dayOfTheWeek,String comment ) throws SQLException {
+    }
+   /* public void addAfterConfirm(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String dayOfTheWeek,String comment ) throws SQLException {
         PreparedStatement preparedStmt2 = connect("insert into worktime (employeeId,enterTime,exitTime,totalhoursWorked,date,dayOfTheWeek,comment) values (?,?,?,?,?,?,?)");
         preparedStmt2.setInt(1, employeeId);
         preparedStmt2.setFloat(2, enterTime);
@@ -701,5 +703,38 @@ there is no need */
         preparedStmt2.setString(6, dayOfTheWeek);
         preparedStmt2.setString(7, comment);
         preparedStmt2.execute();
+    } THERE IS NO NEED*/
+   /* public void removeReason(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String comment ) throws SQLException {
+        PreparedStatement preparedStmt2 = connect("delete from reason where employeeId=? and howmanyHours=? and reasonText=? and date=? and enterTime=? and exitTime=?");
+        preparedStmt2.setInt(1, employeeId);
+        preparedStmt2.setFloat(2, exitTime-enterTime);
+        preparedStmt2.setString(3, comment);
+        preparedStmt2.setDate(4, (java.sql.Date) dateOfWork);
+        preparedStmt2.setFloat(5, enterTime);
+        preparedStmt2.setFloat(6, exitTime);
+        preparedStmt2.execute();
+    }*/
+   @Transactional
+
+    public void removeReason(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String comment ) throws SQLException {
+       String hql = "DELETE ReasonObject WHERE EmployeeObject=:id AND enterTime=:enterTime AND exitTime=:exitTime AND reasonText=:comment AND date=:dateOfWork";
+       getQuerySession().createQuery(hql).setInteger("id",employeeId)
+       .setFloat("enterTime",enterTime)
+       .setFloat("exitTime",exitTime)
+       .setDate("dateOfWork",dateOfWork)
+       .setString("comment",comment)
+               .executeUpdate();
     }
+    public  List <ReasonObject> organizeReasons() {
+       List <ReasonObject> reasonObjectList = (List<ReasonObject>) getQuerySession()
+               .createQuery("FROM ReasonObject ORDER BY date ASC")
+               .list();
+       return reasonObjectList;
+    }
+
+
+
+
+
+
     }

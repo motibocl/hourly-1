@@ -2,6 +2,7 @@ package com.elector.Objects.Entities;
 
 import java.sql.Date;
 
+
 public class ReasonObject {
     private float exitTime;
     private float enterTime;

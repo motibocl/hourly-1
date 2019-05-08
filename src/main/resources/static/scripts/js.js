@@ -62,7 +62,6 @@ function f() {
         success: function (data) {
             console.log('success', data);
 
-
         },
         error: function (exception) {
             alert('Exception' + exception);
@@ -285,21 +284,46 @@ function returnToMainPage() {
 }
 /*------------------------------------------------------------------*/
 function convert(string) {
-    var minutes2;
-    var hours2=parseInt(string.slice(0,2));
-    if(hours2<10){
-        minutes2=parseInt(string.slice(2,6));
+    var hours=string.slice(0,2);
+    var minutes=string.slice(3,5);
+    var check=hours.charAt(0);
+    var check2=minutes.charAt(0);
+    if (check=="0"&&check2=="0"){
+        hours=parseInt(hours.slice(1,2));
+        minutes=parseInt(minutes.slice(1,2));
     }
-    else{
-        minutes2=parseInt(string.slice(3,6));
+    else if(check=="0"&&check2!="0"){
+        hours=parseInt(hours.slice(1,2));
+        minutes=parseInt(minutes);
     }
-    hours2=hours2*60;
-    var total1=hours2+minutes2;
-    return total1;
+    else if(check!="0"&&check2=="0"){
+        hours=parseInt(hours);
+        minutes=parseInt(minutes.slice(1,2));
+    }
+    else {
+        hours=parseInt(hours);
+        minutes=parseInt(minutes);
+    }
+
+    hours=hours*60;
+    var total=hours+minutes;
+    return total;
 }
-function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day) {
-    var enter = convert(enterTime);
-    var exit = convert(exitTime);
+
+function confirmAndAdd(i,emplid,enterTime,exitTime,date,reason,day) {
+    var enter=convert(document.getElementById("input "+i.toString()).value);
+    var exit=convert(document.getElementById("input2 "+i.toString()).value);
+    //var index=i;
+    //var table=document.getElementById("myTable");
+    //var Row=table.rows[index];
+    //var Cells=Row.getElementsByTagName("td");
+    //var enterTest=Cells[4]
+    //var enter=convert(enterTest);
+    //var exitTest=Cells[5].innerText;
+    //var exit=convert(exitTest);
+    /*var obj=document.getElementsByClassName(i);
+    var enter = convert(obj.item(0).getAttribute());
+    var exit = convert(obj.item(1).value);*/
     var data = 'emplid='
         + encodeURIComponent(emplid)
         + '&enterTime='
@@ -318,10 +342,38 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day) {
         data: data,
         success: function (data) {
             console.log('success', data);
-
+            deleteRow(emplid,enterTime,exitTime,date,reason,i);
         },
         error: function (exception) {
             alert('Exception' + exception);
         }
     });
+}
+
+function deleteRow(emplid,enterTime,exitTime,date,reason,i) {
+    var enter = convert(enterTime);
+    var exit = convert(exitTime);
+    var data = 'emplid='
+        + encodeURIComponent(emplid)
+        + '&enterTime='
+        + encodeURIComponent(enter)
+        + '&exitTime='
+        + encodeURIComponent(exit)
+        + '&date='
+        + encodeURIComponent(date)
+        + '&reason='
+        + encodeURIComponent(reason);
+    $.ajax({
+        type: 'POST',
+        url: "removeReason",
+        data: data,
+        success: function (data) {
+            console.log('success', data);
+            document.getElementById("myTable").deleteRow(i);
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+
 }

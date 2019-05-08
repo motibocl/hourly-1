@@ -51,7 +51,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -136,9 +136,20 @@ public class SampleController {
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
-        persist.addAfterConfirm(emplid,enterTime,exitTime,sqldate,day,comment);
-
-        return "request";
+        //persist.addAfterConfirm(emplid,enterTime,exitTime,sqldate,day,comment);
+        EmployeeObject employeeObject=persist.getEmployeeById(emplid);
+        WorktimeObject worktimeObject=new WorktimeObject( enterTime, exitTime,employeeObject, sqldate, exitTime-enterTime, day,comment);
+        persist.save(worktimeObject);
+        return "requests";
+    }
+    @RequestMapping("/removeReason")
+    public String removeReason(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateInString = date;
+        Date dateChoosed = formatter.parse(dateInString);
+        java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
+        persist.removeReason(emplid,enterTime,exitTime,sqldate,comment);
+        return "requests";
     }
 /*--------------------------------------------------------------------------------------------------------------------------------------*/
 @RequestMapping(value = "test" , method = RequestMethod.POST)
@@ -160,7 +171,6 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
  /*--------------------------------------------------------------------------------------------------------------------------------------*/
     @RequestMapping("/remove-employee")
     public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
-
         persist.removeEmployee(parseInt(id));
         return "redirect:/administration";
     }
@@ -314,19 +324,29 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         ArrayList<String> exitTime=new ArrayList<>();
         //ResultSet rs= persist.showRequests();
         List<ReasonObject> reasonObjectList=persist.loadList(ReasonObject.class);
+        reasonObjectList=persist.organizeReasons();
+        persist.organizeReasons();
         Calendar cal = Calendar.getInstance();
         int hour,minutes;
        // while(rs.next()){
         for (int i=0;i<reasonObjectList.size();i++){
             hour=(int)(reasonObjectList.get(i).getExitTime())/60;
             minutes=(int)(reasonObjectList.get(i).getExitTime())%60;
-            if (minutes < 10)
+            if (hour<10&&minutes<10)
+                exitTime.add("0" +hour+ ":0" + minutes);
+            else if (hour<10)
+                exitTime.add("0" +hour+ ":" + minutes);
+            else if(minutes<10)
                 exitTime.add(hour+ ":" + "0" + minutes);
             else
                 exitTime.add(hour+ ":" + minutes);
             hour=(int)(reasonObjectList.get(i).getEnterTime())/60;
             minutes=(int)(reasonObjectList.get(i).getEnterTime())%60;
-            if (minutes < 10)
+            if (hour<10&&minutes<10)
+                enterTime.add("0" +hour+ ":0" + minutes);
+            else if(hour<10)
+                enterTime.add("0" +hour+ ":" + minutes);
+            else if(minutes<10)
                 enterTime.add(hour+ ":" + "0" + minutes);
             else
                 enterTime.add(hour+ ":" + minutes);
