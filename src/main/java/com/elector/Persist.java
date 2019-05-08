@@ -716,11 +716,10 @@ there is no need */
     }*/
    @Transactional
 
-    public void removeReason(int employeeId,Float enterTime ,Float exitTime, Date dateOfWork,String comment ) throws SQLException {
-       String hql = "DELETE ReasonObject WHERE EmployeeObject=:id AND enterTime=:enterTime AND exitTime=:exitTime AND reasonText=:comment AND date=:dateOfWork";
-       getQuerySession().createQuery(hql).setInteger("id",employeeId)
-       .setFloat("enterTime",enterTime)
-       .setFloat("exitTime",exitTime)
+    public void removeReason(int employeeId, Date dateOfWork,String comment ) throws SQLException {
+       String hql = "DELETE ReasonObject WHERE EmployeeObject=:id AND reasonText=:comment AND date=:dateOfWork";
+       getQuerySession().createQuery(hql)
+       .setInteger("id",employeeId)
        .setDate("dateOfWork",dateOfWork)
        .setString("comment",comment)
                .executeUpdate();

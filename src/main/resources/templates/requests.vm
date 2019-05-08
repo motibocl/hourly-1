@@ -51,8 +51,8 @@
                             <td><p class="inf"><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
                             <td><p class="inf"><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
                             <td><p class="inf">$reasonsList.get($i)</p></td>
-                            <td><button type="button" class="inf test" onclick="confirmAndAdd($i,'$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i )">אשר</button></td>
-                            <td><button type="button" class="inf test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i )" >דחה</button></td>
+                            <td><button type="button" class="inf test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this)">אשר</button></td>
+                            <td><button type="button" class="inf test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this )" >דחה</button></td>
                         </tr>
                     #end
                 #end

@@ -143,12 +143,12 @@ public class SampleController {
         return "requests";
     }
     @RequestMapping("/removeReason")
-    public String removeReason(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
+    public String removeReason(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
-        persist.removeReason(emplid,enterTime,exitTime,sqldate,comment);
+        persist.removeReason(emplid,sqldate,comment);
         return "requests";
     }
 /*--------------------------------------------------------------------------------------------------------------------------------------*/

@@ -310,20 +310,9 @@ function convert(string) {
     return total;
 }
 
-function confirmAndAdd(i,emplid,enterTime,exitTime,date,reason,day) {
+function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row) {
     var enter=convert(document.getElementById("input "+i.toString()).value);
     var exit=convert(document.getElementById("input2 "+i.toString()).value);
-    //var index=i;
-    //var table=document.getElementById("myTable");
-    //var Row=table.rows[index];
-    //var Cells=Row.getElementsByTagName("td");
-    //var enterTest=Cells[4]
-    //var enter=convert(enterTest);
-    //var exitTest=Cells[5].innerText;
-    //var exit=convert(exitTest);
-    /*var obj=document.getElementsByClassName(i);
-    var enter = convert(obj.item(0).getAttribute());
-    var exit = convert(obj.item(1).value);*/
     var data = 'emplid='
         + encodeURIComponent(emplid)
         + '&enterTime='
@@ -342,23 +331,19 @@ function confirmAndAdd(i,emplid,enterTime,exitTime,date,reason,day) {
         data: data,
         success: function (data) {
             console.log('success', data);
-            deleteRow(emplid,enterTime,exitTime,date,reason,i);
+            deleteRow(emplid,enterTime,exitTime,date,reason,i,row);
         },
         error: function (exception) {
             alert('Exception' + exception);
         }
     });
 }
-
-function deleteRow(emplid,enterTime,exitTime,date,reason,i) {
-    var enter = convert(enterTime);
-    var exit = convert(exitTime);
+function deleteRow(emplid,enterTime,exitTime,date,reason,i,row) {
+    var index = row.parentNode.parentNode.rowIndex;
+    var enter = convert(document.getElementById("input "+i.toString()).value);
+    var exit = convert(document.getElementById("input2 "+i.toString()).value);
     var data = 'emplid='
         + encodeURIComponent(emplid)
-        + '&enterTime='
-        + encodeURIComponent(enter)
-        + '&exitTime='
-        + encodeURIComponent(exit)
         + '&date='
         + encodeURIComponent(date)
         + '&reason='
@@ -369,7 +354,7 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i) {
         data: data,
         success: function (data) {
             console.log('success', data);
-            document.getElementById("myTable").deleteRow(i);
+            document.getElementById("myTable").deleteRow(index);
         },
         error: function (exception) {
             alert('Exception' + exception);
