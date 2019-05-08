@@ -51,7 +51,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -175,10 +175,10 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         return "redirect:/administration";
     }
     @RequestMapping("/register")
-    public String register(Model model,@RequestParam String adminName,@RequestParam String companyName,@RequestParam int adminId,@RequestParam String password,@RequestParam String companyAdress,@RequestParam int companyId,@RequestParam String phone,@RequestParam String email)  throws SQLException {
-        CompanyObject companyObject=new CompanyObject(companyId,companyName,companyAdress);
+    public String register(Model model,@RequestParam String adminName,@RequestParam String companyName,@RequestParam String adminId,@RequestParam String password,@RequestParam String companyAdress,@RequestParam String companyId,@RequestParam String phone,@RequestParam String email)  throws SQLException {
+        CompanyObject companyObject=new CompanyObject(parseInt(companyId),companyName,companyAdress);
         persist.save(companyObject);
-        AdminObject adminObject=new AdminObject(adminName,password,email,adminId,phone,companyObject);
+        AdminObject adminObject=new AdminObject(adminName,password,email,parseInt(adminId),phone,companyObject);
         persist.save(adminObject);
         return "Landing_page";
     }
@@ -493,85 +493,89 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
             model.addAttribute("employeeName","");
 
             model.addAttribute("admin",isAdmin(phone));
-            EmployeeObject employeeObject=persist. getEmployeeById(getEmployeeId(cookie));
+            EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
             float total=0;
 
             if(!id.equals("")&&!month.equals("") && !year.equals("")) {
-                model.addAttribute("empId",id);
-                //ResultSet result=persist.selectEmployeeById(parseInt(id));
-                //String employeeName="";//GET THE NAME OF THE EMPLOYEE.
-               // while (result.next()){
-                   String employeeName=employeeObject.getName();
-               // }
-                model.addAttribute("employeeName","פירוט החודש של "+employeeName);
-                  //ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
-                List<WorktimeObject> worktimeObject=persist.getWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
-                  WorktimeObject exitTimeObject;
-                  WorktimeObject enterTimeObject;
-                  List<WorktimeObject> sumTimeObject;
-                  ArrayList<String> dayList = new ArrayList<String>();
-                  ArrayList<String> hoursWorked = new ArrayList<String>();
-                  ArrayList<String> hoursList = new ArrayList<String>();
-                  ArrayList<Date> dateList = new ArrayList<Date>();
+                EmployeeObject employeeObjectToView = persist.getEmployeeById(parseInt(id));
+                if (employeeObjectToView != null){
+                    model.addAttribute("empId", id);
 
-                  for (int i = 1; i <= 31; i++) {
-                      total=0;
-                      exitTimeObject=persist.selectLastWorktimeInAday(parseInt(year),parseInt(month),parseInt(id),i);
-                     // rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(id),i);//get the last worktime in a day.
-                     // rsExitTime=persist.selectLastWorktimeInAday(parseInt(year),parseInt(month),parseInt(id),i).getExitTime();
-                      enterTimeObject = persist.selectFirstWorktimeInAday(parseInt(year),parseInt(month),parseInt(id),i);//get the first worktime in a day.;
-                      sumTimeObject = persist.workTimeInADay(parseInt(year),parseInt(month),parseInt(id),i);//get the total time worked in a day.
-                        for (int j=0;j<sumTimeObject.size();j++)
-                            total+=sumTimeObject.get(j).getTotalHoursWorked();
-                      if (enterTimeObject!=null&& exitTimeObject!=null) {
-                          dayList.add(enterTimeObject.getDayOfTheWeek());
-                          hoursWorked.add(timeString(total));
+                    //ResultSet result=persist.selectEmployeeById(parseInt(id));
+                    //String employeeName="";//GET THE NAME OF THE EMPLOYEE.
+                    // while (result.next()){
+                    String employeeName = employeeObjectToView.getName();
+                    // }
+                    model.addAttribute("employeeName", "פירוט החודש של " + employeeName);
+                    //ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),parseInt(id));
+                    List<WorktimeObject> worktimeObject = persist.getWorkTimeMonth(parseInt(month), parseInt(year), parseInt(id));
+                    WorktimeObject exitTimeObject;
+                    WorktimeObject enterTimeObject;
+                    List<WorktimeObject> sumTimeObject;
+                    ArrayList<String> dayList = new ArrayList<String>();
+                    ArrayList<String> hoursWorked = new ArrayList<String>();
+                    ArrayList<String> hoursList = new ArrayList<String>();
+                    ArrayList<Date> dateList = new ArrayList<Date>();
 
-                          hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
-                          dateList.add(enterTimeObject.getDate());
+                    for (int i = 1; i <= 31; i++) {
+                        total = 0;
+                        exitTimeObject = persist.selectLastWorktimeInAday(parseInt(year), parseInt(month), parseInt(id), i);
+                        // rsExitTime = persist.selectLastWorktimeDay(parseInt(year),parseInt(month),parseInt(id),i);//get the last worktime in a day.
+                        // rsExitTime=persist.selectLastWorktimeInAday(parseInt(year),parseInt(month),parseInt(id),i).getExitTime();
+                        enterTimeObject = persist.selectFirstWorktimeInAday(parseInt(year), parseInt(month), parseInt(id), i);//get the first worktime in a day.;
+                        sumTimeObject = persist.workTimeInADay(parseInt(year), parseInt(month), parseInt(id), i);//get the total time worked in a day.
+                        for (int j = 0; j < sumTimeObject.size(); j++)
+                            total += sumTimeObject.get(j).getTotalHoursWorked();
+                        if (enterTimeObject != null && exitTimeObject != null) {
+                            dayList.add(enterTimeObject.getDayOfTheWeek());
+                            hoursWorked.add(timeString(total));
 
-                      }
-                  }
-                  model.addAttribute("days", dayList);
-                  model.addAttribute("hours", hoursList);
-                  model.addAttribute("hoursWorked", hoursWorked);
-                  model.addAttribute("dateWorked", dateList);
-              }
-            else if (!month.equals("") && !year.equals("")) {
-                model.addAttribute("empId",getEmployeeId(cookie));
-           //     ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));//ADMIN DONT HAVE WORKTIME!!NEED TO BE FIXED.
-                List<WorktimeObject> worktimeObject=persist.getWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));
-                WorktimeObject exitTimeObject;
-                WorktimeObject enterTimeObject;
-                List<WorktimeObject> sumTimeObject;
+                            hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
+                            dateList.add(enterTimeObject.getDate());
 
-                ArrayList<String> dayList = new ArrayList<String>();
-                ArrayList<String> hoursWorked = new ArrayList<String>();
-                ArrayList<String> hoursList = new ArrayList<String>();
-                ArrayList<Date> dateList = new ArrayList<Date>();
-
-                for (int i = 1; i <= 31; i++) {
-                    total=0;
-                    exitTimeObject =   exitTimeObject=persist.selectLastWorktimeInAday(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the last worktime in a day.
-                    enterTimeObject =  persist.selectFirstWorktimeInAday(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the first worktime in a day.;
-                    sumTimeObject = persist.workTimeInADay(parseInt(year),parseInt(month),getEmployeeId(cookie),i);//get the total time worked in a day.
-
-                    for (int j=0;j<sumTimeObject.size();j++)
-                        total+=sumTimeObject.get(j).getTotalHoursWorked();
-                    if (enterTimeObject!=null&& exitTimeObject!=null) {
-                        dayList.add(enterTimeObject.getDayOfTheWeek());
-                        hoursWorked.add(timeString(total));
-                        hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
-                        dateList.add(enterTimeObject.getDate());
-
+                        }
                     }
+                    model.addAttribute("days", dayList);
+                    model.addAttribute("hours", hoursList);
+                    model.addAttribute("hoursWorked", hoursWorked);
+                    model.addAttribute("dateWorked", dateList);
                 }
-                model.addAttribute("days", dayList);
-                model.addAttribute("hours", hoursList);
-                model.addAttribute("hoursWorked", hoursWorked);
-                model.addAttribute("dateWorked", dateList);
+            }
+            else if (!month.equals("") && !year.equals("")) {
+                    model.addAttribute("empId", getEmployeeId(cookie));
+                    //     ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));//ADMIN DONT HAVE WORKTIME!!NEED TO BE FIXED.
+                    List<WorktimeObject> worktimeObject = persist.getWorkTimeMonth(parseInt(month), parseInt(year), getEmployeeId(cookie));
+                    WorktimeObject exitTimeObject;
+                    WorktimeObject enterTimeObject;
+                    List<WorktimeObject> sumTimeObject;
 
-                /*this is queris for the details modal*/
+                    ArrayList<String> dayList = new ArrayList<String>();
+                    ArrayList<String> hoursWorked = new ArrayList<String>();
+                    ArrayList<String> hoursList = new ArrayList<String>();
+                    ArrayList<Date> dateList = new ArrayList<Date>();
+
+                    for (int i = 1; i <= 31; i++) {
+                        total = 0;
+                        exitTimeObject = exitTimeObject = persist.selectLastWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the last worktime in a day.
+                        enterTimeObject = persist.selectFirstWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the first worktime in a day.;
+                        sumTimeObject = persist.workTimeInADay(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the total time worked in a day.
+
+                        for (int j = 0; j < sumTimeObject.size(); j++)
+                            total += sumTimeObject.get(j).getTotalHoursWorked();
+                        if (enterTimeObject != null && exitTimeObject != null) {
+                            dayList.add(enterTimeObject.getDayOfTheWeek());
+                            hoursWorked.add(timeString(total));
+                            hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
+                            dateList.add(enterTimeObject.getDate());
+
+                        }
+                    }
+                    model.addAttribute("days", dayList);
+                    model.addAttribute("hours", hoursList);
+                    model.addAttribute("hoursWorked", hoursWorked);
+                    model.addAttribute("dateWorked", dateList);
+
+                    /*this is queris for the details modal*/
              /*   ArrayList<String> dayListDetails = new ArrayList<String>();
                 ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
                 ArrayList<String> hoursListDetails = new ArrayList<String>();
@@ -585,12 +589,13 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                     dateListDetails.add(rs.getDate("date"));
                 }
 */
-                //for the details
+                    //for the details
 
-              // model.addAttribute("daysDetails",daysDetails);
-              // model.addAttribute("hoursDetails", hoursDetails);
-              // model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
-              // model.addAttribute("dateWorkedDetails", dateWorkedDetails);
+                    // model.addAttribute("daysDetails",daysDetails);
+                    // model.addAttribute("hoursDetails", hoursDetails);
+                    // model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
+                    // model.addAttribute("dateWorkedDetails", dateWorkedDetails);
+
             }
             return "reports";
         } catch (Exception exc) {

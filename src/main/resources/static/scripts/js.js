@@ -26,6 +26,7 @@ function getStatus() {
         }
     });
 }
+
 function f() {
    /* var obj = new Object();
     obj.id =  document.getElementById("id").value;
@@ -69,61 +70,80 @@ function f() {
     });
 
 }
+$('.timepicker').wickedpicker();
+
 function changeImage() {
+    var  test=null;
+    $.ajax({
+        type: 'GET',
+        url: "buttonStatus",
+        success: function (data) {
+            test = data;
+            if(test==entered) {
 
-    if (!entered) {
-        var time = new Date();
-        localStorage.setItem("minutes", time.getMinutes().toString());
-        localStorage.setItem("hours", time.getHours().toString());
-        var enterTime = parseInt(localStorage.getItem("minutes")) + (parseInt(localStorage.getItem("hours")) * 60);
-        var num = 1;
-        var pressed = 'button='
-            + encodeURIComponent(num)
-            + '&enterTime='
-            + encodeURIComponent(enterTime);
-        $.ajax({
-            type: 'POST',
-            url: "addWorkTime",
-            data: pressed,
-            success: function (data) {
-                $("#enterBtn").attr("src","css/images/exit-button.png");
-            },
-            error: function (exception) {
-                alert('Exception' + exception);
+                if (!entered) {
+                    var time = new Date();
+                    localStorage.setItem("minutes", time.getMinutes().toString());
+                    localStorage.setItem("hours", time.getHours().toString());
+                    var enterTime = parseInt(localStorage.getItem("minutes")) + (parseInt(localStorage.getItem("hours")) * 60);
+                    var num = 1;
+                    var pressed = 'button='
+                        + encodeURIComponent(num)
+                        + '&enterTime='
+                        + encodeURIComponent(enterTime);
+                    $.ajax({
+                        type: 'POST',
+                        url: "addWorkTime",
+                        data: pressed,
+                        success: function (data) {
+                            $("#enterBtn").attr("src", "css/images/exit-button.png");
+                        },
+                        error: function (exception) {
+                            alert('Exception' + exception);
+                        }
+                    });
+                    entered = true;
+
+                } else {
+
+                    var time2 = new Date();
+                    var minutes1 = time2.getMinutes();
+                    var hours1 = time2.getHours();
+                    var exitTime = minutes1 + (hours1 * 60);
+                    var num = 0;
+                    var data = 'exitTime='
+                        + encodeURIComponent(exitTime)
+                        + '&button='
+                        + encodeURIComponent(num);
+                    $.ajax({
+                        type: 'POST',
+                        url: "updateWorkTime",
+                        data: data,
+                        success: function (data) {
+                            document.getElementById("hide").innerHTML += data + "<br>";
+
+                        },
+                        error: function (exception) {
+                            alert('Exception' + exception);
+                        }
+                    });
+                    $('#myModal').modal('show');
+                    $("#enterBtn").attr("src", "css/images/enter-button2.png");
+                    entered = false;
+                }
+
+            }else {
+                alert("you cant do this function becouse you already entered in onother pc")
             }
-        });
-        entered = true;
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
 
-    } else {
-
-        var time2 = new Date();
-        var minutes1 = time2.getMinutes();
-        var hours1 = time2.getHours();
-        var exitTime = minutes1 + (hours1 * 60);
-        var num = 0;
-        var data = 'exitTime='
-            + encodeURIComponent(exitTime)
-            + '&button='
-            + encodeURIComponent(num);
-        $.ajax({
-            type: 'POST',
-            url: "updateWorkTime",
-            data: data,
-            success: function (data) {
-                document.getElementById("hide").innerHTML += data+"<br>";
-
-            },
-            error: function (exception) {
-                alert('Exception' + exception);
-            }
-        });
-        $('#myModal').modal('show');
-        $("#enterBtn").attr("src","css/images/enter-button2.png");
-        entered = false;
-
-
-    }
 }
+
+
 function rowNum(rowNum) {
     counter=rowNum;
 }
@@ -149,7 +169,7 @@ function addEmployee() {
             console.log('success', data);
             var obj = JSON.parse(data);
 
-            document.getElementById("addEmpTable").innerHTML += "<tr  onclick=\"getRow(this)\">\n" +
+            document.getElementById("addEmpTable").innerHTML += "<tr  style=\"text-align: center\"onclick=\"getRow(this)\">\n" +
                 "    <td ><h4 id=\"idEmp\">"+obj.id+"</h4></td>\n" +
                 "    <td ><h4 id=\"nameEmp\">"+obj.name+"</h4></td>\n" +
                 "    <td ><h4 id=\"phoneEmp\">"+obj.phone+"</h4></td>\n" +

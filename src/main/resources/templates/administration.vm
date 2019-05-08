@@ -14,7 +14,7 @@
 <div class="container report" >
 <div class="row">
     <div class="col-12 removeEmp">
-        <table id="addEmpTable"cellspacing="15">
+        <table id="addEmpTable" cellpadding="10">
             <tr >
                 <th >
                   <h4>תז עובד &nbsp; </h4>
@@ -53,7 +53,7 @@
                 <td>
                     <h4>$password.get($i)</h4>
                 </td>
-                <td>
+                <td style="text-align: center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#removeModal" name="$i">x</button>
                 </td>
             </tr>
@@ -92,7 +92,7 @@
                         <input type="number" class="form-control borColor" id="phone" name="phone" placeholder="מס טלפון">
                     </div>
                     <div>
-                        <input type="number" class="form-control borColor" id="password" name="password" placeholder="סיסמא">
+                        <input type="text"  class="form-control borColor" id="password" name="password" placeholder="סיסמא">
                     </div>
                 </div>
                 <div class="modal-footer">

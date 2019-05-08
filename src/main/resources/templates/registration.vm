@@ -11,10 +11,11 @@
 <div class="img">
     <div class="container" >
         <div class="row">
-            <header class="col">
+            <header class="col-12">
 
                 <img onclick="returnToMainPage()" src="css/images/logo2.png" class="img-fluid" alt="Responsive image" id="logo">
-
+            </header>
+            <div class="col">
                 <form class="input" action="" method="post" id="register">
                     <div class="col">
                         <div class="col-6 regInput">
@@ -61,8 +62,8 @@
                     </div>
                 </form>
                 <button class="btn btn-primary loginBtn regBtn" type="submit" form="register" formaction="register"  >הירשם!</button>
+            </div>
 
-            </header>
         </div>
 
     </div>
