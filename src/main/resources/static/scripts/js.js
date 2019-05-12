@@ -1,4 +1,6 @@
 var indexRow=0;
+var idNumber=[];
+//var years=[];
 //var rocounter=0;//for counting rows
 var today = new Date();//today a date object
 var entered = false;
@@ -26,7 +28,30 @@ function getStatus() {
         }
     });
 }
+function dropDown() {
+    $.ajax({
+        type: 'POST',
+        url: "idNumbers",
+        success: function (data) {
+            console.log('success', data);
+            var obj = JSON.parse(data);
+            var ids=obj.idArray;
+            var dataList = document.getElementById('numberList');//for autocomplete
+            for (var i in ids) {
+                idNumber.push(ids[i]) ;
 
+            }
+            for(var i in idNumber){
+                 var option = document.createElement('option');
+                option.value = idNumber[i];
+                dataList.appendChild(option);
+            }
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+}
 function f() {
    /* var obj = new Object();
     obj.id =  document.getElementById("id").value;
@@ -382,3 +407,5 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row) {
     });
 
 }
+/*-----------------------------------------------------------------------------------------*/
+

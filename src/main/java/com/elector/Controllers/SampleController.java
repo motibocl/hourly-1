@@ -6,6 +6,9 @@ import com.elector.Persist;
 //import com.elector.Sms.model.Phone;
 import com.elector.Utils.sendSMS;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.SimpleEmail;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -130,6 +133,20 @@ public class SampleController {
         return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 
     }
+    //this function returning all the ids an year numbers that are in the db.
+    @RequestMapping(value = "/idNumbers", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity idNumbers() throws SQLException {
+        JSONObject json=new JSONObject();
+        List<EmployeeObject> employeeObject=persist.loadList(EmployeeObject.class);
+        int[] ids=new int[employeeObject.size()];
+        for (int i=0;i<employeeObject.size();i++)
+            ids[i] = employeeObject.get(i).getId();
+
+
+
+        json.put("idArray",ids);
+        return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+    }
     @RequestMapping("/confirmAndAdd")
     public String confirmAndAdd(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "day", defaultValue = "")String day,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -180,6 +197,8 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         persist.save(companyObject);
         AdminObject adminObject=new AdminObject(adminName,password,email,parseInt(adminId),phone,companyObject);
         persist.save(adminObject);
+
+
         return "Landing_page";
     }
     @RequestMapping("/registration")

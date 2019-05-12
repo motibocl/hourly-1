@@ -343,3 +343,10 @@ body, html {
     margin-top: 25px;
     float: none;
 }
+/*------------------------------------reports fit to phone input--------------------------------------------*/
+.fit{
+padding: initial;
+}
+.fitBtn{
+    padding: inherit;
+}

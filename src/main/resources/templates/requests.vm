@@ -33,9 +33,28 @@
 </br>
 <div class="container" >
     <div class="row rowBorder">
+        <div class="accordion" id="accordionExample" style=" width: -webkit-fill-available;">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+בקשות שלא נקראו                        </button>
+                    </h2>
+                </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
 
-        <table id="myTable">
+        <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="myTable" cellpadding="10">
+                <tr>
+                    <th>תז</th>
+                    <th>שם עובד</th>
+                    <th>תאריך</th>
+                    <th>יום</th>
+                    <th>כניסה</th>
+                    <th>יציאה</th>
+                    <th>הערה</th>
 
+                </tr>
             #if($emplId.size()!=0)
 
                 #set($end =$emplId.size())
@@ -43,24 +62,40 @@
                 #if($stop)
                 ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                     #foreach($i in [0..$stop])
-                        <tr >
-                            <td><p class="inf">$emplId.get($i)</p></td>
-                            <td><p class="inf">$names.get($i)</p></td>
-                            <td><p class="inf">$dateList1.get($i)</p></td>
-                            <td><p class="inf">$dayOfWeek.get($i)</p></td>
-                            <td><p class="inf"><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
-                            <td><p class="inf"><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
-                            <td><p class="inf">$reasonsList.get($i)</p></td>
-                            <td><button type="button" class="inf test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this)">אשר</button></td>
-                            <td><button type="button" class="inf test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this )" >דחה</button></td>
+                        <tr class="inf" >
+                            <td><p >$emplId.get($i)</p></td>
+                            <td><p >$names.get($i)</p></td>
+                            <td><p >$dateList1.get($i)</p></td>
+                            <td><p >$dayOfWeek.get($i)</p></td>
+                            <td><p><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
+                            <td><p><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
+                            <td><p >$reasonsList.get($i)</p></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this)">אשר</button></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this )" >דחה</button></td>
                         </tr>
                     #end
                 #end
             #end
         </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+        ##_______________________________________________second  card_____________________________________________________
+        <div class="card"  style=" width: -webkit-fill-available;">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+בקשות שנקראו                    </button>
+                </h2>
+            </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+צריך להוסיף פה את הנתונים שניקראו לפי דעתי נדע על ידי שנוסיף עמודה לסיבות כל פעם שבהודעה תלחץ אישור או דחה העמודה תתמלא כנקרא ואז ההודעה תועבר לנקראו.            </div>
+        </div>
     </div>
 </div>
-
+</div>
     #parse("jsTemp.vm")
 
 </body>

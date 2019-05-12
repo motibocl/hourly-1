@@ -6,7 +6,7 @@
 
     <title>Hourly|reports</title>
 </head>
-<body id="page1" onload="clearCache()">
+<body id="page1" onload="clearCache(); dropDown()">
     #if($admin)
         #parse("adminNav.vm")
     #{else}
@@ -31,17 +31,19 @@
 </div>
     #if($admin)  ##CHECKING IF ITS ADMIN FOR ADDITIONAL FEATURES.
 
-<form class="container report" >
+<form  autocomplete="off" class="container report" >
     <div class="row">
 
-            <div class="col-4 formRep">
-
+            <div class="col-4 formRep fit">
 
                 ## <div class="form-group">
-                     <input type="number" class="form-control borColor" id="id" name="id" placeholder="מספר עובד">
+                     <input type="number" list="numberList" class="form-control borColor" id="id" name="id" placeholder="מספר עובד">
+                    <datalist id="numberList"></datalist>
               ##   </div>
+
              </div>
-                 <div class="col-4 formRep">
+
+                 <div class="col-3 formRep fit">
 
                      ##<div class="form-group">
                          <select class="form-control borColor" id="month" name="month" >
@@ -63,14 +65,17 @@
 
                 ## </div>
 
-                 <div class="col-3 formRep">
+                 <div class="col-3 formRep fit">
 
 
                  ##    <div class="form-group">
-                         <input type="number" class="form-control borColor" id="year" name="year" placeholder="שנה">
-                     </div>
+                         <input type="number" list="yearList" class="form-control borColor" id="year" name="year" placeholder="שנה">
+                     <datalist id="yearList">
+                         <option value="2019">
+                     </datalist>
+                 </div>
                ##  </div>
-                     <div class="col-1 formRep">
+                     <div class="col-2 formRep fitBtn">
 
                   ##   <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
                      <button  style="margin-top:auto;" class="btn btn-primary loginBtn" onclick="f()">בחר</button>
@@ -109,6 +114,9 @@
 
                  ##    <div class="form-group">
                      <input type="number" class="form-control borColor" id="year" name="year" placeholder="שנה">
+                     <datalist id="yearList">
+                         <option value="2019">
+                     </datalist>
                  </div>
              ##  </div>
                  <div class="col-2 formRep">
@@ -124,7 +132,7 @@
 <div class="container " >
     <div class="row rowBorder">
 
-<table>
+<table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;">
     #if($days.size()!=0)
 
     #set($end =$days.size())
