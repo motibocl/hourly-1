@@ -282,6 +282,11 @@ function dayDetails(date,empId) {
         }
     });
 }
+function requestEmp(reasonEmp) {
+    $("#reason").empty();
+    document.getElementById("reason").innerHTML = reasonEmp;
+
+}
 function clearCache() {
     history.go(1);
 }
@@ -376,7 +381,10 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row) {
         data: data,
         success: function (data) {
             console.log('success', data);
-            deleteRow(emplid,enterTime,exitTime,date,reason,i,row);
+            var index = row.parentNode.parentNode.rowIndex;
+            document.getElementById("myTable").deleteRow(index);
+
+            //deleteRow(emplid,enterTime,exitTime,date,reason,i,row);
         },
         error: function (exception) {
             alert('Exception' + exception);
@@ -391,6 +399,10 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row) {
         + encodeURIComponent(emplid)
         + '&date='
         + encodeURIComponent(date)
+        + '&enterTime='
+        + encodeURIComponent(enter)
+        + '&exitTime='
+        + encodeURIComponent(exit)
         + '&reason='
         + encodeURIComponent(reason);
     $.ajax({

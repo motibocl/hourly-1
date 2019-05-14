@@ -34,6 +34,7 @@
         <id name="reasonId" type="int"  column="reasonId" >
             <generator class="native"/>
         </id>
+        <property name="acceptOrNot" type="int" column="acceptOrNot"/>
         <property name="enterTime" type="float" column="enterTime"/>
         <property name="exitTime" type="float" column="exitTime"/>
         <property name="howManyHours" type="int" column="howManyHours" />

@@ -54,7 +54,7 @@ public class SampleController {
 
     @PostConstruct
     public void init() throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -157,31 +157,31 @@ public class SampleController {
         EmployeeObject employeeObject=persist.getEmployeeById(emplid);
         WorktimeObject worktimeObject=new WorktimeObject( enterTime, exitTime,employeeObject, sqldate, exitTime-enterTime, day,comment);
         persist.save(worktimeObject);
+        List<ReasonObject> reasonObjectList=persist.loadList(ReasonObject.class);
+        for (int i=0;i<reasonObjectList.size();i++){//changing the status of the reason
+            if (reasonObjectList.get(i).getEmployeeObject().getId()==emplid&&reasonObjectList.get(i).getEnterTime()==enterTime&&reasonObjectList.get(i).getExitTime()==exitTime&&reasonObjectList.get(i).getDate().equals(sqldate)){
+                reasonObjectList.get(i).setAcceptOrNot(1);//1=accepted
+                persist.save(reasonObjectList.get(i));
+            }
+        }
         return "requests";
     }
     @RequestMapping("/removeReason")
-    public String removeReason(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
+    public String removeReason(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
-        persist.removeReason(emplid,sqldate,comment);
+        List<ReasonObject> reasonObjectList=persist.loadList(ReasonObject.class);
+        for (int i=0;i<reasonObjectList.size();i++){//changing the status of the reason
+            if (reasonObjectList.get(i).getEmployeeObject().getId()==emplid&&reasonObjectList.get(i).getEnterTime()==enterTime&&reasonObjectList.get(i).getExitTime()==exitTime&&reasonObjectList.get(i).getDate().equals(sqldate)){
+                reasonObjectList.get(i).setAcceptOrNot(2);//2=Declined
+                persist.save(reasonObjectList.get(i));
+            }
+        }
+        //persist.removeReason(emplid,sqldate,comment);
         return "requests";
     }
-/*--------------------------------------------------------------------------------------------------------------------------------------*/
-@RequestMapping(value = "test" , method = RequestMethod.POST)
-public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
-    System.out.print(jsonString);
-   // JSONObject json1=new JSONObject(jsonString);
-    JSONObject json=new JSONObject();
-   // System.out.print(json1.getString("name"));
-    json.put("name","moti");
-    json.put("age",25);
-
-    return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
-
-}
-
 
 
 
@@ -326,7 +326,7 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
              return "redirect:/main";
 
     }
-
+//confusing func need to think how to make it more officiant later.
     @RequestMapping("/requests")
     public String req(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         String phone = convertToken(cookie);
@@ -341,45 +341,42 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         ArrayList<String> dayOfWeek=new ArrayList<>();
         ArrayList<String> enterTime=new ArrayList<>();
         ArrayList<String> exitTime=new ArrayList<>();
-        //ResultSet rs= persist.showRequests();
+        ArrayList<String> reasonsAccepted=new ArrayList<>();
+        ArrayList<Integer> employeeIdAccepted=new ArrayList<Integer>();
+        ArrayList<Date> dateAccepted=new ArrayList<>();
+        ArrayList<Integer> hoursAccepted=new ArrayList<Integer>();
+        ArrayList<String> namesAccepted=new ArrayList<>();
+        ArrayList<String> dayOfWeekAccepted=new ArrayList<>();
+        ArrayList<String> enterTimeAccepted=new ArrayList<>();
+        ArrayList<String> exitTimeAccepted=new ArrayList<>();
+        ArrayList<String> reasonsDeclined=new ArrayList<>();
+        ArrayList<Integer> employeeIdDeclined=new ArrayList<Integer>();
+        ArrayList<Date> dateDeclined=new ArrayList<>();
+        ArrayList<Integer> hoursDeclined=new ArrayList<Integer>();
+        ArrayList<String> namesDeclined=new ArrayList<>();
+        ArrayList<String> dayOfWeekDeclined=new ArrayList<>();
+        ArrayList<String> enterTimeDeclined=new ArrayList<>();
+        ArrayList<String> exitTimeDeclined=new ArrayList<>();
         List<ReasonObject> reasonObjectList=persist.loadList(ReasonObject.class);
         reasonObjectList=persist.organizeReasons();
         persist.organizeReasons();
         Calendar cal = Calendar.getInstance();
         int hour,minutes;
-       // while(rs.next()){
-        for (int i=0;i<reasonObjectList.size();i++){
-            hour=(int)(reasonObjectList.get(i).getExitTime())/60;
-            minutes=(int)(reasonObjectList.get(i).getExitTime())%60;
-            if (hour<10&&minutes<10)
-                exitTime.add("0" +hour+ ":0" + minutes);
-            else if (hour<10)
-                exitTime.add("0" +hour+ ":" + minutes);
-            else if(minutes<10)
-                exitTime.add(hour+ ":" + "0" + minutes);
-            else
-                exitTime.add(hour+ ":" + minutes);
-            hour=(int)(reasonObjectList.get(i).getEnterTime())/60;
-            minutes=(int)(reasonObjectList.get(i).getEnterTime())%60;
-            if (hour<10&&minutes<10)
-                enterTime.add("0" +hour+ ":0" + minutes);
-            else if(hour<10)
-                enterTime.add("0" +hour+ ":" + minutes);
-            else if(minutes<10)
-                enterTime.add(hour+ ":" + "0" + minutes);
-            else
-                enterTime.add(hour+ ":" + minutes);
-            cal.setTime(reasonObjectList.get(i).getDate());
-            int day = cal.get(Calendar.DAY_OF_WEEK);
-            dayOfWeek.add(days[day-1]);
-           // names.add(rs.getString("employeeName"));
-            names.add(reasonObjectList.get(i).getEmployeeObject().getName());
-            hours.add(reasonObjectList.get(i).getHowManyHours());
-            employeeId.add(reasonObjectList.get(i).getEmployeeObject().getId());
-            date.add(reasonObjectList.get(i).getDate());
-            reasons.add(reasonObjectList.get(i).getReasonText());
-        }
+        for (int i=0;i<reasonObjectList.size();i++) {
+            hour = (int) (reasonObjectList.get(i).getExitTime()) / 60;
+            minutes = (int) (reasonObjectList.get(i).getExitTime()) % 60;
+            if (reasonObjectList.get(i).getAcceptOrNot() == 0) {//if not read
+               reasonLists(days,cal,i,hour,minutes,reasonObjectList,reasons,employeeId,date,hours,names,dayOfWeek,enterTime,exitTime);
+            }
+            else if (reasonObjectList.get(i).getAcceptOrNot() == 1) {//if accepted
+                reasonLists(days,cal,i,hour,minutes,reasonObjectList,reasonsAccepted,employeeIdAccepted,dateAccepted,hoursAccepted,namesAccepted,dayOfWeekAccepted,enterTimeAccepted,exitTimeAccepted);
 
+            }
+            else if (reasonObjectList.get(i).getAcceptOrNot() == 2) {//if declined
+                reasonLists(days,cal,i,hour,minutes,reasonObjectList,reasonsDeclined,employeeIdDeclined,dateDeclined,hoursDeclined,namesDeclined,dayOfWeekDeclined,enterTimeDeclined,exitTimeDeclined);
+
+            }
+        }
         model.addAttribute("names",names);
         model.addAttribute("enterTime",enterTime);
         model.addAttribute("exitTime",exitTime);
@@ -388,6 +385,22 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
         model.addAttribute("emplId",employeeId);
         model.addAttribute("reasonsList",reasons);
         model.addAttribute("dateList1",date);
+        model.addAttribute("namesAccepted",namesAccepted);
+        model.addAttribute("enterTimeAccepted",enterTimeAccepted);
+        model.addAttribute("exitTimeAccepted",exitTimeAccepted);
+        model.addAttribute("hoursAccepted",hoursAccepted);
+        model.addAttribute("dayOfWeekAccepted",dayOfWeekAccepted);
+        model.addAttribute("emplIdAccepted",employeeIdAccepted);
+        model.addAttribute("reasonsListAccepted",reasonsAccepted);
+        model.addAttribute("dateList1Accepted",dateAccepted);
+        model.addAttribute("namesDeclined",namesDeclined);
+        model.addAttribute("enterTimeDeclined",enterTimeDeclined);
+        model.addAttribute("exitTimeDeclined",exitTimeDeclined);
+        model.addAttribute("hoursDeclined",hoursDeclined);
+        model.addAttribute("dayOfWeekDeclined",dayOfWeekDeclined);
+        model.addAttribute("emplIdDeclined",employeeIdDeclined);
+        model.addAttribute("reasonsListDeclined",reasonsDeclined);
+        model.addAttribute("dateList1Declined",dateDeclined);
 
         return "requests";
     }
@@ -764,7 +777,34 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
        // }
         return id;
     }
-
+private void reasonLists(String[] days,Calendar cal,int i,int hour,int minutes,List<ReasonObject> reasonObjectList,ArrayList<String> reasons, ArrayList<Integer> employeeId, ArrayList<Date> date, ArrayList<Integer> hours, ArrayList<String> names, ArrayList<String> dayOfWeek, ArrayList<String> enterTime,ArrayList<String> exitTime){
+    if (hour < 10 && minutes < 10)
+        exitTime.add("0" + hour + ":0" + minutes);
+    else if (hour < 10)
+        exitTime.add("0" + hour + ":" + minutes);
+    else if (minutes < 10)
+        exitTime.add(hour + ":" + "0" + minutes);
+    else
+        exitTime.add(hour + ":" + minutes);
+    hour = (int) (reasonObjectList.get(i).getEnterTime()) / 60;
+    minutes = (int) (reasonObjectList.get(i).getEnterTime()) % 60;
+    if (hour < 10 && minutes < 10)
+        enterTime.add("0" + hour + ":0" + minutes);
+    else if (hour < 10)
+        enterTime.add("0" + hour + ":" + minutes);
+    else if (minutes < 10)
+        enterTime.add(hour + ":" + "0" + minutes);
+    else
+        enterTime.add(hour + ":" + minutes);
+    cal.setTime(reasonObjectList.get(i).getDate());
+    int day = cal.get(Calendar.DAY_OF_WEEK);
+    dayOfWeek.add(days[day - 1]);
+    names.add(reasonObjectList.get(i).getEmployeeObject().getName());
+    hours.add(reasonObjectList.get(i).getHowManyHours());
+    employeeId.add(reasonObjectList.get(i).getEmployeeObject().getId());
+    date.add(reasonObjectList.get(i).getDate());
+    reasons.add(reasonObjectList.get(i).getReasonText());
+}
    /* private int enterTime(String phone) throws SQLException {
         int timeEnter = 0;
         PreparedStatement statement = dbConnection.prepareStatement("select * from test2.worktime WHERE  id=? order by timeId desc limit 1; ");
@@ -793,7 +833,6 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
     }
     private boolean isAdmin(String phone) throws SQLException {
         AdminObject adminObject=persist.getAdminByPhone(phone);
-       // ResultSet result=persist.selectEmployee(parseInt(id));
         return adminObject != null;
     }
 }

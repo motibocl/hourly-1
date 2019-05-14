@@ -10,15 +10,27 @@ public class ReasonObject {
     private int reasonId;
     private String reasonText;
     private Date date;
+    private int acceptOrNot=0;
+
+
     private EmployeeObject employeeObject;
 public ReasonObject(){}
-    public ReasonObject(float exitTime,float enterTime,String reasonText,Date date,EmployeeObject employeeObject,int howManyHours){
+
+
+    public ReasonObject(float exitTime, float enterTime, String reasonText, Date date, EmployeeObject employeeObject, int howManyHours){
     this.enterTime=enterTime;
     this.exitTime=exitTime;
     this.date=date;
     this.howManyHours=howManyHours;
     this.employeeObject=employeeObject;
     this.reasonText=reasonText;
+    }
+    public int getAcceptOrNot() {
+        return acceptOrNot;
+    }
+
+    public void setAcceptOrNot(int acceptOrNot) {
+        this.acceptOrNot = acceptOrNot;
     }
 
     public float getExitTime() {

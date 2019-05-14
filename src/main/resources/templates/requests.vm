@@ -69,7 +69,7 @@
                             <td><p >$dayOfWeek.get($i)</p></td>
                             <td><p><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
                             <td><p><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
-                            <td><p >$reasonsList.get($i)</p></td>
+                            <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsList.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button></td>
                             <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this)">אשר</button></td>
                             <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this )" >דחה</button></td>
                         </tr>
@@ -86,15 +86,113 @@
             <div class="card-header" id="headingTwo">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-בקשות שנקראו                    </button>
+בקשות שאושרו                    </button>
                 </h2>
             </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
-צריך להוסיף פה את הנתונים שניקראו לפי דעתי נדע על ידי שנוסיף עמודה לסיבות כל פעם שבהודעה תלחץ אישור או דחה העמודה תתמלא כנקרא ואז ההודעה תועבר לנקראו.            </div>
+                <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="myTable" cellpadding="10">
+                    <tr>
+                        <th>תז</th>
+                        <th>שם עובד</th>
+                        <th>תאריך</th>
+                        <th>יום</th>
+                        <th>כניסה</th>
+                        <th>יציאה</th>
+                        <th>הערה</th>
+
+                    </tr>
+                    #if($emplIdAccepted.size()!=0)
+
+                        #set($end =$emplIdAccepted.size())
+                        #set($stop = $end - 1)
+                        #if($stop)
+                        ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
+                            #foreach($i in [0..$stop])
+                                <tr class="inf" >
+                                    <td><p >$emplIdAccepted.get($i)</p></td>
+                                    <td><p >$namesAccepted.get($i)</p></td>
+                                    <td><p >$dateList1Accepted.get($i)</p></td>
+                                    <td><p >$dayOfWeekAccepted.get($i)</p></td>
+                                    <td><p><input type="time" id="input $i" value=$enterTimeAccepted.get($i) ></p></td>
+                                    <td><p><input type="time" id="input2 $i" value=$exitTimeAccepted.get($i)></p></td>
+                                    <td><td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListAccepted.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                   <i class="fa fa-commenting-o" style="font-size:20px"></i> </button></td></td>
+                                </tr>
+                            #end
+                        #end
+                    #end
+                </table>
+            </div>
+    </div>
+        </div>
+    ##_______________________________________________third card_____________________________________________________
+        <div class="card"  style=" width: -webkit-fill-available;">
+            <div class="card-header" id="headingThree">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThird" aria-expanded="false" aria-controls="collapseThird">
+                        בקשות שנידחו                    </button>
+                </h2>
+            </div>
+            <div id="collapseThird" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                <div class="card-body">
+                    <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="myTable" cellpadding="10">
+                        <tr>
+                            <th>תז</th>
+                            <th>שם עובד</th>
+                            <th>תאריך</th>
+                            <th>יום</th>
+                            <th>כניסה</th>
+                            <th>יציאה</th>
+                            <th>הערה</th>
+
+                        </tr>
+                        #if($emplIdDeclined.size()!=0)
+
+                            #set($end =$emplIdDeclined.size())
+                            #set($stop = $end - 1)
+                            #if($stop)
+                            ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
+                                #foreach($i in [0..$stop])
+                                    <tr class="inf" >
+                                        <td><p >$emplIdDeclined.get($i)</p></td>
+                                        <td><p >$namesDeclined.get($i)</p></td>
+                                        <td><p >$dateList1Declined.get($i)</p></td>
+                                        <td><p >$dayOfWeekDeclined.get($i)</p></td>
+                                        <td><p><input type="time" id="input $i" value=$enterTimeDeclined.get($i) ></p></td>
+                                        <td><p><input type="time" id="input2 $i" value=$exitTimeDeclined.get($i)></p></td>
+                                        <td><td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListDeclined.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <i class="fa fa-commenting-o" style="font-size:20px"></i>   </button></td></td>
+                                    </tr>
+
+                                #end
+                            #end
+                        #end
+                    </table>
+                </div>
+        </div>
+        </div>
+</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                <p id="reason">$reasonsList.get($i)</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
     </div>
-</div>
 </div>
     #parse("jsTemp.vm")
 
