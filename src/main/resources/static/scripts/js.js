@@ -284,7 +284,7 @@ function dayDetails(date,empId) {
 }
 function requestEmp(reasonEmp) {
     $("#reason").empty();
-    document.getElementById("reason").innerHTML = reasonEmp;
+    document.getElementById("reason").innerHTML += reasonEmp;
 
 }
 function clearCache() {
@@ -360,7 +360,7 @@ function convert(string) {
     return total;
 }
 
-function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row) {
+function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row,name) {
     var enter=convert(document.getElementById("input "+i.toString()).value);
     var exit=convert(document.getElementById("input2 "+i.toString()).value);
     var data = 'emplid='
@@ -381,8 +381,65 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row) {
         data: data,
         success: function (data) {
             console.log('success', data);
+            var reasonEmp=reason;
             var index = row.parentNode.parentNode.rowIndex;
             document.getElementById("myTable").deleteRow(index);
+            var table = document.getElementById( 'acceptedTable' );
+            var row1 = table.insertRow(table.rows.length)
+            var cell1 = row1.insertCell(0);
+            var  cell2 = row1.insertCell(1);
+            var cell3 = row1.insertCell(2);
+            var cell4 = row1.insertCell(3);
+            var  cell5 = row1.insertCell(4);
+            var  cell6 = row1.insertCell(5);
+            var  cell7 = row1.insertCell(6);
+                cell1.innerHTML='<p >'+emplid+'</p>';
+                cell2.innerHTML='<p >'+name+'</p>';
+                cell3.innerHTML='<p >'+date+'</p>';
+                cell4.innerHTML='<p >'+day+'</p>';
+                cell5.innerHTML='<p><input type="time" id="input $i" value='+enterTime+' ></p>';
+                cell6.innerHTML='<p><input type="time" id="input $i" value='+exitTime+' ></p>';
+                cell7.innerHTML='<button type="button" class="btn btn-primary  test"  onclick=requestEmp('+reasonEmp+')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button>';
+
+
+
+
+
+
+
+                /*  var tableRef = document.getElementById('acceptedTable');
+                  var newRow   = tableRef.insertRow(tableRef.rows.length);
+                  var newCell  = newRow.insertCell(0);
+                  var newText  = document.createTextNode('<p >'+emplid+'</p>');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(1);
+                  newText  = document.createTextNode('<p >'+name+'</p>');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(2);
+                  newText  = document.createTextNode('<p >'+date+'</p>');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(3);
+                  newText  = document.createTextNode('<p >'+day+'</p>');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(4);
+                  newText  = document.createTextNode('<p><input type="time" id="input $i" value='+enterTime+' ></p>\n');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(5);
+                  newText  = document.createTextNode('<p><input type="time" id="input $i" value='+exitTime+' ></p>\n');
+                  newCell.appendChild(newText);
+                  newCell  = newRow.insertCell(6);
+                  newText  = document.createTextNode('<button type="button" class="btn btn-primary  test"  onclick="requestEmp('+reasonEmp+')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button>');
+                  newCell.appendChild(newText);*/
+            /* document.getElementById("acceptedTable").innerHTML +=" <tr class=\"inf\" >\n" +
+                 "                                        <td><p >"+emplid+"</p></td>\n" +
+                 "                                        <td><p >"+name+"</p></td>\n" +
+                 "                                        <td><p >"+date+"</p></td>\n" +
+                 "                                        <td><p >"+day+"</p></td>\n" +
+                 "                                        <td><p><input type=\"time\" id=\"input $i\" value="+enterTime+" ></p></td>\n" +
+                 "                                        <td><p><input type=\"time\" id=\"input2 $i\" value="+exitTime+"></p></td>\n" +
+                 "                                        <td><button type=\"button\" class=\"btn btn-primary test\" onclick=\"requestEmp("+'reasonEmp'+")\" data-toggle=\"modal\" data-target=\"#exampleModalScrollable\">\n" +
+                 "                                        <i class=\"fa fa-commenting-o\" style=\"font-size:20px\"></i>   </button></td>\n" +
+                 "                                    </tr>";*/
 
             //deleteRow(emplid,enterTime,exitTime,date,reason,i,row);
         },
@@ -391,7 +448,7 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row) {
         }
     });
 }
-function deleteRow(emplid,enterTime,exitTime,date,reason,i,row) {
+function deleteRow(emplid,enterTime,exitTime,date,reason,i,row,name,dayOfTheWeek) {
     var index = row.parentNode.parentNode.rowIndex;
     var enter = convert(document.getElementById("input "+i.toString()).value);
     var exit = convert(document.getElementById("input2 "+i.toString()).value);
@@ -412,6 +469,17 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row) {
         success: function (data) {
             console.log('success', data);
             document.getElementById("myTable").deleteRow(index);
+           // var lastIndex = document.getElementById("declinedTable").rows.length;
+            document.getElementById("declinedTable").innerHTML +=" <tr class=\"inf\" >\n" +
+                "                                        <td><p >"+emplid+"</p></td>\n" +
+                "                                        <td><p >"+name+"</p></td>\n" +
+                "                                        <td><p >"+date+"</p></td>\n" +
+                "                                        <td><p >"+dayOfTheWeek+"</p></td>\n" +
+                "                                        <td><p><input type=\"time\" id=\"input $i\" value="+enterTime+" ></p></td>\n" +
+                "                                        <td><p><input type=\"time\" id=\"input2 $i\" value="+exitTime+"></p></td>\n" +
+                "                                        <td><button type=\"button\" class=\"btn btn-primary test\" onclick=\"requestEmp("+'reason'+")\" data-toggle=\"modal\" data-target=\"#exampleModalScrollable\">\n" +
+                "                                        <i class=\"fa fa-commenting-o\" style=\"font-size:20px\"></i>   </button></td>\n" +
+                "                                    </tr>";
         },
         error: function (exception) {
             alert('Exception' + exception);

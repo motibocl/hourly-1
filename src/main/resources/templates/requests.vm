@@ -70,8 +70,8 @@
                             <td><p><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
                             <td><p><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
                             <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsList.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button></td>
-                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this)">אשר</button></td>
-                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this )" >דחה</button></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this,'$names.get($i)')">אשר</button></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this,'$names.get($i)','$dayOfWeek.get($i)' )" >דחה</button></td>
                         </tr>
                     #end
                 #end
@@ -91,7 +91,7 @@
             </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
-                <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="myTable" cellpadding="10">
+                <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="acceptedTable" cellpadding="10">
                     <tr>
                         <th>תז</th>
                         <th>שם עובד</th>
@@ -116,8 +116,8 @@
                                     <td><p >$dayOfWeekAccepted.get($i)</p></td>
                                     <td><p><input type="time" id="input $i" value=$enterTimeAccepted.get($i) ></p></td>
                                     <td><p><input type="time" id="input2 $i" value=$exitTimeAccepted.get($i)></p></td>
-                                    <td><td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListAccepted.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
-                                   <i class="fa fa-commenting-o" style="font-size:20px"></i> </button></td></td>
+                                    <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListAccepted.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                   <i class="fa fa-commenting-o" style="font-size:20px"></i> </button></td>
                                 </tr>
                             #end
                         #end
@@ -136,7 +136,7 @@
             </div>
             <div id="collapseThird" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
                 <div class="card-body">
-                    <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="myTable" cellpadding="10">
+                    <table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;" id="declinedTable" cellpadding="10">
                         <tr>
                             <th>תז</th>
                             <th>שם עובד</th>
@@ -161,8 +161,8 @@
                                         <td><p >$dayOfWeekDeclined.get($i)</p></td>
                                         <td><p><input type="time" id="input $i" value=$enterTimeDeclined.get($i) ></p></td>
                                         <td><p><input type="time" id="input2 $i" value=$exitTimeDeclined.get($i)></p></td>
-                                        <td><td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListDeclined.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
-                                        <i class="fa fa-commenting-o" style="font-size:20px"></i>   </button></td></td>
+                                        <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListDeclined.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <i class="fa fa-commenting-o" style="font-size:20px"></i>   </button></td>
                                     </tr>
 
                                 #end
@@ -179,17 +179,16 @@
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalScrollableTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalScrollableTitle">הערה</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" >
-                <p id="reason">$reasonsList.get($i)</p>
+                <p id="reason"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">אישור</button>
             </div>
         </div>
     </div>
