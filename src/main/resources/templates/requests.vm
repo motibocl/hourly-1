@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col">
             <p class="speRep">בקשות עובדים</p>
-
+           ##  <p>$ar0.get(1).getReasonText()</p>
         </div>
     </div>
 </div>
@@ -55,23 +55,23 @@
                     <th>הערה</th>
 
                 </tr>
-            #if($emplId.size()!=0)
+            #if($reasonsNotRead.size()!=0)
 
-                #set($end =$emplId.size())
+                #set($end =$reasonsNotRead.size())
                 #set($stop = $end - 1)
                 #if($stop)
                 ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                     #foreach($i in [0..$stop])
                         <tr class="inf" >
-                            <td><p >$emplId.get($i)</p></td>
-                            <td><p >$names.get($i)</p></td>
-                            <td><p >$dateList1.get($i)</p></td>
-                            <td><p >$dayOfWeek.get($i)</p></td>
-                            <td><p><input type="time" id="input $i" value=$enterTime.get($i) ></p></td>
-                            <td><p><input type="time" id="input2 $i" value=$exitTime.get($i)></p></td>
-                            <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsList.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button></td>
-                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)','$dayOfWeek.get($i)',$i,this,'$names.get($i)')">אשר</button></td>
-                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$emplId.get($i)','$enterTime.get($i)','$exitTime.get($i)','$dateList1.get($i)','$reasonsList.get($i)',$i,this,'$names.get($i)','$dayOfWeek.get($i)' )" >דחה</button></td>
+                            <td><p >$reasonsNotRead.get($i).getEmployeeObject().getId()</p></td>
+                            <td><p >$reasonsNotRead.get($i).getEmployeeObject().getName()</p></td>
+                            <td><p >$reasonsNotRead.get($i).getDate()</p></td>
+                            <td><p >$dayOfWeek0.get($i)</p></td>
+                            <td><p><input type="time" id="input $i" value=$enterTime0.get($i)></p></td>
+                            <td><p><input type="time" id="input2 $i" value=$exitTime0.get($i)></p></td>
+                            <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsNotRead.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$reasonsNotRead.get($i).getEmployeeObject().getId()','$enterTime0.get($i)','$exitTime0.get($i)','$reasonsNotRead.get($i).getDate()','$reasonsNotRead.get($i).getReasonText()','$dayOfWeek0.get($i)',$i,this,'$reasonsNotRead.get($i).getEmployeeObject().getName()')">אשר</button></td>
+                            <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$reasonsNotRead.get($i).getEmployeeObject().getId()','$enterTime0.get($i)','$exitTime0.get($i)','$reasonsNotRead.get($i).getDate()','$reasonsNotRead.get($i).getReasonText()',$i,this,'$reasonsNotRead.get($i).getEmployeeObject().getName()','$dayOfWeek0.get($i)' )" >דחה</button></td>
                         </tr>
                     #end
                 #end
@@ -102,21 +102,21 @@
                         <th>הערה</th>
 
                     </tr>
-                    #if($emplIdAccepted.size()!=0)
+                    #if($reasonsAccepted.size()!=0)
 
-                        #set($end =$emplIdAccepted.size())
+                        #set($end =$reasonsAccepted.size())
                         #set($stop = $end - 1)
                         #if($stop)
                         ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                             #foreach($i in [0..$stop])
                                 <tr class="inf" >
-                                    <td><p >$emplIdAccepted.get($i)</p></td>
-                                    <td><p >$namesAccepted.get($i)</p></td>
-                                    <td><p >$dateList1Accepted.get($i)</p></td>
-                                    <td><p >$dayOfWeekAccepted.get($i)</p></td>
-                                    <td><p><input type="time" id="input $i" value=$enterTimeAccepted.get($i) ></p></td>
-                                    <td><p><input type="time" id="input2 $i" value=$exitTimeAccepted.get($i)></p></td>
-                                    <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListAccepted.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                    <td><p >$reasonsAccepted.get($i).getEmployeeObject().getId()</p></td>
+                                    <td><p >$reasonsAccepted.get($i).getEmployeeObject().getName()</p></td>
+                                    <td><p >$reasonsAccepted.get($i).getDate()</p></td>
+                                    <td><p >$dayOfWeek1.get($i)</p></td>
+                                    <td><p><input type="time" id="input $i" value=$enterTime1.get($i) ></p></td>
+                                    <td><p><input type="time" id="input2 $i" value=$exitTime1.get($i)></p></td>
+                                    <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsAccepted.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable">
                                    <i class="fa fa-commenting-o" style="font-size:20px"></i> </button></td>
                                 </tr>
                             #end
@@ -147,21 +147,21 @@
                             <th>הערה</th>
 
                         </tr>
-                        #if($emplIdDeclined.size()!=0)
+                        #if($reasonsDeclined.size()!=0)
 
-                            #set($end =$emplIdDeclined.size())
+                            #set($end =$reasonsDeclined.size())
                             #set($stop = $end - 1)
                             #if($stop)
                             ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                                 #foreach($i in [0..$stop])
                                     <tr class="inf" >
-                                        <td><p >$emplIdDeclined.get($i)</p></td>
-                                        <td><p >$namesDeclined.get($i)</p></td>
-                                        <td><p >$dateList1Declined.get($i)</p></td>
-                                        <td><p >$dayOfWeekDeclined.get($i)</p></td>
-                                        <td><p><input type="time" id="input $i" value=$enterTimeDeclined.get($i) ></p></td>
-                                        <td><p><input type="time" id="input2 $i" value=$exitTimeDeclined.get($i)></p></td>
-                                        <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsListDeclined.get($i)')" data-toggle="modal" data-target="#exampleModalScrollable">
+                                        <td><p >$reasonsDeclined.get($i).getEmployeeObject().getId()</p></td>
+                                        <td><p >$reasonsDeclined.get($i).getEmployeeObject().getName()</p></td>
+                                        <td><p >$reasonsDeclined.get($i).getDate()</p></td>
+                                        <td><p >$dayOfWeek2.get($i)</p></td>
+                                        <td><p><input type="time" id="input $i" value=$enterTime2.get($i) ></p></td>
+                                        <td><p><input type="time" id="input2 $i" value=$exitTime2.get($i)></p></td>
+                                        <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsDeclined.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable">
                                         <i class="fa fa-commenting-o" style="font-size:20px"></i>   </button></td>
                                     </tr>
 

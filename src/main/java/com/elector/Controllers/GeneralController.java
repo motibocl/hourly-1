@@ -58,7 +58,7 @@ public class GeneralController {
 
     }
 
-    @RequestMapping("/")
+   /* @RequestMapping("/")
     public String main(Model model) throws Exception {
         model.addAttribute("page", PAGE_MAIN);
         boolean error = false;
@@ -76,7 +76,7 @@ public class GeneralController {
 
         return "tmpl_main";
     }
-
+*/
     @RequestMapping("/second")
     public String second(Model model) throws Exception {
         model.addAttribute("page", PAGE_SECOND);

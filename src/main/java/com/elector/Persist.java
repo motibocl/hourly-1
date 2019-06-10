@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "RAMI2018");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
 
     }
 
@@ -724,11 +724,32 @@ there is no need */
        .setString("comment",comment)
                .executeUpdate();
     }
-    public  List <ReasonObject> organizeReasons() {
+  /*  public  List <ReasonObject> organizeReasons() {
        List <ReasonObject> reasonObjectList = (List<ReasonObject>) getQuerySession()
                .createQuery("FROM ReasonObject ORDER BY date ASC")
                .list();
        return reasonObjectList;
+    }*/
+    public  List <ReasonObject> reasonsAccepted() {
+        List <ReasonObject> reasonsAccepted = (List<ReasonObject>) getQuerySession()
+                .createQuery("FROM ReasonObject WHERE acceptOrNot=:accept ORDER BY date ASC")
+                .setInteger("accept",1)
+                .list();
+        return reasonsAccepted;
+    }
+    public  List <ReasonObject> reasonsDeclined() {
+        List <ReasonObject> reasonsDeclined = (List<ReasonObject>) getQuerySession()
+                .createQuery("FROM ReasonObject WHERE acceptOrNot=:accept ORDER BY date ASC")
+                .setInteger("accept",2)
+                .list();
+        return reasonsDeclined;
+    }
+    public  List <ReasonObject> reasonsNotRead() {
+        List <ReasonObject> reasonsNotRead = (List<ReasonObject>) getQuerySession()
+                .createQuery("FROM ReasonObject WHERE acceptOrNot=:accept ORDER BY date ASC")
+                .setInteger("accept",0)
+                .list();
+        return reasonsNotRead;
     }
 
 
