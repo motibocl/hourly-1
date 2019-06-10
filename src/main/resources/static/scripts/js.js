@@ -491,3 +491,18 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row,name,dayOfTheWeek
 }
 /*-----------------------------------------------------------------------------------------*/
 
+function total(){
+    $.ajax({
+        type: 'POST',
+        url: "adminMain",
+        success: function () {
+            console.log('success');
+
+        },
+        error: function (exception) {
+            alert('Exception' + exception);
+        }
+    });
+
+
+}

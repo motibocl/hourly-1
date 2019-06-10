@@ -7,9 +7,6 @@
     #parse("cssTemp.vm")
     <title>Hourly|main</title>
 </head>
-    #if($admin)
-        #parse("adminMain.vm")
-    #{else}
 
     <body id="page1" onload="clearCache();getStatus()">
 
@@ -79,4 +76,3 @@
 
 </body>
 </html>
-    #end

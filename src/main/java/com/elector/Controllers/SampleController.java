@@ -61,6 +61,8 @@ public class SampleController {
     public String getdata(@RequestParam String login, @RequestParam String pass, HttpServletResponse response) throws SQLException {
         if (checkCredentials(login, pass)) {//if pass and phone correct
             response.addCookie(new Cookie(SESSION, generateToken(login)));//making a cookie
+            if(isAdmin(login))
+                return "redirect:/adminMain";
             return "redirect:/main";
         } else
             return "Landing_page";
@@ -71,48 +73,46 @@ public class SampleController {
         String phone = convertToken(cookie);
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
-        List<EmployeeObject> employeeObjectList = persist.loadList(EmployeeObject.class);
-        ArrayList<Integer> id = new ArrayList<Integer>();
-        ArrayList<String> name = new ArrayList<String>();
-        ArrayList<String> password = new ArrayList<String>();
-        ArrayList<String> phoneNum = new ArrayList<String>();
-        for (int i = 0; i < employeeObjectList.size(); i++) {
+        List<EmployeeObject>employeeObjectList=persist.loadList(EmployeeObject.class);
+        ArrayList<Integer>id=new ArrayList<Integer>() ;
+        ArrayList<String>name=new ArrayList<String>() ;
+        ArrayList<String>password=new ArrayList<String>() ;
+        ArrayList<String>phoneNum=new ArrayList<String>() ;
+        for (int i=0;i<employeeObjectList.size();i++){
             id.add(employeeObjectList.get(i).getId());
             name.add(employeeObjectList.get(i).getName());
             password.add(employeeObjectList.get(i).getPassword());
             phoneNum.add(employeeObjectList.get(i).getPhone());
         }
-        model.addAttribute("id", id);
-        model.addAttribute("name", name);
-        model.addAttribute("password", password);
-        model.addAttribute("phone", phoneNum);
+        model.addAttribute("id",id);
+        model.addAttribute("name",name);
+        model.addAttribute("password",password);
+        model.addAttribute("phone",phoneNum);
 
         return "administration";
 
     }
+     //adding reason if the employee forgot to press the enter and exit button.
+     @RequestMapping(value = "/addReason", method = RequestMethod.GET)
+     public String getText(@RequestParam String text,@RequestParam String enterHours,@RequestParam String enterMinutes,@RequestParam String exitHours,@RequestParam String exitMinutes, @RequestParam String reasonDate, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException, ParseException {
+         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+         String dateInString = reasonDate;
+         Date dateChoosed = formatter.parse(dateInString);
+         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
 
-    //adding reason if the employee forgot to press the enter and exit button.
-    @RequestMapping(value = "/addReason", method = RequestMethod.GET)
-    public String getText(@RequestParam String text, @RequestParam String enterHours, @RequestParam String enterMinutes, @RequestParam String exitHours, @RequestParam String exitMinutes, @RequestParam String reasonDate, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException, ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateInString = reasonDate;
-        Date dateChoosed = formatter.parse(dateInString);
-        java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
-
-        float enterTime = parseInt(enterHours) * 60 + parseInt(enterMinutes);
-        float exitTime = parseInt(exitHours) * 60 + parseInt(exitMinutes);
-        EmployeeObject employeeObject = persist.getEmployeeById(getEmployeeId(cookie));
-        ReasonObject reasonObject = new ReasonObject(exitTime, enterTime, text, sqldate, employeeObject, (int) (exitTime - enterTime));
-        persist.save(reasonObject);
-        //persist.sendReason(getEmployeeId(cookie), text, reasonDate,enterTime,exitTime);//adding reason to dataBase
-        return "redirect:/main";
-    }
+         float enterTime=parseInt(enterHours)*60+parseInt(enterMinutes);
+         float exitTime=parseInt(exitHours)*60+parseInt(exitMinutes);
+         EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
+         ReasonObject reasonObject=new ReasonObject(exitTime,enterTime,text,sqldate,employeeObject,(int)(exitTime-enterTime));
+         persist.save(reasonObject);
+         //persist.sendReason(getEmployeeId(cookie), text, reasonDate,enterTime,exitTime);//adding reason to dataBase
+         return "redirect:/main";
+     }
 
     @RequestMapping("/add-employee")
-    public @ResponseBody
-    ResponseEntity addEmployee(@RequestParam(value = "id", defaultValue = "") String id, @RequestParam(value = "name", defaultValue = "") String name, @RequestParam(value = "phone", defaultValue = "") String phone, @RequestParam(value = "password", defaultValue = "") String password) throws SQLException {
-        CompanyObject companyObject = persist.loadObject(CompanyObject.class, 1);
-        EmployeeObject employeeObject = new EmployeeObject();
+    public @ResponseBody ResponseEntity addEmployee(@RequestParam(value = "id", defaultValue = "") String id,@RequestParam(value = "name", defaultValue = "") String name,@RequestParam(value = "phone", defaultValue = "") String phone,@RequestParam(value = "password", defaultValue = "") String password)  throws SQLException {
+        CompanyObject companyObject= persist.loadObject(CompanyObject.class, 1);
+        EmployeeObject employeeObject=new EmployeeObject();
         employeeObject.setId(parseInt(id));
         employeeObject.setCompanyObject(companyObject);
         employeeObject.setName(name);
@@ -120,11 +120,13 @@ public class SampleController {
         employeeObject.setPhone(phone);
         employeeObject.setEnterOrExit(false);
         persist.save(employeeObject);
-        JSONObject json = new JSONObject();
-        json.put("name", name);
-        json.put("id", id);
-        json.put("password", password);
-        json.put("phone", phone);
+        JSONObject json=new JSONObject();
+        json.put("name",name);
+        json.put("id",id);
+        json.put("password",password);
+        json.put("phone",phone);
+
+
 
 
         // persist.addEmployee(parseInt(id),name,parseInt(empPhone),password);
@@ -133,31 +135,29 @@ public class SampleController {
         return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
 
     }
-
     //this function returning all the ids an year numbers that are in the db.
     @RequestMapping(value = "/idNumbers", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity idNumbers() throws SQLException {
-        JSONObject json = new JSONObject();
-        List<EmployeeObject> employeeObject = persist.loadList(EmployeeObject.class);
-        int[] ids = new int[employeeObject.size()];
-        for (int i = 0; i < employeeObject.size(); i++)
+    public @ResponseBody ResponseEntity idNumbers() throws SQLException {
+        JSONObject json=new JSONObject();
+        List<EmployeeObject> employeeObject=persist.loadList(EmployeeObject.class);
+        int[] ids=new int[employeeObject.size()];
+        for (int i=0;i<employeeObject.size();i++)
             ids[i] = employeeObject.get(i).getId();
 
 
-        json.put("idArray", ids);
+
+        json.put("idArray",ids);
         return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
     }
-
     @RequestMapping("/confirmAndAdd")
-    public String confirmAndAdd(@RequestParam(value = "emplid", defaultValue = "") int emplid, @RequestParam(value = "enterTime", defaultValue = "") Float enterTime, @RequestParam(value = "exitTime", defaultValue = "") Float exitTime, @RequestParam(value = "date", defaultValue = "") String date, @RequestParam(value = "day", defaultValue = "") String day, @RequestParam(value = "reason", defaultValue = "") String comment) throws SQLException, ParseException {
+    public String confirmAndAdd(@RequestParam (value = "emplid", defaultValue = "")int emplid,@RequestParam(value = "enterTime", defaultValue = "")Float enterTime,@RequestParam(value = "exitTime", defaultValue = "")Float exitTime,@RequestParam(value = "date", defaultValue = "")String date,@RequestParam(value = "day", defaultValue = "")String day,@RequestParam(value = "reason", defaultValue = "")String comment) throws SQLException, ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
         //persist.addAfterConfirm(emplid,enterTime,exitTime,sqldate,day,comment);
-        EmployeeObject employeeObject = persist.getEmployeeById(emplid);
-        WorktimeObject worktimeObject = new WorktimeObject(enterTime, exitTime, employeeObject, sqldate, exitTime - enterTime, day, comment);
+        EmployeeObject employeeObject=persist.getEmployeeById(emplid);
+        WorktimeObject worktimeObject=new WorktimeObject( enterTime, exitTime,employeeObject, sqldate, exitTime-enterTime, day,comment);
         persist.save(worktimeObject);
         List<ReasonObject> reasonObjectList = persist.loadList(ReasonObject.class);
         for (int i = 0; i < reasonObjectList.size(); i++) {//changing the status of the reason
@@ -168,10 +168,8 @@ public class SampleController {
         }
         return "requests";
     }
-
     @RequestMapping("/removeReason")
-    public String removeReason(@RequestParam(value = "emplid", defaultValue = "") int emplid, @RequestParam(value = "enterTime", defaultValue = "") Float enterTime, @RequestParam(value = "exitTime", defaultValue = "") Float exitTime, @RequestParam(value = "date", defaultValue = "") String date, @RequestParam(value = "reason", defaultValue = "") String comment) throws SQLException, ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    public String removeReason(@RequestParam(value = "emplid", defaultValue = "") int emplid, @RequestParam(value = "enterTime", defaultValue = "") Float enterTime, @RequestParam(value = "exitTime", defaultValue = "") Float exitTime, @RequestParam(value = "date", defaultValue = "") String date, @RequestParam(value = "reason", defaultValue = "") String comment) throws SQLException, ParseException {        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
         java.sql.Date sqldate = new java.sql.Date(dateChoosed.getTime());
@@ -185,41 +183,53 @@ public class SampleController {
         //persist.removeReason(emplid,sqldate,comment);
         return "requests";
     }
+/*--------------------------------------------------------------------------------------------------------------------------------------*/
+@RequestMapping(value = "test" , method = RequestMethod.POST)
+public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
+    System.out.print(jsonString);
+   // JSONObject json1=new JSONObject(jsonString);
+    JSONObject json=new JSONObject();
+   // System.out.print(json1.getString("name"));
+    json.put("name","moti");
+    json.put("age",25);
+
+    return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+
+}
 
 
-    /*--------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+ /*--------------------------------------------------------------------------------------------------------------------------------------*/
     @RequestMapping("/remove-employee")
-    public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id) throws SQLException {
+    public String removeEmployee(@RequestParam(value = "id", defaultValue = "") String id)  throws SQLException {
         persist.removeEmployee(parseInt(id));
         return "redirect:/administration";
     }
-
     @RequestMapping("/register")
-    public String register(Model model, @RequestParam String adminName, @RequestParam String companyName, @RequestParam String adminId, @RequestParam String password, @RequestParam String companyAdress, @RequestParam String companyId, @RequestParam String phone, @RequestParam String email) throws SQLException {
-        CompanyObject companyObject = new CompanyObject(parseInt(companyId), companyName, companyAdress);
+    public String register(Model model,@RequestParam String adminName,@RequestParam String companyName,@RequestParam String adminId,@RequestParam String password,@RequestParam String companyAdress,@RequestParam String companyId,@RequestParam String phone,@RequestParam String email)  throws SQLException {
+        CompanyObject companyObject=new CompanyObject(parseInt(companyId),companyName,companyAdress);
         persist.save(companyObject);
-        AdminObject adminObject = new AdminObject(adminName, password, email, parseInt(adminId), phone, companyObject);
+        AdminObject adminObject=new AdminObject(adminName,password,email,parseInt(adminId),phone,companyObject);
         persist.save(adminObject);
 
 
         return "Landing_page";
     }
-
     @RequestMapping("/registration")
-    public String registration(Model model) throws SQLException {
+    public String registration(Model model)  throws SQLException {
         return "registration";
     }
 
     //Sending comments "What did you do today"
     @RequestMapping(value = "/sendComment", method = RequestMethod.POST)
     public String getCommentary(@RequestParam String comment, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        // persist.sendComment(getEmployeeId(cookie),commentary);//sendin the comment
-        WorktimeObject worktimeObject = persist.getLastWorktime(getEmployeeId(cookie));
+       // persist.sendComment(getEmployeeId(cookie),commentary);//sendin the comment
+        WorktimeObject worktimeObject=persist.getLastWorktime(getEmployeeId(cookie));
         worktimeObject.setComment(comment);
         persist.save(worktimeObject);
         return "reports";
     }
-
     //our home page.
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String mainp(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
@@ -228,35 +238,35 @@ public class SampleController {
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
         try {
-            model.addAttribute("admin", isAdmin(phone));
-            AdminObject adminObject = persist.getAdminByPhone(phone);
+            model.addAttribute("admin",isAdmin(phone));
+            AdminObject adminObject=persist.getAdminByPhone(phone);
 
             //  String name = "";
             //ResultSet result = persist.selectEmployeeByPhone(phone);//getting employee by phone.
-            EmployeeObject employeeObject = persist.getEmployeeByPhone(phone);
+            EmployeeObject employeeObject=persist. getEmployeeByPhone(phone);
 
             //  while (result.next()) {
-            //     name = result.getString("employeeName");
-            //  }
-            if (adminObject != null)
+           //     name = result.getString("employeeName");
+          //  }
+            if (adminObject!=null)
                 model.addAttribute("name", "ברוך הבא  " + adminObject.getName());//the welcome back page title.
             else
-                model.addAttribute("name", "ברוך הבא  " + employeeObject.getName());//the welcome back page title.
+            model.addAttribute("name", "ברוך הבא  " + employeeObject.getName());//the welcome back page title.
             //getting all the working time list
-            if (employeeObject != null) {
-                // ResultSet rs2 = persist.selectWorkTimeByDay(getEmployeeId(cookie),today);
-                List<WorktimeObject> worktimeObjectList = persist.getWorkTimeByDay(getEmployeeId(cookie), today);
+            if (employeeObject!=null) {
+           // ResultSet rs2 = persist.selectWorkTimeByDay(getEmployeeId(cookie),today);
+                List<WorktimeObject> worktimeObjectList = persist.getWorkTimeByDay(getEmployeeId(cookie),today);
                 float workedToday = 0;
                 ArrayList<String> timeWorkList = new ArrayList<String>();
-                //counting how many hours the employee worked this day.
-                for (int i = 0; i < worktimeObjectList.size(); i++) {
-                    workedToday += worktimeObjectList.get(i).getTotalHoursWorked();
-                    timeWorkList.add("זמן עבודה: " + timeString(worktimeObjectList.get(i).getEnterTime()) + "  ->   " + timeString(worktimeObjectList.get(i).getExitTime()));
-                    //adding to a list of working hours.
-                }
-                //ResultSet rs = persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));
-                //   boolean clicked = false;
-                // while (rs.next()) {
+            //counting how many hours the employee worked this day.
+            for (int i=0;i<worktimeObjectList.size();i++){
+                workedToday += worktimeObjectList.get(i).getTotalHoursWorked();
+                timeWorkList.add("זמן עבודה: " + timeString(worktimeObjectList.get(i).getEnterTime()) + "  ->   " + timeString(worktimeObjectList.get(i).getExitTime()));
+                //adding to a list of working hours.
+            }
+            //ResultSet rs = persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));
+         //   boolean clicked = false;
+           // while (rs.next()) {
 
                 boolean clicked = employeeObject.isEnterOrExit();
                 //}
@@ -281,12 +291,12 @@ public class SampleController {
                 calendar.setTime(date);
                 int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
                 int todayYear = calendar.get(Calendar.YEAR);//year current
-                // ResultSet rs3 = persist.selectWorkTimeMonth(todayMonth + 1, todayYear, getEmployeeId(cookie));//getting resultset for all worked time in a month.
-                worktimeObjectList = persist.getWorkTimeMonth(todayMonth + 1, todayYear, getEmployeeId(cookie));
+               // ResultSet rs3 = persist.selectWorkTimeMonth(todayMonth + 1, todayYear, getEmployeeId(cookie));//getting resultset for all worked time in a month.
+                 worktimeObjectList = persist.getWorkTimeMonth(todayMonth + 1,todayYear,getEmployeeId(cookie));
 
                 float workedThisMonth = 0;//count the month working time.
-                for (int i = 0; i < worktimeObjectList.size(); i++)
-                    workedThisMonth += worktimeObjectList.get(i).getTotalHoursWorked();
+                for (int i=0;i<worktimeObjectList.size();i++)
+                    workedThisMonth+=worktimeObjectList.get(i).getTotalHoursWorked();
                /* while (rs3.next()) {
                     workedThisMonth += rs3.getFloat("totalhoursWorked");
                 }*/
@@ -300,41 +310,39 @@ public class SampleController {
             return "error";
         }
     }
-
     @ResponseBody
     @RequestMapping("/buttonStatus")
-    public boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
-        EmployeeObject employeeObject = persist.getEmployeeById(getEmployeeId(cookie));
+    public  boolean button(@CookieValue(value = SESSION, defaultValue = "") String cookie) throws SQLException {
+        EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
 
-        // ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
-        // boolean enterOrExit = false;
-        // if(rs.next()) {
-        boolean enterOrExit = employeeObject.isEnterOrExit();
-        // }
+       // ResultSet rs =  persist.selectEmployeeById(parseInt(getEmployeeId(cookie)));//getting buton status
+       // boolean enterOrExit = false;
+       // if(rs.next()) {
+        boolean  enterOrExit = employeeObject.isEnterOrExit();
+       // }
         return enterOrExit;
     }
-
     @RequestMapping("/addWorkTime")
     public String addWorkTime(Model model, @RequestParam("button") boolean button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
         //לשנות לא צריך
-        EmployeeObject employeeObject = persist.getEmployeeById(getEmployeeId(cookie));
-        employeeObject.setEnterOrExit(button);
-        persist.save(employeeObject);//for saving updates.
-        //  persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
-        Date days = new Date();
-        java.sql.Date day = new java.sql.Date(days.getTime());
-        Calendar c = Calendar.getInstance();
-        c.setTime(day);
-        String[] dayOfTheWeek = {"יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "יום ז"};
-        WorktimeObject worktimeObject = new WorktimeObject(enterTime, 0, employeeObject, day, 0, dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1], "");           // persist.addWorktime(getEmployeeId(cookie),enterTime,today,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
-        persist.save(worktimeObject);
-        model.addAttribute("url", "css/images/exit-button.png");
+            EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
+            employeeObject.setEnterOrExit(button);
+            persist.save(employeeObject);//for saving updates.
+            //  persist.updateButtonStatus(button,parseInt(getEmployeeId(cookie)));
+            Date days = new Date();
+            java.sql.Date day=new java.sql.Date(days.getTime());
+            Calendar c = Calendar.getInstance();
+            c.setTime(day);
+            String[] dayOfTheWeek = {"יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "יום ז"};
+            WorktimeObject worktimeObject=new WorktimeObject(enterTime,0,employeeObject,day,0,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1],"");           // persist.addWorktime(getEmployeeId(cookie),enterTime,today,dayOfTheWeek[c.get(Calendar.DAY_OF_WEEK) - 1]);
+            persist.save(worktimeObject);
+            model.addAttribute("url", "css/images/exit-button.png");
 
-        return "redirect:/main";
+             return "redirect:/main";
 
     }
 
-    //confusing func need to think how to make it more officiant later.
+
     @RequestMapping("/requests")
     public String req(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
         String phone = convertToken(cookie);
@@ -486,9 +494,13 @@ public class SampleController {
 
     @RequestMapping("/")
     public String loginPage(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
-        String phone = convertToken(cookie);
-        if (isPhoneNumberExist(phone))
+        String phone=convertToken(cookie);
+        if(isPhoneNumberExist(phone)){
+            if(isAdmin(phone))
+                return "redirect:/adminMain";
             return "redirect:/main";
+        }
+        else
         return "Landing_page";
     }
 
@@ -530,16 +542,15 @@ public class SampleController {
 
         return "Landing_page";
     }
-
     //@RequestMapping("/header")
-    // public String header(Model model,@CookieValue(value = SESSION, defaultValue = "")String cookie) throws Exception {
-    //model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
-    // return "header"  ;
-    // }
+   // public String header(Model model,@CookieValue(value = SESSION, defaultValue = "")String cookie) throws Exception {
+        //model.addAttribute("admin",isAdmin(getEmployeeId(cookie)));
+       // return "header"  ;
+   // }
     //this function is gettin the date throw js and returnning list with all the info about all the clickes in the same day.
     @ResponseBody
     @RequestMapping("/workTimeDetails")
-    public ArrayList<ArrayList<String>> workTimeDetails(Model model, @RequestParam("date") String date, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "id", defaultValue = "") String id) throws Exception {
+    public ArrayList<ArrayList<String>> workTimeDetails(Model model, @RequestParam("date")String date, @CookieValue(value = SESSION, defaultValue = "")String cookie,@RequestParam(value ="id",defaultValue = "")String id) throws Exception{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateInString = date;
         Date dateChoosed = formatter.parse(dateInString);
@@ -553,12 +564,12 @@ public class SampleController {
         ArrayList<String> hoursListDetails = new ArrayList<String>();
         ArrayList<String> dateListDetails = new ArrayList<>();
         //ResultSet rs;
-        List<WorktimeObject> worktimeObjects = persist.getWorkTimeByDay(parseInt(id), dateChoosed);
-        // rs=persist.selectWorktimeDay(year,month+1,parseInt(id),day);
-        // while (rs.next()) {
-        for (int i = 0; i < worktimeObjects.size(); i++) {
+        List<WorktimeObject>worktimeObjects=persist.getWorkTimeByDay(parseInt(id),dateChoosed);
+           // rs=persist.selectWorktimeDay(year,month+1,parseInt(id),day);
+       // while (rs.next()) {
+        for (int i=0;i<worktimeObjects.size();i++){
             dayListDetails.add(worktimeObjects.get(i).getDayOfTheWeek());
-            hoursListDetails.add(timeString(worktimeObjects.get(i).getEnterTime()) + "  ->   " + timeString(worktimeObjects.get(i).getExitTime()));
+            hoursListDetails.add(timeString(worktimeObjects.get(i).getEnterTime())+ "  ->   " + timeString (worktimeObjects.get(i).getExitTime()));
             hoursWorkedDetails.add(timeString(worktimeObjects.get(i).getTotalHoursWorked()));
             dateListDetails.add(formatter.format(worktimeObjects.get(i).getDate()));
         }
@@ -570,33 +581,32 @@ public class SampleController {
         return worktimeList;
 
     }
-
     //@RequestParam (value = "jsonString", defaultValue = "{id : \"\", month : \"\",year : \"\"}") String jsonString
 //,@RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id
     @RequestMapping("/reports")
-    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year, @RequestParam(value = "id", defaultValue = "") String id) throws Exception {
+    public String reports(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie,@RequestParam(value = "month", defaultValue = "") String month, @RequestParam(value = "year", defaultValue = "") String year,@RequestParam(value = "id", defaultValue = "") String id) throws Exception {
         String phone = convertToken(cookie);
 
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
         try {
-            // EmployeeObject employeeObject = persist.loadObject(EmployeeObject.class, 1);;
-            // List<EmployeeObject> employeeObjectList = persist.loadList(EmployeeObject.class);
+           // EmployeeObject employeeObject = persist.loadObject(EmployeeObject.class, 1);;
+           // List<EmployeeObject> employeeObjectList = persist.loadList(EmployeeObject.class);
 
             //JSONObject json=new JSONObject(jsonString);
-            // String month=json.getString("month");
-            //String year=json.getString("year");
-            //  String id=json.getString("id");
+           // String month=json.getString("month");
+           //String year=json.getString("year");
+          //  String id=json.getString("id");
 
-            model.addAttribute("employeeName", "");
+            model.addAttribute("employeeName","");
 
-            model.addAttribute("admin", isAdmin(phone));
-            EmployeeObject employeeObject = persist.getEmployeeById(getEmployeeId(cookie));
-            float total = 0;
+            model.addAttribute("admin",isAdmin(phone));
+            EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
+            float total=0;
 
-            if (!id.equals("") && !month.equals("") && !year.equals("")) {
+            if(!id.equals("")&&!month.equals("") && !year.equals("")) {
                 EmployeeObject employeeObjectToView = persist.getEmployeeById(parseInt(id));
-                if (employeeObjectToView != null) {
+                if (employeeObjectToView != null){
                     model.addAttribute("empId", id);
 
                     //ResultSet result=persist.selectEmployeeById(parseInt(id));
@@ -638,41 +648,42 @@ public class SampleController {
                     model.addAttribute("hoursWorked", hoursWorked);
                     model.addAttribute("dateWorked", dateList);
                 }
-            } else if (!month.equals("") && !year.equals("")) {
-                model.addAttribute("empId", getEmployeeId(cookie));
-                //     ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));//ADMIN DONT HAVE WORKTIME!!NEED TO BE FIXED.
-                List<WorktimeObject> worktimeObject = persist.getWorkTimeMonth(parseInt(month), parseInt(year), getEmployeeId(cookie));
-                WorktimeObject exitTimeObject;
-                WorktimeObject enterTimeObject;
-                List<WorktimeObject> sumTimeObject;
+            }
+            else if (!month.equals("") && !year.equals("")) {
+                    model.addAttribute("empId", getEmployeeId(cookie));
+                    //     ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));//ADMIN DONT HAVE WORKTIME!!NEED TO BE FIXED.
+                    List<WorktimeObject> worktimeObject = persist.getWorkTimeMonth(parseInt(month), parseInt(year), getEmployeeId(cookie));
+                    WorktimeObject exitTimeObject;
+                    WorktimeObject enterTimeObject;
+                    List<WorktimeObject> sumTimeObject;
 
-                ArrayList<String> dayList = new ArrayList<String>();
-                ArrayList<String> hoursWorked = new ArrayList<String>();
-                ArrayList<String> hoursList = new ArrayList<String>();
-                ArrayList<Date> dateList = new ArrayList<Date>();
+                    ArrayList<String> dayList = new ArrayList<String>();
+                    ArrayList<String> hoursWorked = new ArrayList<String>();
+                    ArrayList<String> hoursList = new ArrayList<String>();
+                    ArrayList<Date> dateList = new ArrayList<Date>();
 
-                for (int i = 1; i <= 31; i++) {
-                    total = 0;
-                    exitTimeObject = exitTimeObject = persist.selectLastWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the last worktime in a day.
-                    enterTimeObject = persist.selectFirstWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the first worktime in a day.;
-                    sumTimeObject = persist.workTimeInADay(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the total time worked in a day.
+                    for (int i = 1; i <= 31; i++) {
+                        total = 0;
+                        exitTimeObject = exitTimeObject = persist.selectLastWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the last worktime in a day.
+                        enterTimeObject = persist.selectFirstWorktimeInAday(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the first worktime in a day.;
+                        sumTimeObject = persist.workTimeInADay(parseInt(year), parseInt(month), getEmployeeId(cookie), i);//get the total time worked in a day.
 
-                    for (int j = 0; j < sumTimeObject.size(); j++)
-                        total += sumTimeObject.get(j).getTotalHoursWorked();
-                    if (enterTimeObject != null && exitTimeObject != null) {
-                        dayList.add(enterTimeObject.getDayOfTheWeek());
-                        hoursWorked.add(timeString(total));
-                        hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
-                        dateList.add(enterTimeObject.getDate());
+                        for (int j = 0; j < sumTimeObject.size(); j++)
+                            total += sumTimeObject.get(j).getTotalHoursWorked();
+                        if (enterTimeObject != null && exitTimeObject != null) {
+                            dayList.add(enterTimeObject.getDayOfTheWeek());
+                            hoursWorked.add(timeString(total));
+                            hoursList.add(timeString(enterTimeObject.getEnterTime()) + "   ->   " + timeString(exitTimeObject.getExitTime()));
+                            dateList.add(enterTimeObject.getDate());
 
+                        }
                     }
-                }
-                model.addAttribute("days", dayList);
-                model.addAttribute("hours", hoursList);
-                model.addAttribute("hoursWorked", hoursWorked);
-                model.addAttribute("dateWorked", dateList);
+                    model.addAttribute("days", dayList);
+                    model.addAttribute("hours", hoursList);
+                    model.addAttribute("hoursWorked", hoursWorked);
+                    model.addAttribute("dateWorked", dateList);
 
-                /*this is queris for the details modal*/
+                    /*this is queris for the details modal*/
              /*   ArrayList<String> dayListDetails = new ArrayList<String>();
                 ArrayList<String> hoursWorkedDetails = new ArrayList<String>();
                 ArrayList<String> hoursListDetails = new ArrayList<String>();
@@ -686,12 +697,12 @@ public class SampleController {
                     dateListDetails.add(rs.getDate("date"));
                 }
 */
-                //for the details
+                    //for the details
 
-                // model.addAttribute("daysDetails",daysDetails);
-                // model.addAttribute("hoursDetails", hoursDetails);
-                // model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
-                // model.addAttribute("dateWorkedDetails", dateWorkedDetails);
+                    // model.addAttribute("daysDetails",daysDetails);
+                    // model.addAttribute("hoursDetails", hoursDetails);
+                    // model.addAttribute("hoursWorkedDetails", hoursWorkedDetails);
+                    // model.addAttribute("dateWorkedDetails", dateWorkedDetails);
 
             }
             return "reports";
@@ -706,17 +717,16 @@ public class SampleController {
         String phone = convertToken(cookie);
         if (!isPhoneNumberExist(phone))
             return "Landing_page";
-        model.addAttribute("admin", isAdmin(phone));
+        model.addAttribute("admin",isAdmin(phone));
 
         return "special_report";
     }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleController.class, args);
-        // delete(2);//delete all comment of employee test
+       // delete(2);//delete all comment of employee test
     }
-
-    //test
+//test
   /*  public static void delete(int employeeId) throws Exception {
         String sqlDel = "delete from test2.comments where employeeId=?";
         PreparedStatement preparedStmt = dbConnection.prepareStatement(sqlDel);
@@ -730,23 +740,23 @@ public class SampleController {
     }
 */
     private boolean checkCredentials(String phone, String pass) throws SQLException {
-        EmployeeObject employeeObject = persist.getEmployeeByPhone(phone);
-        AdminObject adminObject = persist.getAdminByPhone(phone);
-        if (adminObject != null && adminObject.getPassword().equals(pass))
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(phone);
+        AdminObject adminObject=persist.getAdminByPhone(phone);
+        if (adminObject!=null&&adminObject.getPassword().equals(pass))
             return true;
-        if (employeeObject != null && employeeObject.getPassword().equals(pass))
+        if (employeeObject!=null&&employeeObject.getPassword().equals(pass))
             return true;
         return false;
-        // PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
-        // try {
+       // PreparedStatement myStmt = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  and test2.employee.employeePassword=? ");
+       // try {
 
-        //  myStmt.setInt(1, parseInt(phone));
-        //   myStmt.setString(2, pass);
-        // } catch (Exception exc) {
-        //  return false;
-        // }
-        //  ResultSet rs = myStmt.executeQuery();
-        //  return rs.next() ;
+          //  myStmt.setInt(1, parseInt(phone));
+         //   myStmt.setString(2, pass);
+       // } catch (Exception exc) {
+          //  return false;
+       // }
+      //  ResultSet rs = myStmt.executeQuery();
+      //  return rs.next() ;
     }
 
     private String generateToken(String login) {
@@ -808,7 +818,12 @@ public class SampleController {
         return text.toString();
     }
 
-
+   /* private boolean checkCookie(String cookie) throws SQLException {
+        PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+        statement.setInt(1, parseInt(convertToken(cookie)));
+        ResultSet result = statement.executeQuery();
+        return result.next();
+    }*/
 
     private String timeString(float minutes) {
         int hoursTime = (int) (minutes / 60);
@@ -822,20 +837,20 @@ public class SampleController {
     private int getEmployeeId(String phone) throws SQLException {
         String employeePhone = convertToken(phone);
         int id = 0;
-        EmployeeObject employeeObject = persist.getEmployeeByPhone(employeePhone);
-        AdminObject adminObject = persist.getAdminByPhone(employeePhone);
-        if (adminObject != null)
-            id = adminObject.getId();
-        if (employeeObject != null)
-            id = employeeObject.getId();
-        // String employeePhone = convertToken(phone);
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(employeePhone);
+        AdminObject adminObject=persist.getAdminByPhone(employeePhone);
+        if (adminObject!=null)
+           id=adminObject.getId();
+        if (employeeObject!=null)
+            id=employeeObject.getId();
+       // String employeePhone = convertToken(phone);
         //PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-        // statement.setInt(1, parseInt(employeePhone));
-        // ResultSet result = statement.executeQuery();
-        // while (result.next()) {
-        //  id = result.getString("employeeId");
-        //name=result.getString("employeeName");
-        // }
+       // statement.setInt(1, parseInt(employeePhone));
+       // ResultSet result = statement.executeQuery();
+       // while (result.next()) {
+          //  id = result.getString("employeeId");
+            //name=result.getString("employeeName");
+       // }
         return id;
     }
 
@@ -892,26 +907,70 @@ public class SampleController {
         return timeEnter;
     }*/
 //Integer.valueOf(phone)
-        private boolean isPhoneNumberExist (String phone) throws SQLException {
-            EmployeeObject employeeObject = persist.getEmployeeByPhone(phone);
-            AdminObject adminObject = persist.getAdminByPhone(phone);
-            if (adminObject != null)
-                return true;
-            if (employeeObject != null)
-                return true;
-            return false;
+    private boolean isPhoneNumberExist (String phone) throws SQLException {
+        EmployeeObject employeeObject=persist.getEmployeeByPhone(phone);
+        AdminObject adminObject=persist.getAdminByPhone(phone);
+        if (adminObject!=null)
+            return true;
+        if (employeeObject!=null)
+            return true;
+        return false;
 
-            // PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
-            //statement.setInt(1, Integer.valueOf(phone));
-            //ResultSet result = statement.executeQuery();
-            // return result.next();
-        }
-        private boolean isAdmin (String phone) throws SQLException {
-            AdminObject adminObject = persist.getAdminByPhone(phone);
-            return adminObject != null;
-        }
-
-
-
+        // PreparedStatement statement = dbConnection.prepareStatement("select * from test2.employee WHERE  test2.employee.employeePhone=?  ");
+        //statement.setInt(1, Integer.valueOf(phone));
+        //ResultSet result = statement.executeQuery();
+       // return result.next();
     }
+    private boolean isAdmin(String phone) throws SQLException {
+        AdminObject adminObject=persist.getAdminByPhone(phone);
+       // ResultSet result=persist.selectEmployee(parseInt(id));
+        return adminObject != null;
+    }
+    @RequestMapping("/adminMain")
+    public String adminMain(Model model, @CookieValue(value = SESSION, defaultValue = "") String cookie) throws Exception {
+        Date today=new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        int todayDay = calendar.get(Calendar.DATE);
+        int todayMonth = calendar.get(Calendar.MONTH);//month 0-11
+        int todayYear = calendar.get(Calendar.YEAR);//year current
+        List<WorktimeObject> worktimeObjectList2;
 
+        List<WorktimeObject> worktimeObjectList;
+        String phone = convertToken(cookie);
+        String adminName=persist.getAdminByPhone(phone).getName();
+        int companyId=persist.getAdminByPhone(phone).getCompanyObject().getId();
+        List <EmployeeObject> listOfEmployees=persist.getEmployees(companyId);
+        ArrayList<String> inPosition=new ArrayList<>();
+        float totalInMonth = 0;//count the month working time.
+        float totalInDay=0;
+        float totalDay=0;
+
+        for(int i=0;i<listOfEmployees.size();i++){
+            worktimeObjectList= persist.getWorkTimeMonth(todayMonth + 1,todayYear,listOfEmployees.get(i).getId());
+            worktimeObjectList2=persist.workTimeInADay(todayYear,todayMonth + 1,listOfEmployees.get(i).getId(),todayDay);
+            for (int j=0;j<worktimeObjectList.size();j++){
+                totalInMonth+=worktimeObjectList.get(j).getTotalHoursWorked();
+            }
+            for(int k=0;k<worktimeObjectList2.size();k++){
+                totalInDay+=worktimeObjectList2.get(k).getTotalHoursWorked();
+            }
+            if(listOfEmployees.get(i).isEnterOrExit()==true){
+                inPosition.add(listOfEmployees.get(i).getName());
+                totalDay=totalInDay;
+              /*  for(int y=0;y<worktimeObjectList2.size();y++){
+                    totalDay+=worktimeObjectList2.get(y).getTotalHoursWorked();
+                }*/
+
+            }
+
+
+        }
+        model.addAttribute("name","Welcome "+adminName);
+        model.addAttribute("inPosition",inPosition);
+        model.addAttribute("totalToEmployee",timeString(totalDay));
+        model.addAttribute("totalHoursInMonth",timeString(totalInMonth));
+        model.addAttribute("totalHoursInDay",timeString(totalInDay));
+        return "adminMain";
+    }
+}

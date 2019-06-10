@@ -751,6 +751,13 @@ there is no need */
                 .list();
         return reasonsNotRead;
     }
+    public  List <EmployeeObject> getEmployees(int companyId) {//get all employees that work in that company
+        List <EmployeeObject> employeeObjectList = (List<EmployeeObject>) getQuerySession()
+                .createQuery("FROM EmployeeObject WHERE companyObject=:companyId")
+                .setInteger("companyId",companyId)
+                .list();
+        return employeeObjectList;
+    }
 
 
 

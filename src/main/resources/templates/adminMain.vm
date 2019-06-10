@@ -1,8 +1,41 @@
-
-<body id="page1" onload="clearCache()">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("metaTagsTemp.vm")
+    #parse("cssTemp.vm")
+    <title>Hourly|admin</title>
+</head>
+<body id="page1" onload="clearCache();total()">
 
         #parse("adminNav.vm")
         <p class="spring">$name</p>
+<div class="container inf">
+    <h1>סך שעות עבודה בחודש:</h1>
+    <h2>$totalHoursInMonth</h2>
+    <h1>סך שעות עבודה היום:</h1>
+    <h2>$totalHoursInDay</h2>
+    <h1>עובדים שכרגע במשמרת : </h1>
+    #if($inPosition.size()!=0)
+
+        #set($end =$inPosition.size())
+        #set($stop = $end - 1)
+        #if($stop)
+
+            #foreach($i in [0..$stop])
+
+                    <h3>$inPosition.get($i)<br> $totalToEmployee</h3>
+
+            #end
+        #end
+    #end
+
+
+</div>
+
+
+
+
+
 
 
 
