@@ -272,10 +272,11 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                 //}
                 //change button image if clicked or not.
                 if (!clicked) {
-                    model.addAttribute("url", "css/images/enter-button2.png");
+                   // model.addAttribute("url", "css/images/enter-button2.png");
+                    model.addAttribute("url", "css/images/enterButtonTest.png");
                     // model.addAttribute("id", "0");
                 } else {
-                    model.addAttribute("url", "css/images/exit-button.png");
+                    model.addAttribute("url", "css/images/exiteBtn.png");
                     //  model.addAttribute("id", "1");
                     if (timeWorkList.size() > 0)
                         timeWorkList.remove(timeWorkList.size() - 1);
@@ -598,10 +599,11 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
            //String year=json.getString("year");
           //  String id=json.getString("id");
 
-            model.addAttribute("employeeName","");
+
 
             model.addAttribute("admin",isAdmin(phone));
             EmployeeObject employeeObject=persist.getEmployeeById(getEmployeeId(cookie));
+            model.addAttribute("employeeName","");
             float total=0;
 
             if(!id.equals("")&&!month.equals("") && !year.equals("")) {
@@ -650,7 +652,8 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
                 }
             }
             else if (!month.equals("") && !year.equals("")) {
-                    model.addAttribute("empId", getEmployeeId(cookie));
+                model.addAttribute("employeeName",employeeObject.getName());
+                model.addAttribute("empId", getEmployeeId(cookie));
                     //     ResultSet rs = persist.selectWorkTimeMonth(parseInt(month),parseInt(year),getEmployeeId(cookie));//ADMIN DONT HAVE WORKTIME!!NEED TO BE FIXED.
                     List<WorktimeObject> worktimeObject = persist.getWorkTimeMonth(parseInt(month), parseInt(year), getEmployeeId(cookie));
                     WorktimeObject exitTimeObject;

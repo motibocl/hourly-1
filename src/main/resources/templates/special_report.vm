@@ -16,7 +16,7 @@
 <div class="container-fluid  backButtonCon">
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backBtn.png"class="img-fluid back"> </button>
+            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backButton.png"class="img-fluid back"> </button>
         </div>
     </div>
 </div>

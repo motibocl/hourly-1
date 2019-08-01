@@ -13,7 +13,7 @@
         <div class="row">
             <header class="col">
 
-                <img onclick="returnToMainPage()" src="css/images/logo2.png" class="img-fluid" alt="Responsive image" id="logo">
+                <img onclick="returnToMainPage()" src="css/images/timeup5.png" class="img-fluid" alt="Responsive image" id="logo">
                 <br>
                 <br>
                 <form class="input" action="" method="post" id="login">
@@ -24,10 +24,10 @@
                 </form>
                ## <button class="btn btn-primary loginBtn" onclick="register()" >הרשמה</button>
                 <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="login" >התחבר</button>
-                <a class="forgot" href="forgotPass">שכחתי את הסיסמה?</a>
+                <a class="forgot" href="forgotPass"><b>שכחתי את הסיסמה?</b></a>
                 <br>
                 <br>
-                <a class="forgot" href="registration">הרשמה</a>
+                <a class="forgot" href="registration"><b>הרשמה</b></a>
 
             </header>
         </div>

@@ -13,50 +13,50 @@
         <div class="row">
             <header class="col-12">
 
-                <img onclick="returnToMainPage()" src="css/images/logo2.png" class="img-fluid" alt="Responsive image" id="logo">
+                <img onclick="returnToMainPage()" src="css/images/timeup5.png" class="img-fluid" alt="Responsive image" id="logo">
             </header>
             <div class="col">
                 <form class="input" action="" method="post" id="register">
                     <div class="col">
                         <div class="col-6 regInput">
-                           <h5>שם משתמש:</h5>
+                           <h5 class="regFontColor"><b>שם משתמש:</b></h5>
                            <input class="form-control" type="text" name="adminName" placeholder="שם משתמש" required>
                         </div>
                        <div class="col-6 regInput">
-                           <h5>אימייל:</h5>
+                           <h5 class="regFontColor"><b>אימייל:</b></h5>
                            <input class="form-control" type="text" name="email" placeholder="אימייל" required>
                         </div>
                     </div>
                     <div class="col">
                     <div class="col-6 regInput">
-                           <h5>מס טלפון:</h5>
+                           <h5 class="regFontColor"><b>מס טלפון:</b></h5>
                            <input class="form-control" type="text" name="phone" placeholder="מס טלפון" required>
                     </div>
 
                     <div class="col-6 regInput">
-                           <h5>סיסמה:</h5>
+                           <h5 class="regFontColor"><b>סיסמה:</b></h5>
                            <input class="form-control" type="password" name="password" placeholder="סיסמה" required>
                     </div>
                     </div>
                     <div class="col">
                         <div class="col-6 regInput">
-                           <h5>שם החברה:</h5>
+                           <h5 class="regFontColor"><b>שם החברה:</b></h5>
                            <input class="form-control" type="text" name="companyName" placeholder="שם החברה" required>
                         </div>
 
                         <div class="col-6 regInput">
-                           <h5>כתובת חברה:</h5>
+                           <h5 class="regFontColor"><b>כתובת חברה:</b></h5>
                            <input class="form-control" type="text" name="companyAdress" placeholder="כתובת חברה" required>
                         </div>
                     </div>
                     <div class="col">
                         <div class="col-6 regInput">
-                            <h5>ח.פ חברה</h5>
+                            <h5 class="regFontColor"><b>ח.פ חברה</b></h5>
                             <input class="form-control" type="number" name="companyId" placeholder="ח.פ חברה" required>
                         </div>
 
                         <div class="col-6 regInput">
-                            <h5>מס' זהות:</h5>
+                            <h5 class="regFontColor"><b>מס' זהות:</b></h5>
                             <input class="form-control" type="text" name="adminId" placeholder="מס' זהות" required>
                         </div>
                     </div>

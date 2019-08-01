@@ -7,6 +7,10 @@
     #parse("cssTemp.vm")
     <title>Hourly|main</title>
 </head>
+    #if($admin)
+        #parse("adminMain.vm")
+
+    #{else}
 
     <body id="page1" onload="clearCache();getStatus()">
 
@@ -15,10 +19,16 @@
 <p class="spring">$name</p>
 <div class="container timeEnter">
     <div class="row">
-        <div class="col-12">
+    ##    <div class="col-2">
+
+      ##  </div>
+        <div class="col-12 ">
             <p class="enterTime" id="workTime">$workedToday</p>
 
         </div>
+       ## <div class="col-2">
+
+      ##  </div>
     </div>
 </div>
 </br>
@@ -27,6 +37,7 @@
 
 
 <div class="container-fluid ent">
+    
     <button class="knisa" onclick="changeImage()" method="post" action="/updateWorkTime"  data-target="#myModal"><img class="img-fluid" src=$url id="enterBtn"></button>
 </div>
 <!-- Modal  -->
@@ -72,7 +83,9 @@
         </div>
     </div>
 </div>
+    <p>gfhgfhgfh</p>
     #parse("jsTemp.vm")
 
 </body>
 </html>
+    #end

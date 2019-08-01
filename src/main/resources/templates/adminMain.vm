@@ -1,14 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="max-width: 100%;overflow-x: hidden;">
 <head>
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <title>Hourly|admin</title>
 </head>
-<body id="page1" onload="clearCache();total()">
+<body id="page1" onload="clearCache()" style="max-width: 100%;overflow-x: hidden;">
+
+
+
+<script type="text/javascript">
+
+    google.charts.load('current', {packages: ['corechart', 'bar']}).
+            then(function () {
+        var data = google.visualization.arrayToDataTable([
+            ['Element', 'Hours', { role: 'style' }],
+            ['January', 8.94, 'blue'],            // RGB value
+            ['February', 10.49, 'blue'],            // English color name
+            ['March', 19.30, 'blue'],
+            ['May', 21.45, 'blue' ], // CSS-style declaration
+            ['June', 8.94, 'blue'],            // RGB value
+            ['July', 10.49, 'blue'],            // English color name
+            ['August', 19.30, 'blue'],
+            ['September', 21.45, 'blue' ],
+            ['October', 10.49, 'blue'],            // English color name
+            ['November', 19.30, 'blue'],
+            ['December', 21.45, 'blue' ]
+        ]);
+
+        var options = {
+            title: 'Motivation Level Throughout the Day',
+            hAxis: {
+                title: 'Months',
+                format: 'h:mm a',
+                viewWindow: {
+                    min: [7, 30, 0],
+                    max: [17, 30, 0]
+                }
+            },
+            vAxis: {
+                title: 'Hours in month'
+            },
+            backgroundColor: 'transparent',
+            chartArea: {
+                backgroundColor: 'transparent',
+            }
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+        window.addEventListener('resize', function () {
+            chart.draw(data, options);
+        });
+
+    });
+
+
+
+</script>
 
         #parse("adminNav.vm")
+
         <p class="spring">$name</p>
+<div class="container">
+    <div class="row">
+
+        <div class="col-12">
+            <div  id="chart_div"></div>
+        </div>
+    </div>
+</div>
+
 <div class="container inf">
     <h1>סך שעות עבודה בחודש:</h1>
     <h2>$totalHoursInMonth</h2>
@@ -31,6 +95,8 @@
 
 
 </div>
+
+
 
 
 

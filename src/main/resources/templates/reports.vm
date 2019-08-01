@@ -1,8 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
+    <script lang="javascript" src="/scripts/xlsx.full.min.js"></script>
+    <script lang="javascript" src="/scripts/FileSaver.min.js"></script>
 
     <title>Hourly|reports</title>
 </head>
@@ -15,9 +18,14 @@
 <div class="container-fluid  backButtonCon">
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backBtn.png"class="img-fluid back"> </button>
-            <button type="button" class="btn btn-sm ditalesBtn"  data-toggle="modal" data-target="#exampleModalCenter2"><img src="css/images/ditales.png"class="img-fluid back"> </button>
+            #if($admin)
+            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'adminMain.html';"><img src="css/images/backButton.png"class="img-fluid back"> </button>
+                #{else}
+                    <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backButton.png"class="img-fluid back"> </button>
 
+            #end
+            <button type="button" class="btn btn-sm ditalesBtn"  onclick="go()"><img src="css/images/buttonExcel.png"class="img-fluid excelButton"> </button>
+            ## <button id="button-a">go!</button>
         </div>
     </div>
 </div>
@@ -128,11 +136,13 @@
              </div>
          </form>
 #end
+#if($admin)
 <p class="perotTitle">$employeeName</p>
+    #end
 <div class="container " >
     <div class="row rowBorder">
 
-<table style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;">
+<table id="please" style="border-style: hidden; -webkit-overflow-scrolling: touch; overflow-x: auto; display: block;">
     #if($days.size()!=0)
 
     #set($end =$days.size())
@@ -164,6 +174,39 @@
        </table>
     </div>
 </div>
+<script>
+
+    /* var wb = XLSX.utils.book_new();
+     wb.Props = {
+         Title: "SheetJS Tutorial",
+         Subject: "Test",
+         Author: "Red Stapler",
+         CreatedDate: new Date(2017,12,19)
+     };
+     wb.SheetNames.push("Test Sheet");
+    // var ws_data = [['hello' , 'world']];  //a row with 2 columns
+     //var ws = XLSX.utils.aoa_to_sheet(ws_data);
+     var worksheet = wb.Sheets[wb.SheetNames[0]];
+     var container = document.getElementById('please');
+     container.innerHTML = XLSX.utils.html_to_sheet(worksheet);
+     wb.Sheets["Test Sheet"] = ws;
+     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+ */
+    var wb = XLSX.utils.table_to_book(document.getElementById('please'), {sheet:"Sheet JS"});
+    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    function go(){
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}),'$employeeName'+'.xlsx');
+    }
+</script>
 
             <!-- Modal for the details -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

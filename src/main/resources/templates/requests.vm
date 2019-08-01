@@ -15,7 +15,7 @@
 <div class="container-fluid  backButtonCon">
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backBtn.png"class="img-fluid back"> </button>
+            <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'adminMain.html';"><img src="css/images/backButton.png"class="img-fluid back"> </button>
 
         </div>
     </div>
@@ -69,7 +69,7 @@
                             <td><p >$dayOfWeek0.get($i)</p></td>
                             <td><p><input type="time" id="input $i" value=$enterTime0.get($i)></p></td>
                             <td><p><input type="time" id="input2 $i" value=$exitTime0.get($i)></p></td>
-                            <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsNotRead.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button></td>
+                            <td><button type="button" class="btn btn-primary  test"  onclick="requestEmp('$reasonsNotRead.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="far fa-comment-dots"></i></button></td>
                             <td><button type="button" class="btn btn-primary loginBtn test" onclick="confirmAndAdd('$reasonsNotRead.get($i).getEmployeeObject().getId()','$enterTime0.get($i)','$exitTime0.get($i)','$reasonsNotRead.get($i).getDate()','$reasonsNotRead.get($i).getReasonText()','$dayOfWeek0.get($i)',$i,this,'$reasonsNotRead.get($i).getEmployeeObject().getName()')">אשר</button></td>
                             <td><button type="button" class="btn btn-primary loginBtn test" onclick="deleteRow('$reasonsNotRead.get($i).getEmployeeObject().getId()','$enterTime0.get($i)','$exitTime0.get($i)','$reasonsNotRead.get($i).getDate()','$reasonsNotRead.get($i).getReasonText()',$i,this,'$reasonsNotRead.get($i).getEmployeeObject().getName()','$dayOfWeek0.get($i)' )" >דחה</button></td>
                         </tr>
@@ -117,7 +117,7 @@
                                     <td><p><input type="time" id="input $i" value=$enterTime1.get($i) ></p></td>
                                     <td><p><input type="time" id="input2 $i" value=$exitTime1.get($i)></p></td>
                                     <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsAccepted.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable">
-                                   <i class="fa fa-commenting-o" style="font-size:20px"></i> </button></td>
+                                        <i class="far fa-comment-dots" style="font-size:20px"></i> </button></td>
                                 </tr>
                             #end
                         #end
@@ -162,7 +162,7 @@
                                         <td><p><input type="time" id="input $i" value=$enterTime2.get($i) ></p></td>
                                         <td><p><input type="time" id="input2 $i" value=$exitTime2.get($i)></p></td>
                                         <td><button type="button" class="btn btn-primary test" onclick="requestEmp('$reasonsDeclined.get($i).getReasonText()')" data-toggle="modal" data-target="#exampleModalScrollable">
-                                        <i class="fa fa-commenting-o" style="font-size:20px"></i>   </button></td>
+                                            <i class="far fa-comment-dots" style="font-size:20px"></i>   </button></td>
                                     </tr>
 
                                 #end

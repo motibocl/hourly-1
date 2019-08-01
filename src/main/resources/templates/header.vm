@@ -1,21 +1,21 @@
 <div class="container-fluid ">
     <div class="row">
         <div class="col-3 page1Btn ">
-            <div class="col-3 page1Btn ">
-                <input type="image" onclick="openNav()" class="hih" src="css/images/button.png">
+            <div class="col-3 page1Btn " style="float:right;">
+                <input type="image" onclick="openNav()" class="hih" src="css/images/menuButton.png">
                 <div id="mySidenav" class="sidenav">
                     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                    <a href="main"><h4 class="nav">ראשי</h4></a>
-                    <a href="reports"><h4 class=" nav">דוחות נוכחות</h4></a>
-                    <a href="special_report"><h4 class="nav">דיווח מיוחד</h4></a>
-                    <a href="logout"><h4 class="nav">התנתק</h4></a>
-                    <div class="version">28.4.2019</div>
+                    <a href="main"><h4 class="nav">ראשי <i class="fas fa-home navIcons"></i></h4></a>
+                    <a href="reports"><h4 class=" nav">דוחות נוכחות<i class="fas fa-address-book navIcons"></i></h4></a>
+                    <a href="special_report"><h4 class="nav">דיווח מיוחד <i  class="fas fa-exclamation-circle navIcons"></i></h4></a>
+                    <a href="logout"><h4 class="nav">התנתק<i class="fas fa-sign-out-alt navIcons"></i></h4></a>
+                    <div class="version">1.8.2019</div>
                 </div>
             </div>
         </div>
 
         <div class="col-6 page1Logo">
-            <img onclick="returnToMainPage()" src="css/images/Logo-second.png" class="img-fluid mainLogo">
+            <img onclick="returnToMainPage()" src="css/images/timeup5.png" class="img-fluid mainLogo">
         </div>
         <div class="col-3 page1Btn">
             <p id="date"></p>

@@ -36,13 +36,13 @@ function dropDown() {
             console.log('success', data);
             var obj = JSON.parse(data);
             var ids=obj.idArray;
-            var dataList = document.getElementById('numberList');//for autocomplete
+            var dataList = document.getElementById("numberList");//for autocomplete
             for (var i in ids) {
                 idNumber.push(ids[i]) ;
 
             }
             for(var i in idNumber){
-                 var option = document.createElement('option');
+                var option = document.createElement('option');
                 option.value = idNumber[i];
                 dataList.appendChild(option);
             }
@@ -51,6 +51,7 @@ function dropDown() {
             alert('Exception' + exception);
         }
     });
+
 }
 function f() {
    /* var obj = new Object();
@@ -121,7 +122,7 @@ function changeImage() {
                         url: "addWorkTime",
                         data: pressed,
                         success: function (data) {
-                            $("#enterBtn").attr("src", "css/images/exit-button.png");
+                            $("#enterBtn").attr("src", "css/images/exiteBtn.png");
                         },
                         error: function (exception) {
                             alert('Exception' + exception);
@@ -153,7 +154,7 @@ function changeImage() {
                         }
                     });
                     $('#myModal').modal('show');
-                    $("#enterBtn").attr("src", "css/images/enter-button2.png");
+                    $("#enterBtn").attr("src", "css/images/enterButtonTest.png");
                     entered = false;
                 }
 
@@ -332,6 +333,10 @@ function returnToMainPage() {
     window.location.replace("main");
 
 }
+function returnToAdminMainPage() {
+    window.location.replace("adminMain");
+
+}
 /*------------------------------------------------------------------*/
 function convert(string) {
     var hours=string.slice(0,2);
@@ -438,7 +443,7 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row,name) {
                  "                                        <td><p><input type=\"time\" id=\"input $i\" value="+enterTime+" ></p></td>\n" +
                  "                                        <td><p><input type=\"time\" id=\"input2 $i\" value="+exitTime+"></p></td>\n" +
                  "                                        <td><button type=\"button\" class=\"btn btn-primary test\" onclick=\"requestEmp('"+reasonEmp+"')\" data-toggle=\"modal\" data-target=\"#exampleModalScrollable\">\n" +
-                 "                                        <i class=\"fa fa-commenting-o\" style=\"font-size:20px\"></i>   </button></td>\n" +
+                 "                                        <i class=\"far fa-comment-dots\" style=\"font-size:20px\"></i>   </button></td>\n" +
                  "                                    </tr>";
 
             //deleteRow(emplid,enterTime,exitTime,date,reason,i,row);
@@ -480,7 +485,7 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row,name,dayOfTheWeek
                 "                                        <td><p><input type=\"time\" id=\"input $i\" value="+enterTime+" ></p></td>\n" +
                 "                                        <td><p><input type=\"time\" id=\"input2 $i\" value="+exitTime+"></p></td>\n" +
                 "                                        <td><button type=\"button\" class=\"btn btn-primary test\" onclick=\"requestEmp('"+reasonEmp+"')\" data-toggle=\"modal\" data-target=\"#exampleModalScrollable\">\n" +
-                "                                        <i class=\"fa fa-commenting-o\" style=\"font-size:20px\"></i>   </button></td>\n" +
+                "                                        <i class=\"far fa-comment-dots\" style=\"font-size:20px\"></i>   </button></td>\n" +
                 "                                    </tr>";
         },
         error: function (exception) {
@@ -489,20 +494,48 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row,name,dayOfTheWeek
     });
 
 }
-/*-----------------------------------------------------------------------------------------*/
+/*-------------------------------------charts----------------------------------------------------*/
 
-function total(){
-    $.ajax({
-        type: 'POST',
-        url: "adminMain",
-        success: function () {
-            console.log('success');
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
 
+function drawBasic() {
+
+
+
+      var data = google.visualization.arrayToDataTable([
+         ['Element', 'Density', { role: 'style' }],
+         ['January', 8.94, 'blue'],            // RGB value
+         ['February', 10.49, 'blue'],            // English color name
+         ['March', 19.30, 'blue'],
+         ['May', 21.45, 'blue' ], // CSS-style declaration
+          ['June', 8.94, 'blue'],            // RGB value
+         ['July', 10.49, 'blue'],            // English color name
+         ['August', 19.30, 'blue'],
+         ['September', 21.45, 'blue' ],
+         ['October', 10.49, 'blue'],            // English color name
+         ['November', 19.30, 'blue'],
+         ['December', 21.45, 'blue' ]
+      ]);
+      var options = {
+        title: 'Motivation Level Throughout the Day',
+        hAxis: {
+          title: 'Months',
+          format: 'h:mm a',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
         },
-        error: function (exception) {
-            alert('Exception' + exception);
+        vAxis: {
+          title: 'Hours in month'
         }
-    });
+      };
 
+      var chart = new google.visualization.ColumnChart(
+        document.getElementById('chart_div'));
 
-}
+      chart.draw(data, options);
+    }
+/*-----------------------------------------excel-----*/
+

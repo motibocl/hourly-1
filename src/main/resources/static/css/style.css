@@ -9,15 +9,15 @@ body, html {
 .loginBtn{
     margin-top: 3px;
     float: left;
-    background-color: #b95c6e;
-    border-color: #b96481;
+    background-color: darkblue;
+    border-color: darkblue;
 }
 .loginBtn:hover{
-    background-color: #e07640;
-    border-color: #e07640;
+    background-color: deepskyblue;
+    border-color: deepskyblue;
 }
 .img{
-    background-image: url("images/backgroundDesk.png");
+    background-image: url("images/option1.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -38,8 +38,12 @@ body, html {
 
 }
 #logo{
-    margin-top: 76px;
+   /* margin-top: 76px;*/
+    margin-top: 56px;
     width: auto;
+}
+.regFontColor{
+    color: crimson;
 }
 
 .input{
@@ -55,7 +59,7 @@ body, html {
 }
 @media screen and (max-width:700px) {
     .img {
-        background-image: url("images/backgroundMob.jpg");
+        background-image: url("images/mobileBackground3.png");
 
         /* Full height */
         height: 100%;
@@ -74,9 +78,16 @@ body, html {
 
     }
 }
+
 /*--------------------PAGE 1----------------------------------------------*/
 #page1{
     background-color: #f2eefa;
+}
+#chart_div{
+    background-color: transparent;
+}
+.navIcons{
+    margin-right: auto;
 }
 .container-fluid{
     background: #e8e0d9;
@@ -105,7 +116,7 @@ body, html {
     float: right;
 }
 .timeEnter{
-    background-color: #ef7f28;
+    background-color:  #21afd3;
     height: 85px;
     margin-top: 82px;
 }
@@ -117,11 +128,11 @@ body, html {
 
 }
 .workedDay{
-    background-color: #e07640;
+    background-color: #21afd3;
     margin-top: 185px;
 }
 .workedMonth{
-    background-color: #e07640;
+    background-color: #21afd3;
     margin-top: 2px;
     height: 39%;
 
@@ -143,20 +154,21 @@ body, html {
     width: 40%;
 }
 #date{
-    color: #bf7095;
+    color: #0e2598;
     font-weight: 500;
     font-size: 2.8vw;
 }
 .btnrep{
     height: 27px;
-    background-color: #ef7f28;
+    background-color: #00008b;
     margin-bottom: 18.5px;
     width: max-content;
 
 }
 /*------------------------PAGE 2 (SPECIAL REPORT)--------------------------------------------------*/
 .back{
-    max-width: 73px;
+    /*max-width: 73px;*/
+    max-width: 91px;
 }
 .backBtn{
     float: left;
@@ -174,7 +186,7 @@ body, html {
     margin-top: 30px;
 }
 .specialRepCon{
-    background-color:#e07640 ;
+    background-color:#21afd3 ;
     height: 100px;
 }
 .formRep{
@@ -195,20 +207,24 @@ body, html {
 
 /**/
 .borColor{
-    border-color: #e07640;
+    border-color: #00008b;
 }
 /*------------------------PAGE 3 (REPORTS)------------------------------------------------------------*/
 .ditalesBtn{
     float: right;
     margin-top: 16.5px;
 }
+.excelButton{
+    max-width: 120px;
+}
+
 .spring{
     text-align: center;
     font-size: x-large;
 
 }
 .inf{
-    border-color: #e07640;
+    border-color: #00008b;
     border-style: solid;
 }
 .infCon{
@@ -307,7 +323,7 @@ body, html {
 .nav{
     border-style: solid;
     border-color: white;
-    border-bottom-color: burlywood;
+    border-bottom-color: #0e2598;
     padding-left: 0px;
 
 }
@@ -350,3 +366,45 @@ padding: initial;
 .fitBtn{
     padding: inherit;
 }
+/*------------------------------------------enter button-------------------------------------------------*/
+/*
+.knisa {
+    display: inline-block;
+    position: relative;
+
+    top: 0;
+    font-size: 30px;
+    font-family: "Open Sans", Helvetica;
+    border-radius: 4px;
+
+    background: rgba( 22, 230, 137, 1 );
+    color: #fff;
+    box-shadow: 0px 0px 0px rgba( 15, 165, 60, 0.1 );
+
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.knisa:hover {
+    top: -10px;
+    box-shadow: 0px 10px 10px rgba( 15, 165, 60, 0.2 );
+
+    -webkit-transform: rotateX(20deg);
+    -moz-transform: rotateX(20deg);
+    -ms-transform: rotateX(20deg);
+    transform: rotateX(20deg);
+}
+
+.knisa:active {
+    top: 0px;
+    box-shadow: 0px 0px 0px rgba( 15, 165, 60, 0.0 );
+    background: rgba( 20, 224, 133, 1 );
+}
+*/
