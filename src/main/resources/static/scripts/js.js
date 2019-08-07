@@ -14,7 +14,7 @@ days[5] = "יום שישי,";
 days[6] = "יום שבת,";
 document.getElementById("date").innerHTML = days[today.getDay()] + "<br/>" + today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
 document.getElementById("showTime").innerHTML = today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
-
+var searchedFlag=false;
 function getStatus() {
     $.ajax({
         type: 'POST',
@@ -27,6 +27,46 @@ function getStatus() {
             alert('Exception' + exception);
         }
     });
+}
+function searchEmp(event) {
+    if(event.keyCode==13){
+        searchedFlag=true;
+       var id=document.getElementById("empID").value;
+       var data='id='
+           + encodeURIComponent(id);
+        $.ajax({
+            type: 'POST',
+            url: "empInf",
+            data:data,
+            success: function (data) {
+                console.log('success', data);
+                var obj = JSON.parse(data);
+                var table = document.getElementById("addEmpTable");
+                if(obj.id!=null&&obj.name!=null&&obj.phone!=null&&obj.password!=null) {
+                    for (var i = table.rows.length - 1; i > 1; i--) {
+                        table.deleteRow(i);
+                    }
+                    document.getElementById("addEmpTable").innerHTML += "<tr  >\n" +
+                        "    <td ><h4 id=\"idEmp\">" + obj.id + "</h4></td>\n" +
+                        "    <td ><h4 id=\"nameEmp\">" + obj.name + "</h4></td>\n" +
+                        "    <td ><h4 id=\"phoneEmp\">" + obj.phone + "</h4></td>\n" +
+                        "    <td ><h4 id=\"passwordEmp\">" + obj.password + "</h4></td>\n" +
+                        "    <td ><button type=\"button\" onclick=\"getRow(this)\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#removeModal\"\ name=\"2\">  <i class=\"fas fa-user-times\"></i></button></td>\n" +
+                        "</tr>";
+                    document.getElementById("addEmpTable").innerHTML += "<tr  >\n" +
+                        "    <td colspan='5'><button  type=\"button\" class=\"btn btn-primary btn-sm\" onclick='searchedFlag=true;location.reload();'> לרשימה המלאה <i class=\"fas fa-undo-alt\"></i></button></td>\n" +
+                        "</tr>";
+                }
+                else {
+                    searchedFlag=false;
+                    location.reload();
+                }
+            },
+            error: function (exception) {
+                alert('Exception' + exception);
+            }
+        });
+    }
 }
 function dropDown() {
     $.ajax({
@@ -195,14 +235,35 @@ function addEmployee() {
             console.log('success', data);
             var obj = JSON.parse(data);
 
+/*
             document.getElementById("addEmpTable").innerHTML += "<tr  style=\"text-align: center\"onclick=\"getRow(this)\">\n" +
                 "    <td ><h4 id=\"idEmp\">"+obj.id+"</h4></td>\n" +
                 "    <td ><h4 id=\"nameEmp\">"+obj.name+"</h4></td>\n" +
                 "    <td ><h4 id=\"phoneEmp\">"+obj.phone+"</h4></td>\n" +
                 "    <td ><h4 id=\"passwordEmp\">"+obj.password+"</h4></td>\n" +
-                "    <td ><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#removeModal\"\ name=\"$i\">x</button></td>\n" +
-                "</tr>";
-           // document.getElementById("nameEmp").innerHTML = obj.name;
+                "    <td ><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#removeModal\"\ name=\"$i\"><i class=\"fas fa-user-times\"></i></button></td>\n" +
+                "</tr>";*/
+            var table = document.getElementById( 'addEmpTable' );
+            var index=table.rows.length-1;
+            var row1 = table.insertRow(table.rows.length-1);
+            //row1.onclick="+getRow(this)+";
+            var cell1 = row1.insertCell(0);
+            var  cell2 = row1.insertCell(1);
+            var cell3 = row1.insertCell(2);
+            var cell4 = row1.insertCell(3);
+            var cell5 = row1.insertCell(4);
+
+            cell1.innerHTML='<h4 id="idEmp">'+obj.id+'</h4></td>';
+            cell2.innerHTML="<h4 id=\"nameEmp\">"+obj.name+"</h4>";
+            cell3.innerHTML="<h4 id=\"phoneEmp\">"+obj.phone+"</h4>";
+            cell4.innerHTML="<h4 id=\"passwordEmp\">"+obj.password+"</h4>";
+            cell5.style.textAlign="center";
+            cell5.innerHTML="<button type=\"button\" onclick=\"getRow(this)\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#removeModal\"\\ name=\""+index+"\"><i class=\"fas fa-user-times\"></i></button>";
+            $('#addModal').modal('hide');
+
+            launch_toastAdd();
+           // location.reload();
+            // document.getElementById("nameEmp").innerHTML = obj.name;
          //   document.getElementById("phoneEmp").innerHTML = obj.phone;
            // document.getElementById("passwordEmp").innerHTML = obj.password;
 
@@ -214,14 +275,27 @@ function addEmployee() {
 
 
 }
+function launch_toastAdd() {
+    var x = document.getElementById("toast");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+
+}
+function launch_toastRemove() {
+    var x = document.getElementById("toastRemove");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+
+}
 function register(){
     window.location.replace("registration");
 }
 
 function getRow(x){
-    indexRow=x.rowIndex;
+    indexRow=$(x).closest('tr').index()+2;////////////////////////giving the -2 row index
 }
 function removeEmployee() {
+
     var table=document.getElementById("addEmpTable");
     var Row = table.rows[indexRow];
     var Cells = Row.getElementsByTagName("td");
@@ -234,7 +308,8 @@ function removeEmployee() {
         data: data,
         success: function (data) {
             //console.log('success', data);
-            document.getElementById("addEmpTable").deleteRow(indexRow);
+            document.getElementById("addEmpTable").deleteRow(indexRow)
+            launch_toastRemove();
         },
         error: function (exception) {
             alert('Exception' + exception);
@@ -389,25 +464,27 @@ function confirmAndAdd(emplid,enterTime,exitTime,date,reason,day,i,row,name) {
             var reasonEmp=reason;
             var index = row.parentNode.parentNode.rowIndex;
             document.getElementById("myTable").deleteRow(index);
-           /* var table = document.getElementById( 'acceptedTable' );
-            var row1 = table.insertRow(table.rows.length)
-            var cell1 = row1.insertCell(0);
-            var  cell2 = row1.insertCell(1);
-            var cell3 = row1.insertCell(2);
-            var cell4 = row1.insertCell(3);
-            var  cell5 = row1.insertCell(4);
-            var  cell6 = row1.insertCell(5);
-            var  cell7 = row1.insertCell(6);
-                cell1.innerHTML='<p >'+emplid+'</p>';
-                cell2.innerHTML='<p >'+name+'</p>';
-                cell3.innerHTML='<p >'+date+'</p>';
-                cell4.innerHTML='<p >'+day+'</p>';
-                cell5.innerHTML='<p><input type="time" id="input $i" value='+enterTime+' ></p>';
-                cell6.innerHTML='<p><input type="time" id="input $i" value='+exitTime+' ></p>';
-                cell7.innerHTML='<button type="button" class="btn btn-primary  test"  onclick=requestEmp('+reasonEmp+')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button>';
+            //
+
+            /* var table = document.getElementById( 'acceptedTable' );
+             var row1 = table.insertRow(table.rows.length)
+             var cell1 = row1.insertCell(0);
+             var  cell2 = row1.insertCell(1);
+             var cell3 = row1.insertCell(2);
+             var cell4 = row1.insertCell(3);
+             var  cell5 = row1.insertCell(4);
+             var  cell6 = row1.insertCell(5);
+             var  cell7 = row1.insertCell(6);
+                 cell1.innerHTML='<p >'+emplid+'</p>';
+                 cell2.innerHTML='<p >'+name+'</p>';
+                 cell3.innerHTML='<p >'+date+'</p>';
+                 cell4.innerHTML='<p >'+day+'</p>';
+                 cell5.innerHTML='<p><input type="time" id="input $i" value='+enterTime+' ></p>';
+                 cell6.innerHTML='<p><input type="time" id="input $i" value='+exitTime+' ></p>';
+                 cell7.innerHTML='<button type="button" class="btn btn-primary  test"  onclick=requestEmp('+reasonEmp+')" data-toggle="modal" data-target="#exampleModalScrollable"> <i class="fa fa-commenting-o" style="font-size:20px"></i></button>';
 
 
-*/
+ */
 
 
 
@@ -537,5 +614,17 @@ function drawBasic() {
 
       chart.draw(data, options);
     }
-/*-----------------------------------------excel-----*/
+/*-----------------------------------------checklength-----*/
 
+function checkLength(len,ele){
+    var fieldLength = ele.value.length;
+    if(fieldLength <= len){
+        return true;
+    }
+    else
+    {
+        var str = ele.value;
+        str = str.substring(0, str.length - 1);
+        ele.value = str;
+    }
+}

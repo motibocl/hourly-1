@@ -6,40 +6,67 @@
 
     <title>Hourly|Administration</title>
 </head>
-<body id="page1"  onload="clearCache(); rowNum($id.size())">
+<body id="page1"  onload="clearCache(); rowNum($id.size());dropDown()">
         #parse("adminNav.vm")
+<div id="toast"><div id="img"><i class="far fa-check-circle"></i></div><div id="desc">העובד הוסף בהצלחה.</div></div>
+<div id="toastRemove"><div id="imgRemove"><i class="far fa-times-circle"></i></div><div id="descRemove">העובד הוסר בהצלחה.</div></div>
 
-<h3 class="addEmp">רשימת עובדים:</h3>
+<div class="container report" >
+    <div class="row">
+        <div class="col-12 removeEmp">
+            <h3 class="addEmp">רשימת עובדים:</h3>
+        </div>
+
+    </div>
+</div>
 <br/>
 <div class="container report" >
 <div class="row">
     <div class="col-12 removeEmp">
-        <table id="addEmpTable" cellpadding="10">
+        <table  class="adminTbl table" id="addEmpTable" cellpadding="10">
+
+
+            <tr>
+               <td align="right" colspan="5">
+                   <div class="search">
+                       <div>
+
+                           <input onkeypress="searchEmp(event)"type="number" list="numberList" id="empID" placeholder="       Search . . ." required>
+                           <datalist id="numberList"></datalist>
+
+                       </div>
+                   </div>
+               </td>
+           </tr>
+            <thead class="thead-light">
+
             <tr >
-                <th >
+                <th scope="col" >
                   <h4>תז עובד &nbsp; </h4>
                 </th>
-                <th >
+                <th scope="col">
                     <h4>&nbsp;שם עובד </h4>
                 </th >
 
-                <th >
+                <th scope="col">
                      <h4>&nbsp;טלפון</h4>
                 </th>
-                <th >
+                <th scope="col">
                     <h4>&nbsp;סיסמא</h4>
                 </th>
-                <th >
+                <th scope="col">
                     <h4>&nbsp;הסרה</h4>
                 </th>
             </tr>
+            </thead>
+            <tbody>
             #if($id.size()!=0)
                #set($end =$id.size())
                #set($stop = $end - 1)
             #if($stop)
             ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
             #foreach($i in [0..$stop])
-            <tr onclick="getRow(this)" >
+            <tr  >
                 <td>
                     <h4 >$id.get($i)</h4>
                 </td>
@@ -54,18 +81,22 @@
                     <h4>$password.get($i)</h4>
                 </td>
                 <td style="text-align: center">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#removeModal" name="$i">x</button>
+                    <button type="button" onclick="getRow(this)"class="btn btn-primary" data-toggle="modal" data-target="#removeModal" name="$i"><i class="fas fa-user-times"></i></button>
                 </td>
             </tr>
     #end
     #end
             #end
-
+            <tr >
+                <td colspan="5" align="center"><!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+                    הוסף עובד <i class="fas fa-user-plus"></i>
+                </button>
+                </td>
+            </tr>
+            </tbody>
         </table>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
-          +
-        </button>
+
 
 </div>
 </div>
@@ -82,23 +113,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <form action="javascript:addEmployee();">
                     <div>
-                    <input type="number" class="form-control borColor" id="id" name="id" placeholder="מס זהות">
+                    <input type="tel"  class="form-control borColor" id="id" name="id" placeholder="מס זהות" pattern="[0-9]{9}" onKeyPress="return check(event,value)" onInput="checkLength(9,this)" required>
                     </div>
                     <div>
-                        <input type="text" class="form-control borColor" id="name" name="name" placeholder="שם">
+                        <input type="text" class="form-control borColor" id="name" name="name" placeholder="שם" maxlength="15" required>
                     </div>
                     <div>
-                        <input type="number" class="form-control borColor" id="phone" name="phone" placeholder="מס טלפון">
+                        <input type="tel" class="form-control borColor" id="phone" name="phone" placeholder="מס טלפון" pattern="[0]{1}[5]{1}[0-9]{8}" onInput="checkLength(10,this)" required>
                     </div>
                     <div>
-                        <input type="text"  class="form-control borColor" id="password" name="password" placeholder="סיסמא">
+                        <input type="text"  class="form-control borColor" id="password" name="password" placeholder="סיסמא"required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">דחה</button>
-                    <button type="button" class="btn btn-primary" onclick="addEmployee()"data-dismiss="modal">אשר</button>
+                    <input type="submit" value="אשר" class="btn btn-primary"></input>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -120,6 +153,7 @@
             </div>
         </div>
     </div>
+
     #parse("jsTemp.vm")
 </body>
 </html>

@@ -363,9 +363,10 @@ body, html {
 .fit{
 padding: initial;
 }
-.fitBtn{
+.fitBtn {
     padding: inherit;
 }
+
 /*------------------------------------------enter button-------------------------------------------------*/
 /*
 .knisa {
@@ -408,3 +409,280 @@ padding: initial;
     background: rgba( 20, 224, 133, 1 );
 }
 */
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
+
+
+
+
+.search {
+    margin: 20px;
+}
+
+.search > h3 {
+    font-weight: normal;
+}
+
+.search > h1,
+.search > h3 {
+    color: white;
+    margin-bottom: 15px;
+    text-shadow: 0 1px #0091c2;
+}
+
+.search > div {
+    display: inline-block;
+    position: relative;
+}
+
+.search > div:after {
+    content: "";
+    background: #050505;
+    width: 4px;
+    height: 20px;
+    position: absolute;
+    top: 16px;
+    right: -5px;
+    transform: rotate(135deg);
+    box-shadow: 0px -2px #0091c2;
+}
+
+.search > div > input {
+    color: #252222;
+    font-size: 16px;
+    background: transparent;
+    width: 25px;
+    height: 25px;
+    padding: 10px;
+    border: solid 3px #050404;
+    outline: none;
+    border-radius: 35px;
+    box-shadow: 2px 1px #0091c2;
+    transition: width 0.5s;
+}
+
+.search > div > input::placeholder {
+    color: #efefef;
+    opacity: 1;
+}
+
+
+
+.search > div > input::-ms-input-placeholder {
+    color: #efefef;
+}
+
+.search > div > input:focus,
+.search > div > input:valid {
+    width: 250px;
+}
+/*----------------------------------table administration-----------------*/
+@media only screen and (max-width: 745px) {
+    .adminTbl{
+       border-style: hidden;
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto;
+        display: block;
+    }
+}
+/*--------------toastAdd-------------------------------------------------*/
+#toast {
+    visibility: hidden;
+    max-width: 50px;
+    height: 50px;
+    /*margin-left: -125px;*/
+    margin: auto;
+    background-color: white;
+    color: green;
+    text-align: center;
+    border-radius: 2px;
+
+    position: fixed;
+    z-index: 1;
+    left: 0;right:0;
+    bottom: 30px;
+    font-size: 17px;
+    white-space: nowrap;
+}
+#toast #img{
+    width: 50px;
+    height: 50px;
+
+    float: left;
+
+    padding-top: 16px;
+    padding-bottom: 16px;
+
+    box-sizing: border-box;
+
+
+    background-color: limegreen;
+    color: black;
+}
+#toast #desc{
+
+
+    color: green;
+
+    padding: 16px;
+
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#toast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 2s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 4s, fadeout 0.5s 4.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes expand {
+    from {min-width: 50px}
+    to {min-width: 350px}
+}
+
+@keyframes expand {
+    from {min-width: 50px}
+    to {min-width: 350px}
+}
+@-webkit-keyframes stay {
+    from {min-width: 350px}
+    to {min-width: 350px}
+}
+
+@keyframes stay {
+    from {min-width: 350px}
+    to {min-width: 350px}
+}
+@-webkit-keyframes shrink {
+    from {min-width: 350px;}
+    to {min-width: 50px;}
+}
+
+@keyframes shrink {
+    from {min-width: 350px;}
+    to {min-width: 50px;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 60px; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0px; opacity: 0;}
+}
+/*--------------toastRemove-------------------------------------------------*/
+#toastRemove {
+    visibility: hidden;
+    max-width: 50px;
+    height: 50px;
+    /*margin-left: -125px;*/
+    margin: auto;
+    background-color: white;
+    color: red;
+    text-align: center;
+    border-radius: 2px;
+
+    position: fixed;
+    z-index: 1;
+    left: 0;right:0;
+    bottom: 30px;
+    font-size: 17px;
+    white-space: nowrap;
+}
+#toastRemove #imgRemove{
+    width: 50px;
+    height: 50px;
+
+    float: left;
+
+    padding-top: 16px;
+    padding-bottom: 16px;
+
+    box-sizing: border-box;
+
+
+    background-color: red;
+    color: black;
+}
+#toastRemove #descRemove{
+
+
+    color: red;
+
+    padding: 16px;
+
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#toastRemove.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 2s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, expand 0.5s 0.5s,stay 3s 1s, shrink 0.5s 4s, fadeout 0.5s 4.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes expand {
+    from {min-width: 50px}
+    to {min-width: 350px}
+}
+
+@keyframes expand {
+    from {min-width: 50px}
+    to {min-width: 350px}
+}
+@-webkit-keyframes stay {
+    from {min-width: 350px}
+    to {min-width: 350px}
+}
+
+@keyframes stay {
+    from {min-width: 350px}
+    to {min-width: 350px}
+}
+@-webkit-keyframes shrink {
+    from {min-width: 350px;}
+    to {min-width: 50px;}
+}
+
+@keyframes shrink {
+    from {min-width: 350px;}
+    to {min-width: 50px;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 60px; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0px;
+        opacity: 0;
+    }
+}

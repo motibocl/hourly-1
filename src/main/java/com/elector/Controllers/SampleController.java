@@ -323,6 +323,28 @@ public @ResponseBody ResponseEntity test(@RequestBody String jsonString) {
        // }
         return enterOrExit;
     }
+
+    @RequestMapping("/empInf")
+    @ResponseBody ResponseEntity empInf(@RequestParam(value="id",defaultValue = "") String id,@CookieValue(value = SESSION, defaultValue = "") String cookie){
+
+        String phone = convertToken(cookie);
+        AdminObject admin=persist.getAdminByPhone(phone);
+        int companyId=admin.getCompanyObject().getId();
+        JSONObject json=new JSONObject();
+        if(!id.equals("")) {
+            EmployeeObject employeeObject = persist.getEmployeeById(parseInt(id));
+
+            if (employeeObject != null) {
+                if (employeeObject.getCompanyObject().getId() == companyId) {
+                    json.put("id", employeeObject.getId());
+                    json.put("phone", employeeObject.getPhone());
+                    json.put("password", employeeObject.getPassword());
+                    json.put("name", employeeObject.getName());
+                }
+            }
+        }
+        return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+    }
     @RequestMapping("/addWorkTime")
     public String addWorkTime(Model model, @RequestParam("button") boolean button, @CookieValue(value = SESSION, defaultValue = "") String cookie, @RequestParam("enterTime") Float enterTime) throws Exception {
         //לשנות לא צריך

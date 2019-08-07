@@ -9,7 +9,7 @@
                     <a href="reports"><h4 class=" nav">דוחות נוכחות<i class="fas fa-address-book navIcons"></i></h4></a>
                     <a href="special_report"><h4 class="nav">דיווח מיוחד <i  class="fas fa-exclamation-circle navIcons"></i></h4></a>
                     <a href="logout"><h4 class="nav">התנתק<i class="fas fa-sign-out-alt navIcons"></i></h4></a>
-                    <div class="version">1.8.2019</div>
+                    <div class="version">7.8.2019</div>
                 </div>
             </div>
         </div>
