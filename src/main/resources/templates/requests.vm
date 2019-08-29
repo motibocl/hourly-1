@@ -4,7 +4,7 @@
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
 
-    <title>Hourly|requests</title>
+    <title>TimeUp|requests</title>
 </head>
 <body id="page1" onload="clearCache()">
     #if($admin)
@@ -25,7 +25,6 @@
     <div class="row">
         <div class="col">
             <p class="speRep">בקשות עובדים</p>
-           ##  <p>$ar0.get(1).getReasonText()</p>
         </div>
     </div>
 </div>
@@ -60,7 +59,6 @@
                 #set($end =$reasonsNotRead.size())
                 #set($stop = $end - 1)
                 #if($stop)
-                ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                     #foreach($i in [0..$stop])
                         <tr class="inf" >
                             <td><p >$reasonsNotRead.get($i).getEmployeeObject().getId()</p></td>
@@ -107,7 +105,6 @@
                         #set($end =$reasonsAccepted.size())
                         #set($stop = $end - 1)
                         #if($stop)
-                        ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                             #foreach($i in [0..$stop])
                                 <tr class="inf" >
                                     <td><p >$reasonsAccepted.get($i).getEmployeeObject().getId()</p></td>
@@ -152,7 +149,6 @@
                             #set($end =$reasonsDeclined.size())
                             #set($stop = $end - 1)
                             #if($stop)
-                            ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
                                 #foreach($i in [0..$stop])
                                     <tr class="inf" >
                                         <td><p >$reasonsDeclined.get($i).getEmployeeObject().getId()</p></td>
@@ -174,6 +170,7 @@
         </div>
 </div>
 </div>
+<p style="color:Tomato;margin-top: 10%;text-align: center;"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
 <!-- Modal -->
 <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -193,6 +190,7 @@
         </div>
     </div>
 </div>
+
     #parse("jsTemp.vm")
 
 </body>

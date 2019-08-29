@@ -43,12 +43,17 @@ body, html {
     width: auto;
 }
 .regFontColor{
-    color: crimson;
+    color: tomato;
 }
 
 .input{
     width: 100%;
     margin-top: 20%;
+}
+
+.input1{
+    width: 100%;
+    margin-top: 10%;
 }
 
 .forgot{
@@ -106,7 +111,13 @@ body, html {
     margin-right: auto;
 }
 
-
+.btnConfirm{
+    margin:auto;
+    display:block;
+    color: #0e2598;
+    width: 150px;
+    font-size: x-large;
+}
 .btn-secondary {
     background-color: #e8e0d9;
     border-color: #e8e0d9;
@@ -269,7 +280,7 @@ body, html {
     margin-left: 35%;
     margin-top: 25px;
     font-size: 19px;
-    color: #e07640;
+    color: #21afd3;
 }
 
 .inpForm1{
@@ -282,6 +293,15 @@ body, html {
     float: right;
 
 }
+/*------------------footer-------------------------------*/
+.footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    color:Tomato;
+    text-align: center;
+}
+
 /*-----------------------ER------------------------------*/
 .sidenav {
     width: 0;

@@ -7,7 +7,7 @@
     <script lang="javascript" src="/scripts/xlsx.full.min.js"></script>
     <script lang="javascript" src="/scripts/FileSaver.min.js"></script>
 
-    <title>Hourly|reports</title>
+    <title>TimeUp|reports</title>
 </head>
 <body id="page1" onload="clearCache(); dropDown()">
     #if($admin)
@@ -24,8 +24,7 @@
                     <button type="button" class="btn btn-sm backBtn" onclick="window.location.href = 'main.html';"><img src="css/images/backButton.png"class="img-fluid back"> </button>
 
             #end
-            <button type="button" class="btn btn-sm ditalesBtn"  onclick="go()"><img src="css/images/buttonExcel.png"class="img-fluid excelButton"> </button>
-            ## <button id="button-a">go!</button>
+            <button type="button" class="btn btn-sm ditalesBtn"  onclick="excelDownload()"><img src="css/images/buttonExcel.png"class="img-fluid excelButton"> </button>
         </div>
     </div>
 </div>
@@ -44,16 +43,13 @@
 
             <div class="col-4 formRep fit">
 
-                ## <div class="form-group">
-                     <input type="number" list="numberList" class="form-control borColor" id="id" name="id" placeholder="מספר עובד">
+                     <input type="number" list="numberList" class="form-control borColor" id="id" name="id" placeholder="תעודת זהות עובד" required>
                     <datalist id="numberList"></datalist>
-              ##   </div>
 
              </div>
 
                  <div class="col-3 formRep fit">
 
-                     ##<div class="form-group">
                          <select class="form-control borColor" id="month" name="month" >
                              <option value="">בחר חודש...</option>
                              <option value="1">ינואר</option>
@@ -71,21 +67,17 @@
                          </select>
                      </div>
 
-                ## </div>
 
                  <div class="col-3 formRep fit">
 
-
-                 ##    <div class="form-group">
-                         <input type="number" list="yearList" class="form-control borColor" id="year" name="year" placeholder="שנה">
+                         <input type="number" list="yearList" class="form-control borColor" id="year" name="year" placeholder="שנה"  required>
                      <datalist id="yearList">
                          <option value="2019">
                      </datalist>
                  </div>
-               ##  </div>
+
                      <div class="col-2 formRep fitBtn">
 
-                  ##   <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
                      <button  style="margin-top:auto;" class="btn btn-primary loginBtn" onclick="f()">בחר</button>
                      </div>
 
@@ -112,24 +104,20 @@
                          <option value="10">אוקטובר</option>
                          <option value="11">נובמבר</option>
                          <option value="12">דצמבר</option>
-                     </select>
+                         </select>
                  </div>
 
-             ## </div>
 
                  <div class="col-5 formRep">
 
 
-                 ##    <div class="form-group">
-                     <input type="number" class="form-control borColor" id="year" name="year" placeholder="שנה">
+                     <input type="number" class="form-control borColor" id="year" name="year" placeholder="שנה" required>
                      <datalist id="yearList">
                          <option value="2019">
                      </datalist>
                  </div>
-             ##  </div>
                  <div class="col-2 formRep">
 
-                 ##   <input type="submit" formaction="http://localhost:8666/reports" style="display:none"/>
                      <button  style="margin-top:auto;" class="btn btn-primary loginBtn" onclick="f()">בחר</button>
                  </div>
 
@@ -173,26 +161,13 @@
     #end
        </table>
     </div>
+
 </div>
+
+<p style="color:Tomato;margin-top: 10%;text-align: center;"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
+
 <script>
 
-    /* var wb = XLSX.utils.book_new();
-     wb.Props = {
-         Title: "SheetJS Tutorial",
-         Subject: "Test",
-         Author: "Red Stapler",
-         CreatedDate: new Date(2017,12,19)
-     };
-     wb.SheetNames.push("Test Sheet");
-    // var ws_data = [['hello' , 'world']];  //a row with 2 columns
-     //var ws = XLSX.utils.aoa_to_sheet(ws_data);
-     var worksheet = wb.Sheets[wb.SheetNames[0]];
-     var container = document.getElementById('please');
-     container.innerHTML = XLSX.utils.html_to_sheet(worksheet);
-     wb.Sheets["Test Sheet"] = ws;
-     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
-
- */
     var wb = XLSX.utils.table_to_book(document.getElementById('please'), {sheet:"Sheet JS"});
     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
 
@@ -203,7 +178,7 @@
         for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     }
-    function go(){
+    function excelDownload(){
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}),'$employeeName'+'.xlsx');
     }
 </script>
@@ -220,7 +195,7 @@
                             </button>
                         </div>
 
-                        <div>
+                        <div style="margin: auto;display: block">
                             <div class="form-group">
                                 <div class="container " >
                                     <div class="row rowBorder">
@@ -238,7 +213,7 @@
                                                     <p class="inf" id="hoursWorkedDetails"></p>
                                             </div>
                             </div>
-                            <button type="button" class="close midlle" data-dismiss="modal"><img src="css/images/okBtn.png"class="img-fluid okBtnImg ok"></button>
+                            <button  type="button" class="btn btn-outline-info btnConfirm"data-dismiss="modal">אישור <i class="far fa-check-circle"></i></button>
                         </div>
 
                     </div>
@@ -247,6 +222,11 @@
         </div>
     </div>
 </div>
+<div>
+
+</div>
+
+
 
 
     #parse("jsTemp.vm")

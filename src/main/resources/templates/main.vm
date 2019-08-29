@@ -5,7 +5,7 @@
 
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
-    <title>Hourly|main</title>
+    <title>TimeUp|main</title>
 </head>
     #if($admin)
         #parse("adminMain.vm")
@@ -19,16 +19,10 @@
 <p class="spring">$name</p>
 <div class="container timeEnter">
     <div class="row">
-    ##    <div class="col-2">
-
-      ##  </div>
         <div class="col-12 ">
             <p class="enterTime" id="workTime">$workedToday</p>
 
         </div>
-       ## <div class="col-2">
-
-      ##  </div>
     </div>
 </div>
 </br>
@@ -57,8 +51,9 @@
                 <div class="form-group">
                     <textarea class="inpForm1" rows="4" cols="50" class="form-control" name="commentary" id="exampleFormControlInput1" placeholder="הסבר" ></textarea>
                 </div>
-                <button type="button" onclick="repComment()" class="close" data-dismiss="modal" class="btn btn-sm okBtn"  ><img src="css/images/okBtn.png"class="img-fluid okBtnImg2"></button>
-            </div>
+                <button  type="button" class="btn btn-outline-info btnConfirm"onclick="repComment()"  data-dismiss="modal"  >אישור <i class="far fa-check-circle"></i></button>
+
+        </div>
 
         </div>
     </div>
@@ -83,8 +78,9 @@
         </div>
     </div>
 </div>
-    <p>gfhgfhgfh</p>
-    #parse("jsTemp.vm")
+
+    <p style="color:Tomato;margin-top: 10%;text-align: center;"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
+            #parse("jsTemp.vm")
 
 </body>
 </html>

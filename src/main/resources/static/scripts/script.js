@@ -295,7 +295,6 @@ function getRow(x){
     indexRow=$(x).closest('tr').index()+2;////////////////////////giving the -2 row index
 }
 function removeEmployee() {
-
     var table=document.getElementById("addEmpTable");
     var Row = table.rows[indexRow];
     var Cells = Row.getElementsByTagName("td");
@@ -572,7 +571,7 @@ function deleteRow(emplid,enterTime,exitTime,date,reason,i,row,name,dayOfTheWeek
 
 }
 /*-------------------------------------charts----------------------------------------------------*/
-
+/*
 google.charts.load('current', {packages: ['corechart', 'bar']});
 google.charts.setOnLoadCallback(drawBasic);
 
@@ -613,8 +612,24 @@ function drawBasic() {
         document.getElementById('chart_div'));
 
       chart.draw(data, options);
+    }*/
+
+
+function checkDate() {
+    var todayYear=today.getFullYear();
+    var month=today.getMonth()+1;
+    var day=today.getDate();
+    if(day<10){
+        day='0'+day;
     }
+    if(month<10){
+        month='0'+month;
+    }
+    todayYear=todayYear+"-"+month+"-"+day;
+    document.getElementById("check").setAttribute("max",todayYear);
+}
 /*-----------------------------------------checklength-----*/
+
 
 function checkLength(len,ele){
     var fieldLength = ele.value.length;

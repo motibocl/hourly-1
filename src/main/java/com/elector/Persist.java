@@ -50,7 +50,7 @@ public class Persist {
 
     @PostConstruct
     private void init () throws Exception {
-        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "tuRgmhuI1");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test2?autoReconnect=true&useSSL=false", "root", "R2611996");
 
     }
 
@@ -503,6 +503,14 @@ there is no need */
                 .list();
         return worktimeObject;//excuting query.
     }
+    public List<WorktimeObject> workTimeMonth(int todayMonth, int todayYear) throws SQLException {
+        List<WorktimeObject> worktimeObject=(List<WorktimeObject>) getQuerySession()
+                .createQuery("FROM WorktimeObject WHERE month(date)=:month AND year(date)=:year")
+                .setInteger("month",todayMonth)
+                .setInteger("year",todayYear)
+                .list();
+        return worktimeObject;//excuting query.
+    }
    /* public ResultSet selectWorkTimeByDay(int employeeId, Date today) throws SQLException {
         PreparedStatement Stmt = connect("select * from test2.worktime WHERE test2.worktime.employeeId=? and test2.worktime.date=?");
         Stmt.setInt(1, employeeId);
@@ -649,6 +657,15 @@ there is no need */
               .list();
       return worktimeObject;
   }
+    public List<WorktimeObject> workTimeDay(int year, int month,  int day){
+        List<WorktimeObject> worktimeObjects=(List<WorktimeObject>) getQuerySession()
+                .createQuery("FROM WorktimeObject WHERE month(date)=:month AND year(date)=:year AND day(date)=:day")
+                .setInteger("month",month)
+                .setInteger("year",year)
+                .setInteger("day",day)
+                .list();
+        return worktimeObjects;
+    }
     public ResultSet totalHoursWorkedInDay(int year, int month, int employeeId, int day) throws SQLException {
         PreparedStatement myStmt = connect("SELECT SUM(worktime.totalhoursWorked) as total FROM worktime WHERE YEAR (date)=? and MONTH(date)=? and  day(date)=? and employeeId=? ");
         myStmt.setInt(1, year);

@@ -5,7 +5,7 @@
     #parse("cssTemp.vm")
 
     <meta charset="UTF-8">
-    <title>Notebook</title>
+    <title>Registration</title>
 </head>
 <body >
 <div class="img">
@@ -16,7 +16,7 @@
                 <img onclick="returnToMainPage()" src="css/images/timeup5.png" class="img-fluid" alt="Responsive image" id="logo">
             </header>
             <div class="col">
-                <form class="input" action="" method="post" id="register">
+                <form class="input1" action="" method="post" id="register">
                     <div class="col">
                         <div class="col-6 regInput">
                            <h5 class="regFontColor"><b>שם משתמש:</b></h5>
@@ -24,18 +24,18 @@
                         </div>
                        <div class="col-6 regInput">
                            <h5 class="regFontColor"><b>אימייל:</b></h5>
-                           <input class="form-control" type="text" name="email" placeholder="אימייל" required>
+                           <input class="form-control" type="email" name="email" placeholder="אימייל" required>
                         </div>
                     </div>
                     <div class="col">
                     <div class="col-6 regInput">
                            <h5 class="regFontColor"><b>מס טלפון:</b></h5>
-                           <input class="form-control" type="text" name="phone" placeholder="מס טלפון" required>
+                           <input class="form-control" type="tel" name="phone" placeholder="מס טלפון" pattern="[0]{1}[5]{1}[0-9]{8}" required>
                     </div>
 
                     <div class="col-6 regInput">
                            <h5 class="regFontColor"><b>סיסמה:</b></h5>
-                           <input class="form-control" type="password" name="password" placeholder="סיסמה" required>
+                           <input class="form-control" type="password" name="password" placeholder="סיסמה" minlength="8" required>
                     </div>
                     </div>
                     <div class="col">
@@ -52,23 +52,28 @@
                     <div class="col">
                         <div class="col-6 regInput">
                             <h5 class="regFontColor"><b>ח.פ חברה</b></h5>
-                            <input class="form-control" type="number" name="companyId" placeholder="ח.פ חברה" required>
+                            <input class="form-control" type="tel" name="companyId" placeholder="ח.פ חברה" pattern="[5]{1}[1]{1}[0-9]{7}" required>
                         </div>
 
                         <div class="col-6 regInput">
                             <h5 class="regFontColor"><b>מס' זהות:</b></h5>
-                            <input class="form-control" type="text" name="adminId" placeholder="מס' זהות" required>
+                            <input class="form-control" type="tel" name="adminId" placeholder="מס' זהות"  pattern="[0-9]{9}" required>
                         </div>
                     </div>
                 </form>
                 <button class="btn btn-primary loginBtn regBtn" type="submit" form="register" formaction="register"  >הירשם!</button>
+
             </div>
+
 
         </div>
 
     </div>
+
+    <p class="footer"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
 </div>
-</div>
+
+
     #parse("jsTemp.vm")
 
 </body>

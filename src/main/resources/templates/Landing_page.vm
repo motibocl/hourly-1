@@ -5,7 +5,7 @@
     #parse("cssTemp.vm")
 
     <meta charset="UTF-8">
-    <title>Notebook</title>
+    <title>TimeUP|Home-Page</title>
 </head>
 <body >
 <div class="img">
@@ -17,12 +17,13 @@
                 <br>
                 <br>
                 <form class="input" action="" method="post" id="login">
-                    <input class="form-control" type="text" name="login" placeholder="טלפון" required>
+                    <input class="form-control" type="tel" name="login" placeholder="טלפון"  required>
+                    <!---pattern="[0]{1}[5]{1}[0-9]{8}" -->
                     <br>
                     <input class="form-control" type="password" name="pass" placeholder="סיסמה" required>
+                    <!--minlength="8"-->
 
                 </form>
-               ## <button class="btn btn-primary loginBtn" onclick="register()" >הרשמה</button>
                 <button class="btn btn-primary loginBtn" type="submit" form="login" formaction="login" >התחבר</button>
                 <a class="forgot" href="forgotPass"><b>שכחתי את הסיסמה?</b></a>
                 <br>
@@ -32,9 +33,12 @@
             </header>
         </div>
 
+
     </div>
+    <p class="footer"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
 </div>
 </div>
+
     #parse("jsTemp.vm")
 
 </body>

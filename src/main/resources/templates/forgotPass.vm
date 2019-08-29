@@ -5,7 +5,7 @@
     #parse("cssTemp.vm")
 
     <meta charset="UTF-8">
-    <title>Notebook</title>
+    <title>Forgot-Password</title>
 </head>
 <body >
 <div class="img">
@@ -17,7 +17,7 @@
                 <br>
                 <br>
                 <form class="input" action="" method="post" id="forgot">
-                    <input class="form-control" type="text" name="phone" placeholder="הכנס מס' טלפון">
+                    <input class="form-control" type="tel" name="phone" placeholder="הכנס מס' טלפון" pattern="[0]{1}[5]{1}[0-9]{8}" required>
                     <br>
                 </form>
                 <button class="btn btn-primary loginBtn" type="submit" form="forgot" formaction="sendSms" >קבל סיסמא</button>
@@ -27,7 +27,9 @@
 
     </div>
 </div>
+<p class="footer"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
 </div>
+
     #parse("jsTemp.vm")
 
 </body>

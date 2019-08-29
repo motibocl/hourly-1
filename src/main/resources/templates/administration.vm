@@ -64,7 +64,6 @@
                #set($end =$id.size())
                #set($stop = $end - 1)
             #if($stop)
-            ##$emplId.get($i),$enterTime.get($i),$exitTime.get($i),$dateList1.get($i),$hours.get($i),$dayOfWeek.get($i),$reasonsList.get($i)
             #foreach($i in [0..$stop])
             <tr  >
                 <td>
@@ -99,8 +98,17 @@
 
 
 </div>
-</div>
 
+</div>
+</div>
+<br>
+<div class="container" >
+    <div class="row">
+        <div class="col-12 ">
+            <p class="footer"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
+        </div>
+    </div>
+</div>
 
     <!-- addModal -->
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -124,7 +132,7 @@
                         <input type="tel" class="form-control borColor" id="phone" name="phone" placeholder="מס טלפון" pattern="[0]{1}[5]{1}[0-9]{8}" onInput="checkLength(10,this)" required>
                     </div>
                     <div>
-                        <input type="text"  class="form-control borColor" id="password" name="password" placeholder="סיסמא"required>
+                        <input type="text"  class="form-control borColor" id="password" name="password" placeholder="סיסמא"  minlength="8" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -135,6 +143,7 @@
             </div>
         </div>
     </div>
+
     <!-- removeModal -->
     <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -153,7 +162,6 @@
             </div>
         </div>
     </div>
-
     #parse("jsTemp.vm")
 </body>
 </html>

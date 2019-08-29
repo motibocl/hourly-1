@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" style="max-width: 100%;overflow-x: hidden;">
+<html lang="en" >
 <head>
     #parse("metaTagsTemp.vm")
     #parse("cssTemp.vm")
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <title>Hourly|admin</title>
+    <title>TimeUp|admin</title>
 </head>
-<body id="page1" onload="clearCache()" style="max-width: 100%;overflow-x: hidden;">
-
+<body id="page1"  onload="clearCache();init('$months[0]','$months[1]','$months[2]','$months[3]','$months[4]','$months[5]','$months[6]','$months[7]','$months[8]','$months[9]','$months[10]','$months[11]','$totalHoursInDay[0]','$totalHoursInDay[1]','$totalHoursInDay[2]','$totalHoursInDay[3]','$totalHoursInDay[4]','$totalHoursInDay[5]')" >
 
 
 <script type="text/javascript">
 
-    google.charts.load('current', {packages: ['corechart', 'bar']}).
-            then(function () {
-        var data = google.visualization.arrayToDataTable([
-            ['Element', 'Hours', { role: 'style' }],
-            ['January', 8.94, 'blue'],            // RGB value
-            ['February', 10.49, 'blue'],            // English color name
-            ['March', 19.30, 'blue'],
-            ['May', 21.45, 'blue' ], // CSS-style declaration
-            ['June', 8.94, 'blue'],            // RGB value
-            ['July', 10.49, 'blue'],            // English color name
-            ['August', 19.30, 'blue'],
-            ['September', 21.45, 'blue' ],
-            ['October', 10.49, 'blue'],            // English color name
-            ['November', 19.30, 'blue'],
-            ['December', 21.45, 'blue' ]
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(init);
+    function eachMonthActivity(January,February,March,April,May,June,July,August,September,October,November,December) {
+        var dataMonths = google.visualization.arrayToDataTable([
+            ['string', 'Hours', { role: 'style' }],
+            ['January', parseFloat(January), '#21afd3'],            // RGB value
+            ['February', parseFloat(February), '#21afd3'],            // English color name
+            ['March', parseFloat(March), '#21afd3'],
+            ['April', parseFloat(April), '#21afd3'],
+            ['May',parseFloat(May), '#21afd3' ], // CSS-style declaration
+            ['June', parseFloat(June), '#21afd3'],            // RGB value
+            ['July', parseFloat(July), '#21afd3'],            // English color name
+            ['August', parseFloat(August), '#21afd3'],
+            ['September', parseFloat(September), '#21afd3' ],
+            ['October', parseFloat(October), '#21afd3'],            // English color name
+            ['November', parseFloat(November), '#21afd3'],
+            ['December',parseFloat(December), '#21afd3' ]
         ]);
 
-        var options = {
-            title: 'Motivation Level Throughout the Day',
+        var optionsM = {
+            title: 'Motivation Level Throughout the Months',
+            colors:['#21afd3'],
             hAxis: {
-                title: 'Months',
                 format: 'h:mm a',
                 viewWindow: {
                     min: [7, 30, 0],
                     max: [17, 30, 0]
                 }
+
             },
             vAxis: {
                 title: 'Hours in month'
@@ -45,40 +47,100 @@
             backgroundColor: 'transparent',
             chartArea: {
                 backgroundColor: 'transparent',
-            }
+            },
+            showRowNumber: true, width: '100%', height: '100%'
         };
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
 
-        chart.draw(data, options);
+        chart.draw(dataMonths, optionsM);
         window.addEventListener('resize', function () {
-            chart.draw(data, options);
+            chart.draw(dataMonths, optionsM);
         });
 
-    });
+    }
 
+    function eachDaysActivity(Sunday,Monday,Tuesday,Wednesday,Thursday,Friday) {
+        var data = google.visualization.arrayToDataTable([
+            ['string', 'Hours', { role: 'style' }],
+            ['Sunday', parseFloat(Sunday), '#21afd3'],            // RGB value
+            ['Monday', parseFloat(Monday), '#21afd3'],            // English color name
+            ['Tuesday', parseFloat(Tuesday), '#21afd3'],
+            ['Wednesday', parseFloat(Wednesday), '#21afd3'],
+            ['Thursday',parseFloat(Thursday), '#21afd3' ], // CSS-style declaration
+            ['Friday', parseFloat(Friday), '#21afd3'],            // RGB value
+        ]);
+
+        var options = {
+            title: 'Motivation Level Throughout the Day',
+            colors:['#21afd3'],
+            hAxis: {
+               // title: 'Days',
+                format: 'h:mm a',
+                viewWindow: {
+                    min: [7, 30, 0],
+                    max: [17, 30, 0]
+                }
+            },
+            vAxis: {
+                title: 'Hours in day'
+            },
+            backgroundColor: 'transparent',
+            chartArea: {
+                backgroundColor: 'transparent',
+            }
+        };
+
+        var chartDays = new google.visualization.ColumnChart(document.getElementById('chart_days'));
+
+        chartDays.draw(data, options);
+        window.addEventListener('resize', function () {
+            chartDays.draw(data, options);
+        });
+
+    }
+    function init(January,February,March,April,May,June,July,August,September,October,November,December,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday) {
+        eachMonthActivity(January,February,March,April,May,June,July,August,September,October,November,December);
+        eachDaysActivity(Sunday,Monday,Tuesday,Wednesday,Thursday,Friday)
+    }
 
 
 </script>
 
         #parse("adminNav.vm")
-
+<div>
         <p class="spring">$name</p>
+</div>
+
+<br>
 <div class="container">
     <div class="row">
 
         <div class="col-12">
-            <div  id="chart_div"></div>
+            <div  style="max-width: 100%;overflow-x: hidden;" id="chart_div"></div>
+        </div>
+
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-12">
+            <div style="max-width: 100%;overflow-x: hidden;" id="chart_days"></div>
         </div>
     </div>
 </div>
 
 <div class="container inf">
-    <h1>סך שעות עבודה בחודש:</h1>
-    <h2>$totalHoursInMonth</h2>
-    <h1>סך שעות עבודה היום:</h1>
-    <h2>$totalHoursInDay</h2>
-    <h1>עובדים שכרגע במשמרת : </h1>
+    <div class="row">
+        <div class="col-12">
+    <h2> :employees in position </h2>
     #if($inPosition.size()!=0)
 
         #set($end =$inPosition.size())
@@ -87,23 +149,15 @@
 
             #foreach($i in [0..$stop])
 
-                    <h3>$inPosition.get($i)<br> $totalToEmployee</h3>
+                    <h3>$inPosition.get($i)</h3>
 
             #end
         #end
     #end
-
-
+    </div>
+    </div>
 </div>
-
-
-
-
-
-
-
-
-
+<p align="center"style="color:Tomato;"><b>Rotem & Moti © TimeUp. All rights reserved</b></p>
 
     #parse("jsTemp.vm")
 
